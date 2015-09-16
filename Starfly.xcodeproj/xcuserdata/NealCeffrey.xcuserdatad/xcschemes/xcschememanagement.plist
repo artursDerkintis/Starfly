@@ -4,14 +4,49 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>MacStrafly.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>Starfly copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>Starfly.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>Starfly_Mac.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>B807A04B1BA6A941000A9ED4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B807A0621BA6A995000A9ED4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B807A0751BA6A995000A9ED4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B807A0801BA6A995000A9ED4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B8ECA7DF1BA5AF3500A95D36</key>
 		<dict>
 			<key>primary</key>

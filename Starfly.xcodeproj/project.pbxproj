@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B807A0961BA6AA10000A9ED4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807A0911BA6AA10000A9ED4 /* Constants.swift */; };
+		B807A0971BA6AA10000A9ED4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807A0921BA6AA10000A9ED4 /* Extensions.swift */; };
+		B807A0981BA6AA10000A9ED4 /* SFClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807A0931BA6AA10000A9ED4 /* SFClock.swift */; };
+		B807A0991BA6AA10000A9ED4 /* SFUrlBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807A0941BA6AA10000A9ED4 /* SFUrlBar.swift */; };
+		B807A09A1BA6AA10000A9ED4 /* SFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B807A0951BA6AA10000A9ED4 /* SFView.swift */; };
+		B8125D8A1BA9A79300F3A1BE /* SFWebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8125D891BA9A79300F3A1BE /* SFWebVC.swift */; };
+		B8125D8C1BA9AA9900F3A1BE /* SFTabContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8125D8B1BA9AA9900F3A1BE /* SFTabContents.swift */; };
+		B82DA1911BA736FD00C89740 /* SFTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82DA1901BA736FD00C89740 /* SFTabs.swift */; };
+		B82DA1931BA7372900C89740 /* SFTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82DA1921BA7372900C89740 /* SFTab.swift */; };
+		B82DA1D31BA740E600C89740 /* SFScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82DA1D21BA740E600C89740 /* SFScrollView.swift */; };
 		B8ECA7E41BA5AF3500A95D36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8ECA7E31BA5AF3500A95D36 /* AppDelegate.swift */; };
 		B8ECA7E61BA5AF3500A95D36 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8ECA7E51BA5AF3500A95D36 /* ViewController.swift */; };
 		B8ECA7E91BA5AF3500A95D36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B8ECA7E71BA5AF3500A95D36 /* Main.storyboard */; };
@@ -35,6 +45,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B807A05E1BA6A942000A9ED4 /* Starfly copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Starfly copy-Info.plist"; path = "/Users/NealCeffrey/Desktop/Development/Starfly/Starfly copy-Info.plist"; sourceTree = "<absolute>"; };
+		B807A0911BA6AA10000A9ED4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B807A0921BA6AA10000A9ED4 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B807A0931BA6AA10000A9ED4 /* SFClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFClock.swift; sourceTree = "<group>"; };
+		B807A0941BA6AA10000A9ED4 /* SFUrlBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFUrlBar.swift; sourceTree = "<group>"; };
+		B807A0951BA6AA10000A9ED4 /* SFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFView.swift; sourceTree = "<group>"; };
+		B8125D891BA9A79300F3A1BE /* SFWebVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFWebVC.swift; sourceTree = "<group>"; };
+		B8125D8B1BA9AA9900F3A1BE /* SFTabContents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFTabContents.swift; sourceTree = "<group>"; };
+		B82DA1901BA736FD00C89740 /* SFTabs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFTabs.swift; sourceTree = "<group>"; };
+		B82DA1921BA7372900C89740 /* SFTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFTab.swift; sourceTree = "<group>"; };
+		B82DA1D21BA740E600C89740 /* SFScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFScrollView.swift; sourceTree = "<group>"; };
 		B8ECA7E01BA5AF3500A95D36 /* Starfly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Starfly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8ECA7E31BA5AF3500A95D36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B8ECA7E51BA5AF3500A95D36 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -83,6 +104,7 @@
 				B8ECA7FA1BA5AF3500A95D36 /* StarflyTests */,
 				B8ECA8051BA5AF3500A95D36 /* StarflyUITests */,
 				B8ECA7E11BA5AF3500A95D36 /* Products */,
+				B807A05E1BA6A942000A9ED4 /* Starfly copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,11 +123,21 @@
 			children = (
 				B8ECA7E31BA5AF3500A95D36 /* AppDelegate.swift */,
 				B8ECA7E51BA5AF3500A95D36 /* ViewController.swift */,
+				B807A0911BA6AA10000A9ED4 /* Constants.swift */,
+				B807A0921BA6AA10000A9ED4 /* Extensions.swift */,
+				B807A0931BA6AA10000A9ED4 /* SFClock.swift */,
+				B807A0941BA6AA10000A9ED4 /* SFUrlBar.swift */,
+				B807A0951BA6AA10000A9ED4 /* SFView.swift */,
+				B82DA1901BA736FD00C89740 /* SFTabs.swift */,
+				B82DA1921BA7372900C89740 /* SFTab.swift */,
+				B82DA1D21BA740E600C89740 /* SFScrollView.swift */,
 				B8ECA7E71BA5AF3500A95D36 /* Main.storyboard */,
 				B8ECA7ED1BA5AF3500A95D36 /* Assets.xcassets */,
 				B8ECA7EF1BA5AF3500A95D36 /* LaunchScreen.storyboard */,
 				B8ECA7F21BA5AF3500A95D36 /* Info.plist */,
 				B8ECA7EA1BA5AF3500A95D36 /* Starfly.xcdatamodeld */,
+				B8125D891BA9A79300F3A1BE /* SFWebVC.swift */,
+				B8125D8B1BA9AA9900F3A1BE /* SFTabContents.swift */,
 			);
 			path = Starfly;
 			sourceTree = "<group>";
@@ -190,6 +222,8 @@
 		B8ECA7D81BA5AF3500A95D36 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0710;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Starfly;
 				TargetAttributes = {
@@ -258,9 +292,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B807A0971BA6AA10000A9ED4 /* Extensions.swift in Sources */,
+				B807A0981BA6AA10000A9ED4 /* SFClock.swift in Sources */,
+				B8125D8C1BA9AA9900F3A1BE /* SFTabContents.swift in Sources */,
+				B82DA1D31BA740E600C89740 /* SFScrollView.swift in Sources */,
 				B8ECA7E61BA5AF3500A95D36 /* ViewController.swift in Sources */,
+				B807A09A1BA6AA10000A9ED4 /* SFView.swift in Sources */,
 				B8ECA7EC1BA5AF3500A95D36 /* Starfly.xcdatamodeld in Sources */,
+				B82DA1911BA736FD00C89740 /* SFTabs.swift in Sources */,
+				B807A0991BA6AA10000A9ED4 /* SFUrlBar.swift in Sources */,
+				B8125D8A1BA9A79300F3A1BE /* SFWebVC.swift in Sources */,
 				B8ECA7E41BA5AF3500A95D36 /* AppDelegate.swift in Sources */,
+				B82DA1931BA7372900C89740 /* SFTab.swift in Sources */,
+				B807A0961BA6AA10000A9ED4 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,6 +531,7 @@
 				B8ECA80D1BA5AF3500A95D36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B8ECA80E1BA5AF3500A95D36 /* Build configuration list for PBXNativeTarget "StarflyTests" */ = {
 			isa = XCConfigurationList;
@@ -495,6 +540,7 @@
 				B8ECA8101BA5AF3500A95D36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B8ECA8111BA5AF3500A95D36 /* Build configuration list for PBXNativeTarget "StarflyUITests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +549,7 @@
 				B8ECA8131BA5AF3500A95D36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
