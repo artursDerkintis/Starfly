@@ -14,9 +14,10 @@ class SFTab: SFView {
     var icon  : UIImageView?
     var closeTab : UIButton?
     var overLayer : CALayer?
-    var delegate : SFCloseTab?
+    var delegate : SFTabDelegate?
     var loadingIndicator : CALayer?
     var radial : SFRadialLayer?
+    var webVC : SFWebVC?
     override init(frame: CGRect) {
         super.init(frame: frame)
         //layer.backgroundColor = currentColor?.CGColor
@@ -43,13 +44,13 @@ class SFTab: SFView {
         radial!.locations = [0.0, 0.6, 0.6, 0.6, 0.6]
         radial?.opacity = 0.0
         radial!.radius = radial!.frame.height
-        icon?.layer.addSublayer(radial!)
+        //icon?.layer.addSublayer(radial!)
         
         addSubview(icon!)
         setLoader()
-        label = UILabel(frame: CGRect(x: self.frame.height * 0.9, y: 0, width: self.frame.width - (self.frame.height * 1.5), height: self.frame.height))
+        label = UILabel(frame: CGRect(x: self.frame.height * 0.85, y: 0, width: self.frame.width - (self.frame.height * 1.6), height: self.frame.height))
       
-        label!.text = "some long useless textmore tx"
+        label!.text = "Loading..."
         label?.font = UIFont.systemFontOfSize(13, weight: UIFontWeightMedium)
         label?.textColor = UIColor.whiteColor()
         label!.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
@@ -63,14 +64,40 @@ class SFTab: SFView {
         closeTab = UIButton(type: UIButtonType.Custom)
         closeTab?.frame = CGRect(x: frame.width - frame.height * 1.25, y: -(frame.height * 0.25), width: frame.height * 1.5, height: frame.height * 1.5)
         closeTab?.autoresizingMask =  UIViewAutoresizing.FlexibleLeftMargin
-        closeTab?.setImage(UIImage(named: NavImages.closeTab), forState: UIControlState.Normal)
-        closeTab?.setImage(UIImage(named: NavImages.closeTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        closeTab?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Normal)
+        closeTab?.setImage(UIImage(named: Images.closeTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         closeTab?.contentEdgeInsets = UIEdgeInsets(top: 21, left: 21, bottom: 21, right: 21)
         closeTab?.addTarget(self, action: "closeTabF", forControlEvents: UIControlEvents.TouchDown)
         addSubview(closeTab!)
-        loadingIndiSwitch(on : true)
-        delay(5.0) { () -> () in
-            self.loadingIndiSwitch(on: false)
+        loadingIndiSwitch(on : false)
+        let doubleTap = UITapGestureRecognizer(target: self, action: "closeTabF")
+        doubleTap.numberOfTapsRequired = 2
+        self.addGestureRecognizer(doubleTap)
+    }
+    func setUpObservers(){
+        if let web = webVC?.webView{
+            web.addObserver(self, forKeyPath: "title", options: NSKeyValueObservingOptions.New, context: nil)
+            web.addObserver(self, forKeyPath: "loading", options: NSKeyValueObservingOptions.New, context: nil)
+            webVC?.addObserver(self, forKeyPath: "favicon", options: NSKeyValueObservingOptions.New, context: nil)
+        }
+    }
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "title"{
+            label?.text = webVC?.webView?.title
+        }
+        if keyPath == "loading"{
+            loadingIndiSwitch(on: webVC!.webView!.loading)
+            
+        }
+        if keyPath == "favicon"{
+            icon?.image = webVC?.favicon
+        }
+    }
+    deinit{
+        if let web = webVC?.webView{
+            web.removeObserver(self, forKeyPath: "title")
+            web.removeObserver(self, forKeyPath: "loading")
+            webVC!.removeObserver(self, forKeyPath: "favicon")
         }
     }
     func loadingIndiSwitch(on on : Bool){
@@ -78,11 +105,11 @@ class SFTab: SFView {
         let basicAnim = CABasicAnimation(keyPath: "opacity")
         basicAnim.fromValue = on ? 0.0 : 1.0
         basicAnim.toValue = on ? 1.0 : 0.0
-        basicAnim.duration = 1.0
+        basicAnim.duration = 0.6
         basicAnim.fillMode = kCAFillModeForwards
         basicAnim.removedOnCompletion = false
         self.loadingIndicator?.addAnimation(basicAnim, forKey: "j")
-        self.radial?.addAnimation(basicAnim, forKey: "j")
+       // self.radial?.addAnimation(basicAnim, forKey: "j")
     }
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -100,6 +127,12 @@ class SFTab: SFView {
         
         
        
+    }
+    override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+        if CGRectContainsPoint(CGRectInset(self.bounds, -10, -5), point){
+            return true
+        }
+        return false
     }
      var selected : Bool = false{
         didSet{
@@ -199,6 +232,7 @@ class SFTab: SFView {
         // 5
         let instanceLayer = CALayer()
         let layerWidth: CGFloat = 2.0
+        instanceLayer.cornerRadius = 1.0
         let midX = CGRectGetMidX(icon!.frame) - layerWidth / 2.0
         instanceLayer.frame = CGRect(x: midX, y: 0.0, width: layerWidth, height: layerWidth * 3.0)
         instanceLayer.backgroundColor = UIColor.whiteColor().CGColor

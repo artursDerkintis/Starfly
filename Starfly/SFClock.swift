@@ -211,7 +211,7 @@ class SFClock: UIView {
     }
 }
 class Battery: UIView {
-    let color = UIColor.whiteColor()
+    var color = UIColor.whiteColor()
     var label : UILabel?
     var timer : NSTimer?
     var currentLevel : Float? = 45
@@ -243,7 +243,11 @@ class Battery: UIView {
     func refreshTimer(){
         currentLevel = UIDevice.currentDevice().batteryLevel
         label!.text = String(format: "%.f%%", currentLevel! * 100)
-        
+        if currentLevel! * 100 <= 10{
+            color = UIColor.redColor()
+        }else{
+            color = UIColor.whiteColor()
+        }
         check()
         setNeedsDisplay()
     }
@@ -283,6 +287,7 @@ class Battery: UIView {
         let ovalRect = CGRectMake(-(rect.width * 0.475), -(rect.height * 0.475), rect.width * 0.95, rect.height * 0.95)
         let ovalPath = UIBezierPath()
         let bbc =  CGFloat(360 * currentLevel!)
+        
         ovalPath.addArcWithCenter(CGPointMake(ovalRect.midX, ovalRect.midY), radius: ovalRect.width / 2, startAngle: 0 * CGFloat(M_PI)/180, endAngle: bbc * CGFloat(M_PI)/180, clockwise: true)
         ovalPath.lineCapStyle = CGLineCap.Round
         UIColor.clearColor().setFill()

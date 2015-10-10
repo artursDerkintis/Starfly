@@ -9,18 +9,37 @@
 import UIKit
 
 
-struct NavImages {
+struct Images {
     static let back = "back"
     static let forward = "forward"
     static let reload = "reload"
     static let stop = "stopLoading"
     static let home = "home"
     static let bookmark = "bookmark"
+    static let bookmarkFill = "bookmarkFilled"
     static let menu = "logo"
     static let addTab = "addTab"
     static let closeTab = "closeTab"
+    static let edit = "edit"
+    static let image = "image"
 }
-
+func backgroundImages() -> [String]{
+    var array = [String]()
+    for i in 1...20{
+        array.append("abs" + String(i))
+    }
+    return array
+}
+func backgroundImagesThumbnails() -> [String]{
+    var array = [String]()
+    for image in backgroundImages(){
+        array.append(image + "_small")
+    }
+    return array
+}
+typealias SFTabWeb = SFWebVC -> Void
+typealias SFContains = Bool -> Void
+typealias SFNewContentLoaded = Bool -> Void
 enum SFClockFace : Int {
     case analog = 1//Default
     case digital = 2
@@ -40,7 +59,7 @@ struct SFColors {
     static let teal         = UIColor(rgba: "#009688")
     static let grey         = UIColor(rgba: "#607D8B")
     static let dark         = UIColor(rgba: "#212121")
-    static let yellow       = UIColor(rgba: "#FFD600")
+    static let yellow       = UIColor(rgba: "#CFA601")
     static let allColors =
         [SFColors.cyan,
         SFColors.dark,
@@ -55,4 +74,9 @@ struct SFColors {
         SFColors.red,
         SFColors.teal,
         SFColors.yellow]
+}
+
+enum SFWebState{
+    case web
+    case home
 }

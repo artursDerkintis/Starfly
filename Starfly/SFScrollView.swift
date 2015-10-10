@@ -42,12 +42,12 @@ class SFScrollView : UIView, UIScrollViewDelegate {
 
     
     var scrollView : UIScrollView?
-    var addTabB : UIButton?
+    var addTabB : SFButton?
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clearColor()
         
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 45, height: frame.height ))
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 60, height: frame.height ))
         scrollView?.autoresizingMask = sfMaskBoth
         scrollView?.layer.masksToBounds = false
         scrollView?.clipsToBounds = false
@@ -60,12 +60,11 @@ class SFScrollView : UIView, UIScrollViewDelegate {
         addSubview(scrollView!)
         scrollView?.delegate = self
         
-        addTabB = UIButton(type: UIButtonType.Custom)
-        addTabB?.backgroundColor = currentColor
-        addTabB?.frame = CGRect(x: frame.width - 40, y: 5, width: 35, height: 35)
+        addTabB = SFButton(type: UIButtonType.Custom)
+        addTabB?.frame = CGRect(x: frame.width - 44, y: 5, width: 35, height: 35)
         addTabB?.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin
-        addTabB?.setImage(UIImage(named: NavImages.addTab), forState: UIControlState.Normal)
-        addTabB?.setImage(UIImage(named: NavImages.addTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        addTabB?.setImage(UIImage(named: Images.addTab), forState: UIControlState.Normal)
+        addTabB?.setImage(UIImage(named: Images.addTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         addTabB?.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         addTabB?.layer.cornerRadius = addTabB!.frame.size.height * 0.5
         addTabB?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
@@ -166,12 +165,18 @@ class SFScrollView : UIView, UIScrollViewDelegate {
             if cell == cells.last{
                 cell.center = CGPoint(x: origin.x - (size.width * 0.5), y: self.frame.height * 0.5)
             }
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-               
-                    cell.frame.size = size
-                
+            let animationOptions: UIViewAnimationOptions = [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.BeginFromCurrentState]
+            UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.8, options: animationOptions, animations: { () -> Void in
                 cell.center = CGPoint(x: origin.x + (size.width * 0.5), y: self.frame.height * 0.5)
+                cell.frame.size = size
+                }, completion: { (e) -> Void in
+                    
             })
+               
+            
+                
+            
+            
            
       
             

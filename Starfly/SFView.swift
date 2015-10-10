@@ -11,11 +11,20 @@ var currentColor : UIColor?
 class SFView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        currentColor = SFColors.orange
-        backgroundColor = currentColor
         
+        currentColor = NSUserDefaults.standardUserDefaults().colorForKey("COLOR2") == nil ? SFColors.green : NSUserDefaults.standardUserDefaults().colorForKey("COLOR2")
+        backgroundColor = currentColor
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeColor", name: "ColorChanges", object: nil)
     }
+    
+    func changeColor(){
+        currentColor = NSUserDefaults.standardUserDefaults().colorForKey("COLOR2") == nil ? SFColors.green : NSUserDefaults.standardUserDefaults().colorForKey("COLOR2")
 
+        backgroundColor = currentColor
+    }
+    deinit{
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "ColorChanges", object: nil)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9048" systemVersion="15A282b" minimumToolsVersion="Automatic">
+    <entity name="Bookmarks" representedClassName="Bookmarks" syncable="YES">
+        <attribute name="arrangeIndex" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
+        <attribute name="bigImage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="favicon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="BooksHomeList" syncable="YES">
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="HistoryHit" representedClassName="HistoryHit" syncable="YES">
+        <attribute name="arrangeIndex" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="faviconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sectionId" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="titleOfIt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="urlOfIt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="visitsCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="HomeHit" representedClassName="HomeHit" syncable="YES">
+        <attribute name="arrangeIndex" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
+        <attribute name="bigImage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="favicon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Bookmarks" positionX="63" positionY="36" width="128" height="135"/>
+        <element name="HistoryHit" positionX="196" positionY="-9" width="128" height="165"/>
+        <element name="HomeHit" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="BooksHomeList" positionX="63" positionY="54" width="128" height="60"/>
+    </elements>
+</model>

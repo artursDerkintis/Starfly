@@ -13,14 +13,32 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var dateFormater : NSDateFormatter = NSDateFormatter()
+    var dateFormater2 : NSDateFormatter = NSDateFormatter()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         window?.backgroundColor = UIColor.whiteColor()
-        return true
-    }
+        
+        
+        
+        if NSUserDefaults.standardUserDefaults().stringForKey("alreadyLauched") != nil{
+            
+        }else{
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "showT")
+             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "rest")
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "savePASS")
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "alreadyLauched")
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "pr")
+            saveHitFirst()
 
+        }
+        
+      
+        return true
+        
+    }
+  
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -55,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var managedObjectModel: NSManagedObjectModel = {
         // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-        let modelURL = NSBundle.mainBundle().URLForResource("Starfly", withExtension: "momd")!
+        let modelURL = NSBundle.mainBundle().URLForResource("StarflyV2", withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
 
@@ -63,10 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
         // Create the coordinator and store
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("SingleViewCoreData.sqlite")
+        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("StarflyV2.sqlite")
         var failureReason = "There was an error creating or loading the application's saved data."
         do {
-            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: [NSMigratePersistentStoresAutomaticallyOption : true, NSInferMappingModelAutomaticallyOption : true])
         } catch {
             // Report any error we got.
             var dict = [String: AnyObject]()

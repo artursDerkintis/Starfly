@@ -17,6 +17,7 @@ public func lineWidth() -> CGFloat{
     }
  
 }
+public func degreesToRadians(degrees: Double) -> Double { return degrees * M_PI / 180.0 }
 public func delay(delay:Double, closure:()->()) {
     dispatch_after(
         dispatch_time(
@@ -39,7 +40,33 @@ public func getRandomColor() -> UIColor{
     return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
     
 }
-
+extension NSUserDefaults {
+    
+    func colorForKey(key: String) -> UIColor? {
+        var color: UIColor?
+        if let colorData = dataForKey(key) {
+            color = NSKeyedUnarchiver.unarchiveObjectWithData(colorData) as? UIColor
+        }
+        return color
+    }
+    
+    func setColor(color: UIColor?, forKey key: String) {
+        var colorData: NSData?
+        if let color = color {
+            colorData = NSKeyedArchiver.archivedDataWithRootObject(color)
+        }
+        setObject(colorData, forKey: key)
+    }
+    
+}
+extension String {
+    public func indexOfCharacter(char: Character) -> Int? {
+        if let idx = self.characters.indexOf(char) {
+            return self.startIndex.distanceTo(idx)
+        }
+        return nil
+    }
+}
 public func getDegreeSymbol(getdegree : Bool) -> NSString {
     /*NSLocale *locale = [NSLocale currentLocale];
     BOOL isMetric = [[locale objectForKey:NSLocaleUsesMetricSystem] boolValue];*/
@@ -58,7 +85,7 @@ public func getDegreeSymbol(getdegree : Bool) -> NSString {
                 return "imperial"
             }
         }
-   }
+}
 public func urlBarWidth() -> CGFloat{
     let orientation : UIInterfaceOrientation = UIApplication.sharedApplication().statusBarOrientation
     if orientation == UIInterfaceOrientation.LandscapeRight
@@ -180,40 +207,54 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage
     }
-
-    /*
-    -(UIImage*)addGlowToImage:(UIImage*)imageInput;
-    {
-    CGRect newSize = imageInput.bounds;
-    CGImageRef theImage = imageInput.CGImage;
-    
-    // expand the size to handle the "glow"
-    newSize.size.width += 6.0;
-    newSize.size.height += 6.0;
-    UIGraphicsBeginImageContext(newSize);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    CGContextBeginTransparencyLayerWithRect(ctx, newSize, NULL);
-    CGContextClearRect(ctx, newSize);
-    
-    // you can repeat this process to build glow.
-    CGContextDrawImage(ctx, newSize, theImage);
-    CGContextSetAlpha(ctx, 0.2);
-    
-    CGContextEndTransparencyLayer(ctx);
-    
-    // draw the original image into the context, offset to be centered;
-    CGRect centerRect = inputImage.bounds;
-    centerRect.origin.x += 3.0;
-    centerRect.origin.y += 3.0;
-    CGContextDrawImage(ctx, centerRect, theImage);
-    
-    result = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return result;
-    }*/
+    func isDarkImage() -> Bool{
+        var isDark = false
+        let imageData = CGDataProviderCopyData(CGImageGetDataProvider(self.CGImage))
+        let pixels = CFDataGetBytePtr(imageData)
+        var darkPixels = 0
+        let lenght = CFDataGetLength(imageData)
+        let darkPixelThreshold : Int = Int((self.size.width * self.size.height) * 0.45)
+        for var i = 0; i < lenght; i += 4{
+            let r = 0.299 * Float(pixels[i])
+            let g = 0.587 * Float(pixels[i+1])
+            let b = 0.114 * Float(pixels[i+2])
+            
+            let luminance = r + g + b
+            if luminance < 150{
+                darkPixels++
+            }
+        }
+        if darkPixels >= darkPixelThreshold{
+            isDark = true
+        }
+        return isDark
+    }
+    func tintedWithLinearGradientColors(colorsArr: [CGColor!]) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale);
+        let context = UIGraphicsGetCurrentContext()
+        CGContextTranslateCTM(context, 0, self.size.height)
+        CGContextScaleCTM(context, 1.0, -1.0)
+        
+        CGContextSetBlendMode(context, CGBlendMode.Normal)
+        let rect = CGRectMake(0, 0, self.size.width, self.size.height)
+        
+        // Create gradient
+        
+        let colors = colorsArr as CFArray
+        let space = CGColorSpaceCreateDeviceRGB()
+        let gradient = CGGradientCreateWithColors(space, colors, nil)
+        
+        // Apply gradient
+        
+        CGContextClipToMask(context, rect, self.CGImage)
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, self.size.height), CGGradientDrawingOptions.DrawsAfterEndLocation)
+        let gradientImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return gradientImage
+    }
 }
+
 extension UIView {
     
     func takeSnapshot(offset : CGFloat) -> UIImage? {
@@ -559,7 +600,13 @@ public func parseUrl(input : NSString) -> String?{
     
     return String(format: "https://www.google.com/search?q=%@", string!)
 }
-
+extension CGPoint{
+    func distanceToPoint(point : CGPoint) -> CGFloat{
+        let xDist = x - point.x
+        let yDist = y - point.y
+        return sqrt((xDist * xDist) + (yDist * yDist))
+    }
+}
 extension NSString {
     func urlEncode() -> NSString {
         return CFURLCreateStringByAddingPercentEscapes(
