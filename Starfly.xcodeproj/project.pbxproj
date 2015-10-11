@@ -141,7 +141,6 @@
 		B807A0951BA6AA10000A9ED4 /* SFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFView.swift; sourceTree = "<group>"; };
 		B8125D891BA9A79300F3A1BE /* SFWebVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFWebVC.swift; sourceTree = "<group>"; };
 		B8125D8B1BA9AA9900F3A1BE /* SFTabContents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFTabContents.swift; sourceTree = "<group>"; };
-		B818366D1BB8026000730371 /* Starfly-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Starfly-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B818366E1BB80BE400730371 /* StarflyV2_ 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "StarflyV2_ 3.xcdatamodel"; sourceTree = "<group>"; };
 		B81836711BB8115700730371 /* SFCoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFCoreData.swift; sourceTree = "<group>"; };
 		B81836731BB8121A00730371 /* ew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ew.h; sourceTree = "<group>"; };
@@ -246,6 +245,7 @@
 		B86D9A5C1BAB1963000808C5 /* abs8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abs8.jpg; sourceTree = "<group>"; };
 		B86D9A631BAB1A85000808C5 /* abs10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abs10.jpg; sourceTree = "<group>"; };
 		B8DF5A2A1BCAA78D00405A91 /* SFMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFMenu.swift; sourceTree = "<group>"; };
+		B8DF5A2E1BCAE9B400405A91 /* Starfly-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Starfly-Bridging-Header.h"; sourceTree = "<group>"; };
 		B8ECA7E01BA5AF3500A95D36 /* Starfly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Starfly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8ECA7E31BA5AF3500A95D36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B8ECA7E51BA5AF3500A95D36 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -311,7 +311,7 @@
 				B8DF5A2D1BCAE04500405A91 /* SWTableViewCell */,
 				B81836731BB8121A00730371 /* ew.h */,
 				B81836741BB8121A00730371 /* ew.m */,
-				B818366D1BB8026000730371 /* Starfly-Bridging-Header.h */,
+				B8DF5A2E1BCAE9B400405A91 /* Starfly-Bridging-Header.h */,
 				B81A0E041BAC536E00A93125 /* LXReorderableCollectionViewFlowLayout.h */,
 				B81A0E051BAC536E00A93125 /* LXReorderableCollectionViewFlowLayout.m */,
 			);
