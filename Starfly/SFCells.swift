@@ -28,11 +28,6 @@ class SFHomeCell: UICollectionViewCell {
         layer.shouldRasterize = true
         layer.rasterizationScale = UIScreen.mainScreen().scale
       
-       /* blur?.layer.addSublayer(colorLayer!)
-        blur?.effect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        blur!.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-        
-        addSubview(blur!)*/
         label = UILabel(frame: CGRect(x: 10, y: frame.height - frame.height * 0.16, width: frame.width - 20, height: frame.height * 0.16))
         label?.font = UIFont.systemFontOfSize(14, weight: UIFontWeightRegular)
         
@@ -44,17 +39,7 @@ class SFHomeCell: UICollectionViewCell {
         label!.layer.rasterizationScale = UIScreen.mainScreen().scale
         label!.layer.shouldRasterize = true
         label?.textAlignment = NSTextAlignment.Center
-        // Vibrancy Effect
-       /* let vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: UIBlurEffectStyle.ExtraLight))
-        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
-        vibrancyEffectView.frame = CGRect(x: 0, y: 0, width: frame.width , height: frame.height * 0.14)
-        
-    
-        // Add label to the vibrancy view
-        vibrancyEffectView.contentView.addSubview(label!)
-        
-        // Add the vibrancy view to the blur view
-        blur!.contentView.addSubview(vibrancyEffectView)*/
+     
         addSubview(label!)
         imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: frame.height - frame.height * 0.16))
         imageView?.backgroundColor = UIColor.whiteColor()
@@ -81,12 +66,167 @@ class SFHomeCell: UICollectionViewCell {
     }
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
         if CGRectContainsPoint(CGRect(x: 0, y: -20, width: frame.width + 20, height: frame.height + 20), point){
-            print("IN")
+            
             return true
         }
         return false
     }
     required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+class SFSearchTableCell: UITableViewCell {
+    var label : UILabel?
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        label = UILabel(frame: CGRect.zero)
+        label?.font = UIFont.systemFontOfSize(15, weight: UIFontWeightRegular)
+        backgroundColor = UIColor.clearColor()
+        label?.textColor = UIColor.blackColor()
+        label!.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.8).CGColor
+        label!.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
+        label!.layer.shadowRadius = 0
+        label!.layer.shadowOpacity = 1.0
+        label!.layer.rasterizationScale = UIScreen.mainScreen().scale
+        label!.layer.shouldRasterize = true
+        label?.textAlignment = NSTextAlignment.Left
+        addSubview(label!)
+        label?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(self)
+            make.left.right.equalTo(50)
+            
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+
+//MARK: BOOKMARKS CELL
+
+class SFBookmarksCell : SWTableViewCell{
+    var titleLabel : UILabel?
+    var urlLabel   : UILabel?
+    var icon   : UIImageView?
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clearColor()
+        titleLabel = UILabel(frame: CGRect.zero)
+        titleLabel?.textColor = UIColor.blackColor()
+        titleLabel?.font = UIFont.systemFontOfSize(16, weight: UIFontWeightRegular)
+        contentView.addSubview(titleLabel!)
+        titleLabel?.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(50)
+            make.height.equalTo(self.contentView).multipliedBy(0.5)
+            make.top.equalTo(4)
+            make.right.equalTo(0)
+        }
+        urlLabel = UILabel(frame: CGRect.zero)
+        urlLabel?.textColor = UIColor.grayColor()
+        urlLabel?.font = UIFont.systemFontOfSize(14, weight: UIFontWeightRegular)
+        contentView.addSubview(urlLabel!)
+        urlLabel!.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(50)
+            make.height.equalTo(self.contentView).multipliedBy(0.5)
+            make.top.equalTo(25)
+            make.right.equalTo(0)
+            
+        }
+        
+        icon = UIImageView(frame: CGRect.zero)
+        contentView.addSubview(icon!)
+        icon?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(30)
+            make.top.left.equalTo(10)
+        }
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+
+//MARK: HISTORY's Stuff
+
+class SFHistoryCell : SWTableViewCell{
+    var titleLabel : UILabel?
+    var urlLabel   : UILabel?
+    var icon   : UIImageView?
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clearColor()
+        titleLabel = UILabel(frame: CGRect.zero)
+        titleLabel?.textColor = UIColor.blackColor()
+        titleLabel?.font = UIFont.systemFontOfSize(16, weight: UIFontWeightRegular)
+        contentView.addSubview(titleLabel!)
+        titleLabel?.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(50)
+            make.height.equalTo(self.contentView).multipliedBy(0.5)
+            make.top.equalTo(4)
+            make.right.equalTo(0)
+        }
+        urlLabel = UILabel(frame: CGRect.zero)
+        urlLabel?.textColor = UIColor.grayColor()
+        urlLabel?.font = UIFont.systemFontOfSize(14, weight: UIFontWeightRegular)
+        contentView.addSubview(urlLabel!)
+        urlLabel!.snp_makeConstraints { (make) -> Void in
+            make.left.equalTo(50)
+            make.height.equalTo(self.contentView).multipliedBy(0.5)
+            make.top.equalTo(25)
+            make.right.equalTo(0)
+            
+        }
+        
+        icon = UIImageView(frame: CGRect.zero)
+        contentView.addSubview(icon!)
+        icon?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(30)
+            make.top.left.equalTo(10)
+        }
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+class SFHistoryHeader : UITableViewHeaderFooterView{
+    var dayLabel : UILabel?
+    var csView : SFView?
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        csView = SFView(frame: bounds)
+        
+        csView!.userInteractionEnabled = false
+        
+        addSubview(csView!)
+        csView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(self)
+            make.center.equalTo(self)
+        }
+        
+        dayLabel = UILabel(frame: CGRect.zero)
+        dayLabel?.textColor = UIColor.whiteColor()
+        dayLabel?.font = UIFont.systemFontOfSize(15, weight: UIFontWeightMedium)
+        addSubview(dayLabel!)
+        dayLabel?.snp_makeConstraints { (make) -> Void in
+            make.top.bottom.equalTo(0)
+            make.left.equalTo(35)
+            make.width.equalTo(self)
+            
+        }
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

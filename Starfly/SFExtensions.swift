@@ -17,6 +17,14 @@ public func lineWidth() -> CGFloat{
     }
  
 }
+public func randomString(len : Int) -> NSString {
+    let s : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    let mut : NSMutableString = NSMutableString(capacity: len)
+    for var inde = 0; inde < len; ++inde {
+        mut.appendFormat("%C", s.characterAtIndex(Int(arc4random_uniform(UInt32(s.length)))))
+    }
+    return mut.mutableCopy() as! NSString
+}
 public func degreesToRadians(degrees: Double) -> Double { return degrees * M_PI / 180.0 }
 public func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -26,6 +34,7 @@ public func delay(delay:Double, closure:()->()) {
         ),
         dispatch_get_main_queue(), closure)
 }
+
 public func starflyFont(size : CGFloat) -> UIFont{
     return UIFont(name: "Helvetica-Light", size: size)!
 }

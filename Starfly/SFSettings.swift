@@ -11,7 +11,7 @@ import UIKit
 class SFSettings: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let stackView = UIStackView(frame: CGRect(x: 15, y: 15, width: frame.width - 30, height: 40))
+        let stackView = UIStackView(frame: CGRect.zero)
         stackView.distribution = .FillEqually
         stackView.spacing = 35
         
@@ -52,17 +52,22 @@ class SFSettings: UIView {
         
         stackView.addArrangedSubview(restoreTabs)
         addSubview(stackView)
-        let colorPlate = SFColorPlate(frame: CGRect(x: 0, y: frame.height - 20, width: frame.width, height: 20))
-        colorPlate.autoresizingMask = [UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleWidth]
-        colorPlate.translatesAutoresizingMaskIntoConstraints = true
+        stackView.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(15)
+            make.left.equalTo(15)
+            make.height.equalTo(40)
+            make.right.equalTo(self).inset(25)
+        }
+        let colorPlate = SFColorPlate(frame: CGRect.zero)
         addSubview(colorPlate)
+        colorPlate.snp_makeConstraints { (make) -> Void in
+            make.left.right.bottom.equalTo(0)
+            make.height.equalTo(20)
+        }
+        
         layer.cornerRadius = 45 / 2
         layer.masksToBounds = true
-        stackView.snp_makeConstraints { (make) -> Void in
-            make.top.left.equalTo(15)
-            make.bottom.equalTo(-40)
-            make.right.equalTo(-15)
-        }
+        
 
     }
     func restoreTabs(sender : UIButton){
@@ -124,17 +129,32 @@ class SFSettingsSwitch : UIView{
 class SFColorPlate: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let width = frame.width / CGFloat(SFColors.allColors.count)
+        let stackView = UIStackView(frame: CGRect.zero)
+        stackView.distribution = .FillEqually
+        stackView.spacing = 5
+       
+        addSubview(stackView)
+        stackView.snp_makeConstraints { (make) -> Void in
+            make.bottom.equalTo(self.snp_bottom).inset(3)
+            make.left.equalTo(15)
+            make.right.equalTo(self.snp_right).inset(15)
+            make.top.equalTo(0)
+        }
         for i in 0..<SFColors.allColors.count{
             let button = UIButton(type: UIButtonType.Custom)
             button.backgroundColor = SFColors.allColors[i]
-            button.frame = CGRect(x: width * CGFloat(i), y: 0, width: width, height: frame.height)
+            button.autoresizingMask = UIViewAutoresizing.FlexibleWidth
             button.addTarget(self, action: "changeColor:", forControlEvents: UIControlEvents.TouchDown)
             button.tag = i
-            addSubview(button)
+            button.layer.cornerRadius = 5
+            button.layer.borderWidth = 1
+            button.layer.borderColor = UIColor.whiteColor().CGColor
+            stackView.addArrangedSubview(button)
+            
         }
         
     }
+    
     func changeColor(sender : UIButton){
         NSUserDefaults.standardUserDefaults().setColor(SFColors.allColors[sender.tag], forKey: "COLOR2")
         NSNotificationCenter.defaultCenter().postNotificationName("ColorChanges", object: nil)

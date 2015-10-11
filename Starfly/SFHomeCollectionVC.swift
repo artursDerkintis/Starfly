@@ -11,13 +11,15 @@ import WebKit
 import CoreData
 class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, NSFetchedResultsControllerDelegate {
     private var collection : UICollectionView?
-    //var infoArray = getAllHomeHitArray()
     private var imageDictionary = NSMutableDictionary()
-    var app : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    let app = UIApplication.sharedApplication().delegate as! AppDelegate
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     var editButton : UIButton?
     var editingCells = false
     private var fetchedResultController: NSFetchedResultsController?
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         let layout = LXReorderableCollectionViewFlowLayout()
@@ -81,17 +83,15 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
            }
     
     func controllerWillChangeContent(controller: NSFetchedResultsController)  {
-        // println("TEST 03")
+    
         
     }
     
     func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType)  {
-        // println("TEST 02")
     }
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
-        // println("TEST 01")
         collection!.performBatchUpdates({ () -> Void in
             switch type {
             case .Insert:
@@ -120,8 +120,6 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
                 
                 break
                 
-            default:
-                return
             }
             
             }, completion: { (finish) -> Void in
@@ -135,7 +133,7 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
     
     func deleteCellFromCollectionView(index: NSIndexPath) {
         let object = fetchedResultController?.objectAtIndexPath(index) as! HomeHit
-        deleteImageIN(object.bigImage)
+        deleteImage(object.bigImage)
         managedObjectContext.deleteObject(object)
         
         app.saveContext()
@@ -151,7 +149,7 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
         app.saveContext()
     }
 
-    func deleteImageIN(stringPath : NSString){
+    func deleteImage(stringPath : NSString){
         let stsAr : NSString? = stringPath.lastPathComponent
         if stsAr == nil {return}
         let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
@@ -160,7 +158,7 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
         do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
     
-        } catch var error1 as NSError {
+        } catch let error1 as NSError {
             error = error1
         }
         if error != nil{
@@ -171,18 +169,15 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
         
         let request : NSFetchRequest = NSFetchRequest(entityName: "HomeHit")
         request.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: true)]
-        print(request)
-        var error : NSError? = nil
+        
         var array : NSArray? = try! app.managedObjectContext.executeFetchRequest(request)
-        for homH : AnyObject in array as! [AnyObject]{
-            let h = homH as! HomeHit
-            let imagePlace = h.bigImage
+        for object  in array as! [HomeHit]{
+            let imagePlace = object.bigImage
             let stsAr : NSString? = (imagePlace as NSString).lastPathComponent
             let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
             let path = folder.stringByAppendingPathComponent(stsAr! as String)
-            let image = UIImage(contentsOfFile: path)
-            if let imag = image{
-            imageDictionary.setObject(image!, forKey: imagePlace)
+            if let image = UIImage(contentsOfFile: path){
+                imageDictionary.setObject(image, forKey: imagePlace)
             }
         }
         array = nil
@@ -267,7 +262,7 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let s = fetchedResultController!.sections as [NSFetchedResultsSectionInfo]! {
-            var d = s[section].numberOfObjects
+            let d = s[section].numberOfObjects
             return d
         }
         return 0

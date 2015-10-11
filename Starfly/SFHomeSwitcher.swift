@@ -69,7 +69,8 @@ class SFHomeSwitcher: UIControl {
     }
     func liveScroll(point : CGPoint){
         if !ImDoingSomething{
-        floater?.frame.origin = point
+            
+            floater?.frame.origin = point
         }
     }
     func setPage(current : Int){

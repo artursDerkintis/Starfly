@@ -1,6 +1,6 @@
 //
-//  SFScrollView.swift
-//  SFScrollView
+//  SFCardTabs.swift
+//  SFCardTabs
 //
 //  Created by Arturs Derkintis on 7/14/15.
 //  Copyright © 2015 Neal Ceffrey. All rights reserved.
@@ -22,14 +22,10 @@ enum SFCellSizeStyle{
    
 }
 
-let cellColor = UIColor.orangeColor()
-let cellBorderColor = UIColor.whiteColor()
 
 
-
-class SFScrollView : UIView, UIScrollViewDelegate {
+class SFCardTabs : UIView, UIScrollViewDelegate {
     
-    //Array of Cells
     var cells = [SFTab]()
     
     var offsetGap : CGFloat? = 5.0
@@ -47,26 +43,24 @@ class SFScrollView : UIView, UIScrollViewDelegate {
         super.init(frame: frame)
         self.backgroundColor = .clearColor()
         
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width - 60, height: frame.height ))
-        scrollView?.autoresizingMask = sfMaskBoth
+        scrollView = UIScrollView(frame: CGRect.zero)
         scrollView?.layer.masksToBounds = false
         scrollView?.clipsToBounds = false
-        ///Delete this if you don't need it
         scrollView?.showsHorizontalScrollIndicator = false
         scrollView?.showsVerticalScrollIndicator = false
         scrollView?.decelerationRate = 0.1
-        ////
-        
         addSubview(scrollView!)
+        scrollView?.snp_makeConstraints { (make) -> Void in
+            make.top.bottom.left.equalTo(0)
+            make.right.equalTo(self.snp_right).inset(50).priority(100)
+        }
         scrollView?.delegate = self
         
         addTabB = SFButton(type: UIButtonType.Custom)
-        addTabB?.frame = CGRect(x: frame.width - 44, y: 5, width: 35, height: 35)
-        addTabB?.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin
         addTabB?.setImage(UIImage(named: Images.addTab), forState: UIControlState.Normal)
         addTabB?.setImage(UIImage(named: Images.addTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         addTabB?.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        addTabB?.layer.cornerRadius = addTabB!.frame.size.height * 0.5
+        addTabB?.layer.cornerRadius = 35 * 0.5
         addTabB?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         addTabB?.layer.shadowOffset = CGSize(width: 0, height: 0)
         addTabB?.layer.shadowRadius = 2
@@ -74,7 +68,11 @@ class SFScrollView : UIView, UIScrollViewDelegate {
         addTabB?.layer.rasterizationScale = UIScreen.mainScreen().scale
         addTabB?.layer.shouldRasterize = true
         addSubview(addTabB!)
-
+        addTabB?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(35)
+            make.top.equalTo(5)
+            make.right.equalTo(-5).priority(100)
+        }
        
     }
     func addTarget(target : SFTabs){
@@ -246,56 +244,5 @@ class SFScrollView : UIView, UIScrollViewDelegate {
     }
 }
 
-// Some extensions
-
-public func randomInRange (lower: Int , upper: Int) -> Int {
-    return lower + Int(arc4random_uniform(UInt32(upper - lower + 1)))
-}
-public func randomString(len : Int) -> NSString {
-    let s : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    let mut : NSMutableString = NSMutableString(capacity: len)
-    for var inde = 0; inde < len; ++inde {
-        mut.appendFormat("%C", s.characterAtIndex(Int(arc4random_uniform(UInt32(s.length)))))
-    }
-    return mut.mutableCopy() as! NSString
-}
-
-public let sfMaskBoth : UIViewAutoresizing = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
 
 
-class SFCell: UIView {
-    
-    var line = 0
-    var row = 0
-    ///Put your stuff in contentView
-    var contentView : UIView?
-    var label : UILabel?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        contentView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
-        contentView?.autoresizingMask = sfMaskBoth
-        addSubview(contentView!)
-        label = UILabel(frame: contentView!.bounds)
-        label?.clipsToBounds = true
-        label?.autoresizingMask = sfMaskBoth
-        contentView!.addSubview(label!)
-        label?.textAlignment = NSTextAlignment.Center
-        label!.textColor = UIColor.whiteColor()
-        contentView?.backgroundColor = cellColor
-        contentView?.layer.borderColor = cellBorderColor.CGColor
-        contentView?.layer.borderWidth = 1
-        
-    }
-    func setUpSize(horizotal : Bool){
-        //Autogenerates random size
-        ///Change size to the one you need
-        
-        self.bounds = CGRect(x: 0, y: 0, width: horizotal ? CGFloat(randomInRange(50, upper: 200)) : frame.width, height: horizotal ? frame.height : CGFloat(randomInRange(50, upper: 200)))
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}

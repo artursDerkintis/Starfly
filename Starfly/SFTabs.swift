@@ -13,13 +13,13 @@ protocol SFTabDelegate{
 }
 class SFTabs: UIViewController, SFTabDelegate {
     var tabs = [SFTab]()
-    var scroller : SFScrollView?
+    var scroller : SFCardTabs?
     var currentTab : SFTab?
     var tabManagment : SFTabManagment?
     var urlBarManagment : SFUrlBarManagment?
     override func viewDidLoad() {
         super.viewDidLoad()
-        scroller = SFScrollView(frame: view.bounds)
+        scroller = SFCardTabs(frame: view.bounds)
         scroller?.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
         scroller?.addTarget(self)
         
@@ -63,7 +63,7 @@ class SFTabs: UIViewController, SFTabDelegate {
         tabManagment?.addNewTab({ (webVC : SFWebVC) -> Void in
             webVC.openURL(nil)
             self.addTab(true, webVC: webVC)
-            self.urlBarManagment?.setObservers(webVC)
+            self.urlBarManagment?.setWebVC(webVC)
         })
         
     }
@@ -71,7 +71,7 @@ class SFTabs: UIViewController, SFTabDelegate {
         tabManagment?.addNewTab({ (webVC : SFWebVC) -> Void in
             webVC.openURL(url)
             self.addTab(true, webVC: webVC)
-            self.urlBarManagment?.setObservers(webVC)
+            self.urlBarManagment?.setWebVC(webVC)
         })
         
     }
@@ -99,7 +99,7 @@ class SFTabs: UIViewController, SFTabDelegate {
                     let tab = self.tabs[nextTab]
                     
                     tab.selected = true
-                    self.urlBarManagment?.setObservers(tab.webVC!)
+                    self.urlBarManagment?.setWebVC(tab.webVC!)
                     self.tabManagment?.switchToTab(tab.webVC!)
                         
                 
@@ -132,7 +132,7 @@ class SFTabs: UIViewController, SFTabDelegate {
         if sender.view!.isKindOfClass(SFTab) && (sender.view as! SFTab) != currentTab{
             updateAllTabs()
             self.tabManagment?.switchToTab((sender.view as! SFTab).webVC!)
-            self.urlBarManagment?.setObservers((sender.view as! SFTab).webVC!)
+            self.urlBarManagment?.setWebVC((sender.view as! SFTab).webVC!)
             currentTab = (sender.view as! SFTab)
             (sender.view as! SFTab).selected = true
         }

@@ -30,10 +30,11 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
    // var delgate : SFOpenMeDelegate?
     var oldestItemAge : NSDate?
     var wholeArray : NSArray?
-    let laye = CALayer()
+    var shadowView : UIView?
     
-    var overLayerView : SFView?
-    let starBig = UIImageView(image: UIImage(named: "history"))
+    
+    var introView : SFView?
+    let starImage = UIImageView(image: UIImage(named: "history"))
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
@@ -46,18 +47,20 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         blur!.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         
        
-        laye.frame = CGRectMake(50, 50, bounds.width - 100, bounds.height - 150)
-        layer.cornerRadius = 20
-        laye.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
-        laye.shadowOffset = CGSize(width: 0, height: 0)
-        laye.shadowRadius = 2
-        laye.shadowPath = UIBezierPath(roundedRect: laye.bounds, cornerRadius: 20).CGPath
-        laye.shadowOpacity = 1.0
-        laye.shouldRasterize = true
-        laye.rasterizationScale = UIScreen.mainScreen().scale
-        self.layer.addSublayer(laye)
+        shadowView = UIView(frame: CGRect.zero)
+        
+        
+        shadowView?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
+        shadowView?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowView?.layer.shadowRadius = 2
+        shadowView?.layer.shadowPath = UIBezierPath(roundedRect: shadowView!.bounds, cornerRadius: 20).CGPath
+        shadowView?.layer.shadowOpacity = 1.0
+        shadowView?.layer.shouldRasterize = true
+        shadowView?.layer.rasterizationScale = UIScreen.mainScreen().scale
+        addSubview(shadowView!)
+
         addSubview(blur!)
-        tableView = UITableView(frame: CGRectMake(50, 50, bounds.width - 100, bounds.height - 150))
+        tableView = UITableView(frame: CGRect.zero)
         tableView?.layer.cornerRadius = 20
         tableView?.layer.masksToBounds = true
         tableView?.registerClass(SFHistoryCell.self, forCellReuseIdentifier: "HISTI")
@@ -70,27 +73,52 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         tableView?.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         addSubview(tableView!)
         
-        overLayerView = SFView(frame: CGRect.zero)
-        overLayerView?.layer.zPosition = 500
-        overLayerView?.addSubview(starBig)
-        tableView?.addSubview(overLayerView!)
-        overLayerView?.snp_makeConstraints { (make) -> Void in
+        introView = SFView(frame: CGRect.zero)
+        introView?.layer.zPosition = 500
+        
+        introView?.addSubview(starImage)
+        tableView?.addSubview(introView!)
+        introView?.snp_makeConstraints { (make) -> Void in
             make.top.right.bottom.left.equalTo(0)
             make.height.width.equalTo(tableView!)
         }
-        starBig.snp_makeConstraints { (make) -> Void in
-            make.center.equalTo(overLayerView!)
+        starImage.snp_makeConstraints { (make) -> Void in
+            make.center.equalTo(introView!)
             make.height.width.equalTo(100)
+        }
+        tableView?.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+        }
+        shadowView?.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+        }
+        blur!.snp_makeConstraints { (make) -> Void in
+            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
         }
 
 
     }
+    
+    
+    func updateFrames(edge : EdgeInsets){
+        tableView?.snp_updateConstraints { (make) -> Void in
+            make.edges.equalTo(edge)
+        }
+        shadowView?.snp_updateConstraints { (make) -> Void in
+            make.edges.equalTo(edge)
+        }
+        blur!.snp_updateConstraints { (make) -> Void in
+            make.edges.equalTo(edge)
+        }
+    }
+    
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        laye.frame = CGRectMake(50, 50, bounds.width - 100, bounds.height - 150)
-        laye.shadowPath = UIBezierPath(roundedRect: laye.bounds, cornerRadius: 20).CGPath
-        blur?.frame = CGRectMake(50, 50, bounds.width - 100, bounds.height - 150)
+        shadowView?.layer.shadowPath = UIBezierPath(roundedRect: shadowView!.bounds, cornerRadius: 20).CGPath
     }
+    
+    
     func load(){
         
         do {
@@ -99,12 +127,12 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             tableView?.reloadData()
             delay(0.1, closure: { () -> () in
                 UIView.animateWithDuration(0.5, animations: { () -> Void in
-                    self.overLayerView?.alpha = 0.0
-                    self.starBig.transform = CGAffineTransformMakeScale(0.01, 0.01)
+                    self.introView?.alpha = 0.0
+                    self.starImage.transform = CGAffineTransformMakeScale(0.01, 0.01)
                     }, completion: { (m) -> Void in
-                        self.overLayerView?.hidden = true
-                        self.overLayerView?.alpha = 1.0
-                        self.starBig.transform = CGAffineTransformIdentity
+                        self.introView?.hidden = true
+                        self.introView?.alpha = 1.0
+                        self.starImage.transform = CGAffineTransformIdentity
                 })
             })
         } catch _ {
@@ -144,16 +172,13 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         let deleteDeep = SFButton(frame: CGRectMake(0, 300, 200, 50))
         deleteDeep.setTitle("Clear cookies and cache", forState: UIControlState.Normal)
         deleteDeep.tag = Deleter.deepDelete
-       // let cancel = SFButton(frame: CGRectMake(0, 350, 200, 50))
-       // cancel.setTitle("Cancel", forState: UIControlState.Normal)
-       // cancel.tag = Deleter.cancel
         let calendar = NSCalendar.currentCalendar()
         let date : NSDate = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -2, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
         var buttonAr : [SFButton]?
         if moreLess(date, rhs: oldestItemAge!){
-             buttonAr = [deleteLastHour, deleteToday, deleteLastWeek, deleteAllButToday, deleteAllButWeek, deleteEverthing, deleteDeep/*, cancel*/]
+             buttonAr = [deleteLastHour, deleteToday, deleteLastWeek, deleteAllButToday, deleteAllButWeek, deleteEverthing, deleteDeep]
         }else{
-             buttonAr = [deleteLastHour, deleteToday, deleteEverthing, deleteDeep/*, cancel*/]
+             buttonAr = [deleteLastHour, deleteToday, deleteEverthing, deleteDeep]
         }
             let overlay = UIView(frame: CGRect.zero)
             
@@ -217,8 +242,8 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             for var i = 0; i < wholeArray!.count; ++i{
                 let h = wholeArray!.objectAtIndex(i) as! HistoryHit
                 if h.date.compare(date) == NSComparisonResult.OrderedSame ||  h.date.compare(date) == NSComparisonResult.OrderedDescending{
-                print("5678\n LAST HOUR \(h.date)")
-                    deleteImageIN(h.faviconPath)
+                
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                 }else{
                     break
@@ -240,9 +265,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
                 let dayStrings = datF.stringFromDate(h.date)
                 let date = datF.dateFromString(dayStrings)
                if dayStrings == dayToday{
-                    
-                print("1\n to DAY \(h.date)")
-                    deleteImageIN(h.faviconPath)
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                 }else{
                 break
@@ -260,8 +283,8 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             for var i = 0; i < wholeArray!.count; ++i{
                 let h = wholeArray!.objectAtIndex(i) as! HistoryHit
                 if h.date.compare(date) == NSComparisonResult.OrderedSame ||  h.date.compare(date) == NSComparisonResult.OrderedDescending{
-                    print("176678\n this week \(h.date)")
-                    deleteImageIN(h.faviconPath)
+                
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                 }else{
                     break
@@ -284,8 +307,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
                 if dayStrings == dayToday{
 
                 }else{
-                     print("1e2qw\n not to DAY \(h.date)")
-                    deleteImageIN(h.faviconPath)
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                     
                  
@@ -307,7 +329,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
                    
                 }else{
                     print("1766wefqwfqrgq78\n not this week \(h.date)")
-                    deleteImageIN(h.faviconPath)
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                     
                 }
@@ -321,7 +343,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             for var i = 0; i < wholeArray!.count; ++i{
                 let h = wholeArray!.objectAtIndex(i) as! HistoryHit
                 
-                    deleteImageIN(h.faviconPath)
+                    deleteImage(h.faviconPath)
                     app.managedObjectContext.deleteObject(h)
                 
             }
@@ -348,12 +370,11 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             
             let path : String? = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Library/WebKit/WebsiteData/LocalStorage")
             if path != nil{
-                var eror : NSError? = nil
                 let s: [AnyObject]?
                 do {
                     s = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(path!)
                 } catch let error as NSError {
-                    eror = error
+                    
                     s = nil
                 }
                 if s != nil && s?.count != 0{
@@ -361,13 +382,11 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
                     if fileString.pathExtension == "localstorage"{
                         let pathd = (path! as NSString).stringByAppendingPathComponent(fileString as! String)
                         var error : NSError?
-                        var booler : Bool
                         do {
                             try NSFileManager.defaultManager().removeItemAtPath(pathd)
-                            booler = true
-                        } catch var error1 as NSError {
+                            
+                        } catch let error1 as NSError {
                             error = error1
-                            booler = false
                         }
                         if error != nil{
                             print(error?.localizedDescription)
@@ -387,7 +406,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         }
 
     }
-    func deleteImageIN(stringPath : NSString){
+    func deleteImage(stringPath : NSString){
        
         let stsAr : NSString? = stringPath.lastPathComponent
         let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
@@ -409,58 +428,28 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         let viewToRemove = self.viewWithTag(10)
         if viewToRemove != nil{
             animate({ () -> Void in
-                viewToRemove!.frame = CGRectMake(self.frame.width * 0.5 - 100, self.bounds.height , min(200, self.laye.frame.width), viewToRemove!.frame.height)
+                viewToRemove!.frame = CGRectMake(self.frame.width * 0.5 - 100, self.bounds.height , min(200, self.shadowView!.frame.width), viewToRemove!.frame.height)
                 viewToRemove!.alpha = 0.1
                 }, after: { () -> Void in
                     viewToRemove!.removeFromSuperview()
             })}
 
     }
-    /*date =  calendar.dateByAddingUnit(NSCalendarUnit.CalendarUnitDay, value: -1, toDate: NSDate(), options: nil)!
-    if h.date.compare(date) == NSComparisonResult.OrderedSame ||  h.date.compare(date) == NSComparisonResult.OrderedDescending{
-    println("1\n to DAY \(h.date)")
-    }
-    date = calendar.dateByAddingUnit(NSCalendarUnit.CalendarUnitDay, value: -7, toDate: NSDate(), options: nil)!
-    if h.date.compare(date) == NSComparisonResult.OrderedSame ||  h.date.compare(date) == NSComparisonResult.OrderedDescending{
-    println("4\n LAST WEEK \(h.date)")
-    }
-    if h.date.compare(date) == NSComparisonResult.OrderedSame ||  h.date.compare(date) == NSComparisonResult.OrderedAscending{
-    println("67\n anything Else but not this WEEK \(h.date)")
-    }*/
-
+ 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
         NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: nil, userInfo: ["url" : object.urlOfIt])
     }
-   /* func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == UITableViewCellEditingStyle.Delete {
-            let object = fetchController!.objectAtIndexPath(indexPath) as! NSManagedObject
-            deleteImageIN(object.valueForKey("faviconPath") as! String)
-            app.managedObjectContext.deleteObject(object)
-            app.saveContext()
-        }
-    }*/
+  
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: Int) {
         let indexPath = self.tableView?.indexPathForCell(cell)
         let object = fetchController!.objectAtIndexPath(indexPath!) as! NSManagedObject
-        deleteImageIN(object.valueForKey("faviconPath") as! String)
+        deleteImage(object.valueForKey("faviconPath") as! String)
         app.managedObjectContext.deleteObject(object)
         app.saveContext()
     }
-    func topView(){
-        let view = UIView(frame: CGRectMake(0, 0,  bounds.width, 50))
-     
-        let label = UILabel(frame: CGRectMake(25, 0, 100, 50))
-        label.text = "History"
-        label.font = starflyFont(18)
-        label.textColor = .whiteColor()
-        view.addSubview(label)
-        let deleteAllButton = UIButton(frame: CGRectMake(view.bounds.width - 50, 0, 50, 50))
-       // deleteAllButton.setImage(TabButtons.imageOfDelete(), forState: UIControlState.Normal)
-        view.addSubview(deleteAllButton)
-        addSubview(view)
-    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
         if sectionInfo.numberOfObjects > 0{
@@ -468,9 +457,11 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         }
         return sectionInfo.numberOfObjects
     }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.fetchController!.sections?.count ?? 0
     }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("HISTI", forIndexPath: indexPath) as! SFHistoryCell
         let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
@@ -481,18 +472,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         cell.delegate = self
         return cell
     }
-   /* - (NSArray *)rightButtons
-    {
-    NSMutableArray *rightUtilityButtons = [NSMutableArray new];
-    [rightUtilityButtons sw_addUtilityButtonWithColor:
-    [UIColor colorWithRed:0.78f green:0.78f blue:0.8f alpha:1.0]
-    title:@"More"];
-    [rightUtilityButtons sw_addUtilityButtonWithColor:
-    [UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f]
-    title:@"Delete"];
     
-    return rightUtilityButtons;
-    }*/
     func deleteButton() -> NSArray{
         let mutableArray = NSMutableArray()
         mutableArray.sw_addUtilityButtonWithColor(.redColor(), title: "Delete")
@@ -502,9 +482,11 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 50
     }
+    
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30
     }
+    
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier("HISTII") as! SFHistoryHeader
         let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
@@ -535,6 +517,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     func taskFetchRequest() -> NSFetchRequest {
         
         let request : NSFetchRequest = NSFetchRequest(entityName: "HistoryHit")
@@ -559,26 +542,27 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         return request
         
     }
+    
     func getArray(){
         let request : NSFetchRequest = NSFetchRequest(entityName: "HistoryHit")
         request.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: false)]
-        print(request)
+        
         let array : NSArray? = try! app.managedObjectContext.executeFetchRequest(request)
-        for homH : AnyObject in array as! [AnyObject]{
-            let h = homH as! HistoryHit
-            oldestItemAge = h.date
-            let imagePlace = h.faviconPath
+        for object in array as! [HistoryHit]{
+            oldestItemAge = object.date
+            let imagePlace = object.faviconPath
             let stsAr : NSString? = (imagePlace as NSString).lastPathComponent
             let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
             let path = folder.stringByAppendingPathComponent(stsAr! as String)
-            let image = UIImage(contentsOfFile: path)
-            imageDictionary.setObject(image!, forKey: imagePlace)
+            if let image = UIImage(contentsOfFile: path){
+                imageDictionary.setObject(image, forKey: imagePlace)
+            }
         }
         wholeArray = array
     }
 
     func controllerWillChangeContent(controller: NSFetchedResultsController)  {
-         print("TEST 03")
+      
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             if self.tableView != nil{
              self.tableView?.beginUpdates()
@@ -589,7 +573,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     }
     
     func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType)  {
-         print("TEST 02")
+    
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
        switch type {
         case .Insert:
@@ -630,7 +614,6 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
          
             break
         case .Update:
-            print(indexPath!.section)
             self.configureCell(indexPath!)
             break
         case .Move:
@@ -645,33 +628,32 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         
         
     }
+    
     override func removeFromSuperview() {
         super.removeFromSuperview()
         self.fetchController = nil
     }
-    deinit{
-        
-    }
+    
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-      print("TEST 05r")
+      
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.tableView?.endUpdates()
             
         })
 
     }
+    
     func configureCell(indexPath : NSIndexPath){
         
         let object = fetchController!.objectAtIndexPath(indexPath) as! HistoryHit
         let imagePlace = object.faviconPath
-        let cely = self.tableView?.cellForRowAtIndexPath(indexPath) as? SFHistoryCell
-            print(cely)
-        if cely != nil{
-            cely!.icon!.image = imageDictionary.objectForKey(imagePlace) as? UIImage
+        let cell = self.tableView?.cellForRowAtIndexPath(indexPath) as? SFHistoryCell
+        if cell != nil{
+            cell!.icon!.image = imageDictionary.objectForKey(imagePlace) as? UIImage
             
             
-            cely!.urlLabel?.text = object.urlOfIt
-            cely!.titleLabel?.text = object.titleOfIt
+            cell!.urlLabel?.text = object.urlOfIt
+            cell!.titleLabel?.text = object.titleOfIt
             
         }else{
             self.tableView!.reloadData()
@@ -679,60 +661,4 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     }
 
 
-}
-class SFHistoryCell : SWTableViewCell{
-    var titleLabel : UILabel?
-    var urlLabel   : UILabel?
-    var icon   : UIImageView?
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .clearColor()
-        titleLabel = UILabel(frame: CGRectMake(50, 3, bounds.width - 155, 25))
-        titleLabel?.textColor = UIColor.blackColor()
-        titleLabel?.font = UIFont.systemFontOfSize(16, weight: UIFontWeightRegular)
-        contentView.addSubview(titleLabel!)
-        urlLabel = UILabel(frame: CGRectMake(50, 22, bounds.width - 155, 25))
-        urlLabel?.textColor = UIColor.grayColor()
-        urlLabel?.font = UIFont.systemFontOfSize(14, weight: UIFontWeightRegular)
-        contentView.addSubview(urlLabel!)
-        icon = UIImageView(frame: CGRectMake(10, 10, 30, 30))
-        contentView.addSubview(icon!)
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        urlLabel!.frame = CGRectMake(50, 21, bounds.width - 55, 25)
-        titleLabel!.frame = CGRectMake(50, 3, bounds.width - 55, 25)
-        
-    }
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
-class SFHistoryHeader : UITableViewHeaderFooterView{
-    var dayLabel : UILabel?
-    var csView : SFView?
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        csView = SFView(frame: bounds)
-        
-        csView!.userInteractionEnabled = false
-        
-        addSubview(csView!)
-        
-        dayLabel = UILabel(frame: CGRectMake(35, 0, bounds.width - 55, 30))
-        dayLabel?.textColor = UIColor.whiteColor()
-        dayLabel?.font = UIFont.systemFontOfSize(15, weight: UIFontWeightMedium)
-        addSubview(dayLabel!)
-
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        dayLabel!.frame = CGRectMake(15, 0, bounds.width - 55, 30)
-        csView?.frame = bounds
-    }
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

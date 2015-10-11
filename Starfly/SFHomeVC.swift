@@ -17,7 +17,7 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
     
     var history : SFHistory?
     var homeContent : SFHomeCollectionVC?
-    var bookmarks : SFBookmarksTable?
+    var bookmarks : SFBookmarks?
     
     var editButton : SFButton?
     var imageChange : SFButton?
@@ -27,11 +27,6 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         super.viewDidLoad()
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: "bookcels")
         view.backgroundColor = .clearColor()
-        /*let label = UILabel(frame: self.view.bounds)
-        label.textAlignment = NSTextAlignment.Center
-        label.text = "Home"
-        label.textColor = SFColors.green
-        view.addSubview(label)*/
         backGround = UIImageView(frame: view.bounds)
         backGround!.contentMode = UIViewContentMode.ScaleAspectFill
         backGround!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
@@ -50,11 +45,13 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         homeContent!.view.frame = CGRect(x: view.bounds.width, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
         homeContent!.view.autoresizingMask = [ UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
         scrollView!.addSubview(homeContent!.view)
-        bookmarks = SFBookmarksTable(frame: CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90))
+        bookmarks = SFBookmarks(frame: CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90))
         bookmarks!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
+        bookmarks?.updateFrames(EdgeInsetsMake(50, left: 50, bottom: -130, right: -50))
         scrollView?.addSubview(bookmarks!)
         history = SFHistory(frame: CGRect(x: view.bounds.width * 2, y: 90, width: view.bounds.width, height: view.bounds.height - 90))
         history!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
+        history!.updateFrames(EdgeInsetsMake(50, left: 50, bottom: -130, right: -50))
         scrollView?.addSubview(history!)
         scrollView?.showsHorizontalScrollIndicator = false
         

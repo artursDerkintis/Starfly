@@ -9,20 +9,20 @@
 import Foundation
 import UIKit
 import CoreData
-import MessageUI
-import Social
+
+
 public func saveInFavorites(array : NSDictionary) {
-    let title : String = array.objectForKey("title") as! String
-    let url : String = array.objectForKey("url") as! String
+    let title  = array.objectForKey("title") as! String
+    let url  = array.objectForKey("url") as! String
 
     let app : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    let name : String = String(format: "%@.png", randomString(11))
+   
     let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
     if NSFileManager.defaultManager().fileExistsAtPath(folder as String) == false{
-        let error : NSError? = nil
+        
         do {
             try NSFileManager.defaultManager().createDirectoryAtPath(folder as String, withIntermediateDirectories: false, attributes: nil)
-        } catch let error1 as NSError {
+        } catch let _ as NSError {
             
         }
         
@@ -41,14 +41,13 @@ public func saveInFavorites(array : NSDictionary) {
     newObj.setValue(url, forKey: "url")
     let requeste : NSFetchRequest = NSFetchRequest(entityName: "HomeHit")
     requeste.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: true)]
-    let error : NSError? = nil
+    
     let resultds : NSArray? = try! app.managedObjectContext.executeFetchRequest(requeste)
     let obj : NSManagedObject = resultds?.objectAtIndex(resultds!.count - 1) as! NSManagedObject
     let index : Float = obj.valueForKey("arrangeIndex") as! Float
     newObj.setValue(index + 1.0 , forKey: "arrangeIndex")
         app.saveContext()
     
-    //println("Home Hit: \(getAllHomeHitArray())")
 }
 public func saveInBookmarks(array : NSDictionary) {
     let title : String = array.objectForKey("title") as! String
@@ -64,10 +63,10 @@ public func saveInBookmarks(array : NSDictionary) {
     let name : String = String(format: "%@.png", randomString(11))
     let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
     if NSFileManager.defaultManager().fileExistsAtPath(folder as String) == false{
-        let error : NSError? = nil
+        
         do {
             try NSFileManager.defaultManager().createDirectoryAtPath(folder as String, withIntermediateDirectories: false, attributes: nil)
-        } catch let error1 as NSError {
+        } catch let error as NSError {
             
         }
         
@@ -92,15 +91,13 @@ public func saveInBookmarks(array : NSDictionary) {
     newObj.setValue(dataColor, forKey: "color")
     let requeste : NSFetchRequest = NSFetchRequest(entityName: "Bookmarks")
     requeste.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: true)]
-    let error : NSError? = nil
+   
     let resultds : NSArray? = try! app.managedObjectContext.executeFetchRequest(requeste)
     let obj : NSManagedObject = resultds?.objectAtIndex(resultds!.count - 1) as! NSManagedObject
     let index : Float = obj.valueForKey("arrangeIndex") as! Float
     newObj.setValue(index + 1.0 , forKey: "arrangeIndex")
   
     app.saveContext()
-    
-    //println("Home Hit: \(getAllHomeHitArray())")
 }
 
 public func saveHitFirst(){
@@ -150,7 +147,6 @@ public func saveInHistory(array : NSDictionary) {
     
     let compound = NSCompoundPredicate(orPredicateWithSubpredicates: [resultPredicate1, resultPredicate2])
     request.predicate = compound
-    let error : NSError? = nil
     let results : NSArray? = try! app.managedObjectContext.executeFetchRequest(request)
     if results?.count != 0 {
         for obj : AnyObject in results! {
@@ -179,10 +175,10 @@ public func saveInHistory(array : NSDictionary) {
     if data != nil {
         let folder : String = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
         if NSFileManager.defaultManager().fileExistsAtPath(folder) == false{
-            let error : NSError? = nil
+            
             do {
                 try NSFileManager.defaultManager().createDirectoryAtPath(folder, withIntermediateDirectories: false, attributes: nil)
-            } catch let error1 as NSError {
+            } catch let error as NSError {
                 
             }
             
@@ -204,14 +200,12 @@ public func saveInHistory(array : NSDictionary) {
     newObj.arrangeIndex = CFAbsoluteTimeGetCurrent()
     
     app.saveContext()
-    // println("History : \(getAllHomeHitArray())")
 }
 public func getAllHomeHitArray() -> NSMutableArray? {
     let app : AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     let request : NSFetchRequest = NSFetchRequest(entityName: "HistoryHit")
     request.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: false)]
     request.returnsObjectsAsFaults = false
-    let error : NSError? = nil
     let array : NSArray? = try! app.managedObjectContext.executeFetchRequest(request)
     
     
@@ -224,53 +218,5 @@ public func imageWithImage(image:UIImage) -> UIImage{
     let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     return newImage
-}
-public func tweet(url : NSURL){
-    
-    let tw = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
-   /*
-    let mainVC = (UIApplication.sharedApplication().delegate as! AppDelegate).mainVC
-    tw.addURL(url)
-    mainVC!.presentViewController(tw, animated: true, completion: { () -> Void in
-        
-    })*/
-    
-}
-public func faceit(url : NSURL){
-    
-    let tw = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-    
-    
-   /* tw.addURL(url)
-    let mainVC = (UIApplication.sharedApplication().delegate as! AppDelegate).mainVC
-    mainVC!.presentViewController(tw, animated: true, completion: { () -> Void in
-
-    })*/
-    
-    
-}
-func messege(url : NSURL){
-   /* let mainVC = (UIApplication.sharedApplication().delegate as! AppDelegate).mainVC
-    let mm = MFMessageComposeViewController()
-   
-    mm.messageComposeDelegate = mainVC
-    
-    mm.body = String(format: "\n %@", url.absoluteString)
-    mainVC!.presentViewController(mm, animated: true, completion: { () -> Void in
-        
-    })
-
-}
-func mail(url : NSURL){
-    let mainVC = (UIApplication.sharedApplication().delegate as! AppDelegate).mainVC
-    let mm = MFMailComposeViewController()
-    mm.mailComposeDelegate = mainVC!
-    
-    mm.setMessageBody(url.absoluteString, isHTML: false)
-    mainVC!.presentViewController(mm, animated: true, completion: { () -> Void in
-        
-    })*/
-    
-    
 }
 

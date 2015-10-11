@@ -26,7 +26,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         table!.delegate = self
         table!.dataSource = self
         table!.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
-       // table?.separatorColor = UIColor.clearColor()
+        table?.separatorColor = UIColor.clearColor()
         table!.layer.borderColor = UIColor.whiteColor().CGColor
         table!.layer.borderWidth = 2
         table!.layer.cornerRadius = 20
@@ -35,7 +35,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         table2!.delegate = self
         table2!.dataSource = self
         table2!.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
-     //   table2?.separatorColor = UIColor.clearColor()
+        table2?.separatorColor = UIColor.clearColor()
         table2!.layer.borderColor = UIColor.whiteColor().CGColor
         table2!.layer.borderWidth = 2
         table2!.layer.cornerRadius = 20
@@ -159,31 +159,4 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
     }
     
 
-}
-class SFSearchTableCell: UITableViewCell {
-    var label : UILabel?
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        label = UILabel(frame: CGRect.zero)
-        label?.font = UIFont.systemFontOfSize(15, weight: UIFontWeightRegular)
-        backgroundColor = UIColor.clearColor()
-        label?.textColor = UIColor.blackColor()
-        label!.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.8).CGColor
-        label!.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
-        label!.layer.shadowRadius = 0
-        label!.layer.shadowOpacity = 1.0
-        label!.layer.rasterizationScale = UIScreen.mainScreen().scale
-        label!.layer.shouldRasterize = true
-        label?.textAlignment = NSTextAlignment.Left
-        addSubview(label!)
-        label?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(self)
-            make.left.right.equalTo(50)
-            
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

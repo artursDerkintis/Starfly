@@ -8,23 +8,35 @@
 
 import UIKit
 protocol SFUrlBarManagment{
-    func setObservers(webVC : SFWebVC?)
+    func setWebVC(webVC : SFWebVC?)
 }
 
 class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate {
-    var nav1, nav2 : UIView?
-    var back, forward, stop, reload, home, share, menu : UIButton?
+    
+    
+    var main, left, right : UIStackView?
+    var backButton, forwardButton, stopButton, reloadButton, homeButton, shareButton, menuButton : UIButton?
+    
+    
     
     var textField : UITextField?
-    var gradient : CAGradientLayer?
-    var sizeOfPro : CGSize = CGSize(width: 1, height: lineWidth())
-    var percent : CGFloat = 0.0
+    var textFieldMask : CALayer?
+    var progressGradient : CAGradientLayer?
+    var sizeOfProgress : CGSize = CGSize(width: 1, height: lineWidth())
+    
+    
     var clock : SFClock?
-    var mask : CALayer?
+    
+    
     var currentWebVC : SFWebVC?
+    
+    
     var outsideListener : UITapGestureRecognizer?
     var search : SFSearchTable?
     var keyboardHeight : CGFloat = 0
+    
+    var menuView : SFMenu?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = SFView(frame: view.bounds)
@@ -42,54 +54,60 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     
     func setup(){
         print(" setup ")
-        nav1 = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height))
+        backButton = UIButton(type: UIButtonType.Custom)
+        backButton?.setImage(UIImage(named: Images.back), forState: UIControlState.Normal)
+        backButton?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        backButton?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
+        backButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(backButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(backButton!)
+        }
         
-
-        view.addSubview(nav1!)
-        let edge = UIEdgeInsets(top: 13, left: 13, bottom: 13, right: 13)
-        back = UIButton(type: UIButtonType.Custom)
-        back?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        back?.setImage(UIImage(named: Images.back), forState: UIControlState.Normal)
-        back?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        back?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
+        forwardButton = UIButton(type: UIButtonType.Custom)
        
-        back?.contentEdgeInsets = edge
-        
-        forward = UIButton(type: UIButtonType.Custom)
-        forward?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        forward?.setImage(UIImage(named: Images.forward), forState: UIControlState.Normal)
-        forward?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        forward?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
-        forward?.contentEdgeInsets = edge
-        
-        
-        reload = UIButton(type: UIButtonType.Custom)
-        reload?.frame = CGRect(x: 0, y: 0, width: 46, height: 45)
-        reload?.setImage(UIImage(named: Images.reload), forState: UIControlState.Normal)
-        reload?.setImage(UIImage(named: Images.reload)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        reload?.contentEdgeInsets = edge
-        
-        stop = UIButton(type: UIButtonType.Custom)
-        stop?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        stop?.setImage(UIImage(named: Images.stop), forState: UIControlState.Normal)
-        stop?.setImage(UIImage(named: Images.stop)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        stop?.contentEdgeInsets = edge
-        stop?.hidden = true
-        
-        home = UIButton(type: UIButtonType.Custom)
-        home?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        home?.setImage(UIImage(named: Images.home), forState: UIControlState.Normal)
-        home?.setImage(UIImage(named: Images.home)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        home?.contentEdgeInsets = edge
-        
-        nav1?.addSubview(back!)
-        nav1?.addSubview(forward!)
-        nav1?.addSubview(reload!)
-        nav1?.addSubview(stop!)
-        nav1?.addSubview(home!)
+        forwardButton?.setImage(UIImage(named: Images.forward), forState: UIControlState.Normal)
+        forwardButton?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        forwardButton?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
+        forwardButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(forwardButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(forwardButton!)
+        }
+
         
         
-        textField = UITextField(frame: CGRect(x: 0, y: 0, width: self.view.frame.width * 0.52, height: 35))
+        reloadButton = UIButton(type: UIButtonType.Custom)
+        
+        reloadButton?.setImage(UIImage(named: Images.reload), forState: UIControlState.Normal)
+        reloadButton?.setImage(UIImage(named: Images.reload)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        reloadButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.height.equalTo(reloadButton!.snp_height).multipliedBy(0.5)
+            make.width.equalTo(reloadButton!.snp_height).multipliedBy(0.52)
+            make.center.equalTo(reloadButton!)
+        }
+        
+        stopButton = UIButton(type: UIButtonType.Custom)
+       
+        stopButton?.setImage(UIImage(named: Images.stop), forState: UIControlState.Normal)
+        stopButton?.setImage(UIImage(named: Images.stop)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        stopButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(stopButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(stopButton!)
+        }
+        //stop?.hidden = true
+       
+        homeButton = UIButton(type: UIButtonType.Custom)
+        
+        homeButton?.setImage(UIImage(named: Images.home), forState: UIControlState.Normal)
+        homeButton?.setImage(UIImage(named: Images.home)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        homeButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(homeButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(homeButton!)
+        }
+        
+       
+        
+        
+        textField = UITextField(frame: CGRect.zero)
         textField?.layer.cornerRadius = 35 * 0.5
         textField?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         textField?.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
@@ -99,7 +117,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         textField?.keyboardAppearance = UIKeyboardAppearance.Light
         textField?.autocapitalizationType = UITextAutocapitalizationType.None
         textField?.autocorrectionType = UITextAutocorrectionType.No
-        //NSAttributedString(string: ss, attributes: [NSForegroundColorAttributeName : color.colorWithAlphaComponent(0.5)])
+        
         textField?.attributedPlaceholder = NSAttributedString(string: "Search or Type URL", attributes: [NSForegroundColorAttributeName : UIColor.whiteColor().colorWithAlphaComponent(0.8)])
         textField?.layer.borderWidth = 1
         textField?.layer.borderColor = UIColor.whiteColor().CGColor
@@ -114,7 +132,42 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         textField?.addTarget(self, action: "textFieldEnd", forControlEvents: [UIControlEvents.EditingDidEnd, UIControlEvents.EditingDidEndOnExit])
         textField?.addTarget(self, action: "textEnter", forControlEvents: UIControlEvents.EditingDidEndOnExit)
         textField?.addTarget(self, action: "textFieldEditing", forControlEvents: UIControlEvents.EditingChanged)
-        view.addSubview(textField!)
+        
+        main = UIStackView(frame: CGRect.zero)
+        main?.distribution = .FillProportionally
+        main?.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(main!)
+        
+        left = UIStackView(frame: CGRect.zero)
+        left?.distribution = .FillEqually
+        left?.translatesAutoresizingMaskIntoConstraints = false
+        left?.addArrangedSubview(backButton!)
+        left?.addArrangedSubview(forwardButton!)
+        left?.addArrangedSubview(reloadButton!)
+        left?.addArrangedSubview(stopButton!)
+        left?.addArrangedSubview(homeButton!)
+        main!.addArrangedSubview(left!)
+        left?.snp_makeConstraints { (make) -> Void in
+            make.left.top.equalTo(0)
+            make.width.equalTo(self.view).multipliedBy(0.24)
+        }
+
+        main?.snp_makeConstraints { (make) -> Void in
+            make.top.right.left.equalTo(0)
+            make.height.equalTo(45)
+            
+        }
+        textField?.translatesAutoresizingMaskIntoConstraints = false
+        let textFieldHolder = UIView(frame: CGRect.zero)
+        textFieldHolder.addSubview(textField!)
+        main!.addArrangedSubview(textFieldHolder)
+        
+        textField?.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(5)
+            make.left.equalTo(0)
+            make.width.equalTo(textFieldHolder)
+            make.bottom.equalTo(textFieldHolder).inset(5)
+        }
         setLoader(textField!)
         let doubleTap = UITapGestureRecognizer(target: self, action: "showFullURL")
         doubleTap.numberOfTapsRequired = 2
@@ -123,31 +176,48 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         textField!.addGestureRecognizer(doubleTap)
         
         
-        nav2 = UIView(frame: CGRect(x: self.view.frame.width * 0.8, y: 0, width: self.view.frame.width * 0.1, height: self.view.frame.height))
-        view.addSubview(nav2!)
-        share = UIButton(type: UIButtonType.Custom)
-        share?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        share?.setImage(UIImage(named: Images.bookmark), forState: UIControlState.Normal)
-        share?.setImage(UIImage(named: Images.bookmark)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        share?.setImage(UIImage(named: Images.bookmarkFill), forState: UIControlState.Selected)
-        share?.contentEdgeInsets = edge
-        share?.tag = 0
-        share?.addTarget(self, action: "shareSreen:", forControlEvents: UIControlEvents.TouchDown)
-        menu = UIButton(type: UIButtonType.Custom)
-        menu?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
-        menu?.setImage(UIImage(named: Images.menu), forState: UIControlState.Normal)
-        menu?.setImage(UIImage(named: Images.menu)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        menu?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Selected)
-        menu?.contentEdgeInsets = edge
-        menu?.tag = 0
-        menu?.addTarget(self, action: "showMenu:", forControlEvents: UIControlEvents.TouchDown)
-        nav2?.addSubview(menu!)
-        nav2?.addSubview(share!)
+        right = UIStackView(frame: CGRect.zero)
+        right?.distribution = .FillEqually
+        right?.translatesAutoresizingMaskIntoConstraints = false
+        main!.addArrangedSubview(right!)
+        right?.snp_makeConstraints { (make) -> Void in
+            make.width.equalTo(self.view).multipliedBy(0.17)
+            
+        }
         
-        view.addSubview(nav2!)
-        clock = SFClock(frame: CGRect(x: 0, y: 0, width: 43, height: 43))
-        view.addSubview(clock!)
+        shareButton = UIButton(type: UIButtonType.Custom)
+        shareButton?.setImage(UIImage(named: Images.bookmark), forState: UIControlState.Normal)
+        shareButton?.setImage(UIImage(named: Images.bookmark)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        shareButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(shareButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(shareButton!)
+        }
+        shareButton?.tag = 0
+        shareButton?.addTarget(self, action: "shareSreen:", forControlEvents: UIControlEvents.TouchDown)
+        menuButton = UIButton(type: UIButtonType.Custom)
+        menuButton?.setImage(UIImage(named: Images.menu), forState: UIControlState.Normal)
+        menuButton?.setImage(UIImage(named: Images.menu)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        menuButton?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Selected)
+        menuButton?.tag = 0
+        menuButton?.addTarget(self, action: "showMenu:", forControlEvents: UIControlEvents.TouchDown)
+        right?.addArrangedSubview(shareButton!)
+        right?.addArrangedSubview(menuButton!)
+        menuButton?.imageView?.snp_makeConstraints { (make) -> Void in
+            make.width.height.equalTo(menuButton!.snp_height).multipliedBy(0.5)
+            make.center.equalTo(menuButton!)
+        }
+        
+        clock = SFClock(frame: CGRect(x: 0, y: 1, width: 43, height: 43))
+        let clockView = UIView(frame: CGRect.zero)
+        
+        clockView.addSubview(clock!)
+        
+        right?.addArrangedSubview(clockView)
+        clock?.frame.origin.x = clockView.frame.width - 44
+        clock?.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin
         addTargets()
+        
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "closeEx", name: "CLOSE", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
@@ -156,7 +226,9 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     func showFullURL(){
         let url = currentWebVC?.webView?.URL?.absoluteString
         if let u = url {
-            textField?.text = u
+            if !u.containsString("file:///"){
+                textField?.text = u
+            }
         }
     }
     func shareSreen(sender: SFButton){
@@ -188,16 +260,19 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
     func expand(on : Bool, height : CGFloat){
         if self.view.viewWithTag(100000)  != nil{
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.9, options: UIViewAnimationOptions.CurveEaseInOut,  animations: { () -> Void in
-                self.view.frame = CGRect(x: 0, y: self.view.frame.origin.y, width: self.view.frame.size.width, height: on ? height + 45 : 45)
+            view.snp_updateConstraints { (make) -> Void in
+                make.height.equalTo(on ? height + 45 : 45)
+            }
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                self.view.layoutIfNeeded()
                 self.view.viewWithTag(100000)?.frame.size.height = on ? height : 0
                 
                 }) { (e) -> Void in
                     
                     if !on {
-                        self.menu?.tag = 0
-                        self.share?.tag = 0
-                        self.menu?.selected = false
+                        self.menuButton?.tag = 0
+                        self.shareButton?.tag = 0
+                        self.menuButton?.selected = false
                         self.view.viewWithTag(100000)?.removeFromSuperview()
                         self.search?.removeFromSuperview()
                         self.search = nil
@@ -229,9 +304,9 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         let loc = sender.locationInView(self.view.superview)
         if !CGRectContainsPoint(self.view.frame, loc){
             expand(false, height: 0)
-            menu?.tag = 0
-            share?.tag = 0
-            menu?.selected = false
+            menuButton?.tag = 0
+            shareButton?.tag = 0
+            menuButton?.selected = false
             self.view.window?.removeGestureRecognizer(sender)
       
         }
@@ -251,77 +326,48 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
     func showMenu(sender : SFButton){
         if textField!.isFirstResponder() {return}
-        
         if sender.tag == 0{
-            
             sender.selected = true
             sender.tag = 1
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                let hostView = UIView(frame: CGRect(x: 0, y: 45, width: self.view.frame.width, height: 0))
-                hostView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-                hostView.layer.cornerRadius = 20
-                hostView.backgroundColor = UIColor.clearColor()
-                hostView.layer.masksToBounds = true
-                self.view.addSubview(hostView)
-                let history = SFHistory(frame: CGRect.zero)
-                let bookmarks = SFBookmarksTable(frame: CGRect.zero)
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    history.load()
-                    bookmarks.load()
+            menuView = SFMenu(frame: CGRect.zero)
+            view.addSubview(menuView!)
+            menuView?.snp_makeConstraints { (make) -> Void in
+                make.top.equalTo(main!.snp_bottomMargin)
+                make.width.equalTo(self.view.snp_width)
+                make.left.right.bottom.equalTo(0)
+                
+            }
+            view.snp_updateConstraints { (make) -> Void in
+                make.height.equalTo(567)
+            }
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                self.view.layoutIfNeeded()
+                self.menuView?.layoutIfNeeded()
                 })
-                
-                let stackView = UIStackView(arrangedSubviews: [bookmarks, history])
-                stackView.distribution = .FillEqually
-                stackView.spacing = 35
-                hostView.addSubview(stackView)
-                history.tableView?.backgroundColor = UIColor(white: 0.9, alpha: 0.7)
-                history.tableView?.frame = history.bounds
-                history.tableView?.layer.borderWidth = 2
-                history.tableView?.layer.borderColor = UIColor.whiteColor().CGColor
-                history.blur?.hidden = true
-                history.laye.hidden = true
-                bookmarks.tableView?.frame = bookmarks.bounds
-                bookmarks.backgroundColor = UIColor(white: 0.9, alpha: 0.7)
-                bookmarks.tableView?.layer.borderWidth = 2
-                bookmarks.tableView?.layer.borderColor =  UIColor.whiteColor().CGColor
-                bookmarks.blur?.hidden = true
-                bookmarks.laye.hidden = true
-                let settings = SFSettings(frame: CGRect(x: 0, y: 510 - 45, width: self.view.frame.width, height: 90))
-                
-                hostView.tag = 100000
-                hostView.addSubview(settings)
-                stackView.snp_makeConstraints { (make) -> Void in
-                    make.top.equalTo(30)
-                    make.left.equalTo(15)
-                    make.right.equalTo(-15)
-                    make.bottom.equalTo(-90)
-                }
-                settings.snp_makeConstraints { (make) -> Void in
-                    make.top.equalTo(stackView.snp_bottomMargin)
-                    make.bottom.left.right.equalTo(0)
-                }
-                
-                self.expand(true, height: 555)
-
-            })
-            
         }else{
             sender.tag = 0
             sender.selected = false
-            expand(false, height: 0)
-            
-            
-            
+            closeMenu()
         }
         
     }
-    
+    func closeMenu(){
+        view.snp_updateConstraints { (make) -> Void in
+            make.height.equalTo(45)
+        }
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            self.view.layoutIfNeeded()
+            self.menuView?.layoutIfNeeded()
+            }) { (fin) -> Void in
+                self.menuView?.removeFromSuperview()
+        }
+    }
     func addTargets(){
-        back?.addTarget(self, action: "goBack", forControlEvents: UIControlEvents.TouchDown)
-        forward?.addTarget(self, action: "goForward", forControlEvents: UIControlEvents.TouchDown)
-        reload?.addTarget(self, action: "reloadPage", forControlEvents: UIControlEvents.TouchDown)
-        stop?.addTarget(self, action: "stopPage", forControlEvents: UIControlEvents.TouchDown)
-        home?.addTarget(self, action: "goHome", forControlEvents: UIControlEvents.TouchDown)
+        backButton?.addTarget(self, action: "goBack", forControlEvents: UIControlEvents.TouchDown)
+        forwardButton?.addTarget(self, action: "goForward", forControlEvents: UIControlEvents.TouchDown)
+        reloadButton?.addTarget(self, action: "reloadPage", forControlEvents: UIControlEvents.TouchDown)
+        stopButton?.addTarget(self, action: "stopPage", forControlEvents: UIControlEvents.TouchDown)
+        homeButton?.addTarget(self, action: "goHome", forControlEvents: UIControlEvents.TouchDown)
         
     }
     func goHome(){
@@ -340,7 +386,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         currentWebVC?.webView?.stopLoading()
     }
     
-    func setObservers(webVC : SFWebVC?){
+    func setWebVC(webVC : SFWebVC?){
         if webVC != nil{
         currentWebVC = webVC
         updateInstantly()
@@ -361,60 +407,60 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
             if !textField!.isFirstResponder(){
                 textField?.text = shortURL(currentWebVC!.webView!.URL) as String
             }
-        back?.enabled = currentWebVC!.webView!.canGoBack
-        forward?.enabled = currentWebVC!.webView!.canGoForward
+        backButton?.enabled = currentWebVC!.webView!.canGoBack
+        forwardButton?.enabled = currentWebVC!.webView!.canGoForward
         let l = currentWebVC!.webView!.loading
         if l {
             setProgress(CGFloat(currentWebVC!.webView!.estimatedProgress))
         }else{
             showHideProgressBar(on: false, animated: false)
         }
-        stop?.hidden = l ? false : true
-        reload?.hidden = l ? true : false
+        stopButton?.hidden = l ? false : true
+        reloadButton?.hidden = l ? true : false
         }
     }
     
     func setLoader(viewToAd : UIView){
-        gradient = CAGradientLayer()
-        gradient?.anchorPoint = CGPoint(x: 0.0, y: 0.0)
-        gradient?.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradient?.endPoint = CGPoint(x: 1.0, y: 0.5)
-        gradient!.colors =  [UIColor.whiteColor().colorWithAlphaComponent(0.7).CGColor, UIColor.whiteColor().CGColor, UIColor.whiteColor().colorWithAlphaComponent(0.9).CGColor]
-        gradient?.cornerRadius = viewToAd.frame.height * 0.05
-        gradient!.locations = [0.0, 1.0, 1.0]
-        gradient!.frame = CGRect(x: 0, y: 0, width: 1, height: viewToAd.frame.height * 0.08)
-        mask = CALayer()
-        mask!.frame = viewToAd.bounds
-        mask!.cornerRadius = mask!.frame.height * 0.5
-        mask!.masksToBounds = true
-        mask!.name = "Mask"
-        viewToAd.layer.addSublayer(mask!)
-        mask!.addSublayer(gradient!)
+        progressGradient = CAGradientLayer()
+        progressGradient?.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+        progressGradient?.startPoint = CGPoint(x: 0.0, y: 0.5)
+        progressGradient?.endPoint = CGPoint(x: 1.0, y: 0.5)
+        progressGradient!.colors =  [UIColor.whiteColor().colorWithAlphaComponent(0.7).CGColor, UIColor.whiteColor().CGColor, UIColor.whiteColor().colorWithAlphaComponent(0.9).CGColor]
+        progressGradient?.cornerRadius = viewToAd.frame.height * 0.05
+        progressGradient!.locations = [0.0, 1.0, 1.0]
+        progressGradient!.frame = CGRect(x: 0, y: 0, width: 1, height: viewToAd.frame.height * 0.08)
+        textFieldMask = CALayer()
+        textFieldMask!.frame = viewToAd.bounds
+        textFieldMask!.cornerRadius = 35 * 0.5
+        textFieldMask!.masksToBounds = true
+        textFieldMask!.name = "Mask"
+        viewToAd.layer.addSublayer(textFieldMask!)
+        textFieldMask!.addSublayer(progressGradient!)
         showHideProgressBar(on: false, animated: false)
     }
     func setProgress(percent : CGFloat){
-        if sizeOfPro.height == lineWidth(){
-            sizeOfPro = CGSize(width: 1, height: textField!.frame.height * 0.08)
+        if sizeOfProgress.height == lineWidth(){
+            sizeOfProgress = CGSize(width: 1, height: textField!.frame.height * 0.08)
            
             showHideProgressBar(on: true, animated: true)
             
         }
         let progress = textField!.bounds.width * percent
-        let duration = percent - (sizeOfPro.width / textField!.frame.width)
+        let duration = percent - (sizeOfProgress.width / textField!.frame.width)
         
         let basicAnim = CABasicAnimation(keyPath: "bounds.size.width")
-        basicAnim.fromValue = sizeOfPro.width
+        basicAnim.fromValue = sizeOfProgress.width
         basicAnim.toValue = progress
         basicAnim.duration = CFTimeInterval(duration)
         basicAnim.removedOnCompletion = false
         basicAnim.fillMode = kCAFillModeForwards
-        gradient?.addAnimation(basicAnim, forKey: "progress")
+        progressGradient?.addAnimation(basicAnim, forKey: "progress")
         
-        sizeOfPro = CGSize(width: progress, height: textField!.frame.height * 0.08)
+        sizeOfProgress = CGSize(width: progress, height: textField!.frame.height * 0.08)
         if percent == 1.0{
             delay(NSTimeInterval(duration), closure: { () -> () in
                 self.showHideProgressBar(on: false, animated: true)
-               self.sizeOfPro = CGSize(width: 1, height: lineWidth())
+               self.sizeOfProgress = CGSize(width: 1, height: lineWidth())
 
             })
                     }
@@ -422,12 +468,12 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     func showHideProgressBar(on on : Bool, animated : Bool){
         let basicAnim = CABasicAnimation(keyPath: "bounds.size")
        
-        basicAnim.fromValue = on ? NSValue(CGSize: CGSize(width: sizeOfPro.width, height: lineWidth())) : NSValue(CGSize: CGSize(width: sizeOfPro.width, height: sizeOfPro.height))
-        basicAnim.toValue = on ? NSValue(CGSize: CGSize(width: sizeOfPro.width, height: sizeOfPro.height)) : NSValue(CGSize: CGSize(width: sizeOfPro.width, height: lineWidth()))
+        basicAnim.fromValue = on ? NSValue(CGSize: CGSize(width: sizeOfProgress.width, height: lineWidth())) : NSValue(CGSize: CGSize(width: sizeOfProgress.width, height: sizeOfProgress.height))
+        basicAnim.toValue = on ? NSValue(CGSize: CGSize(width: sizeOfProgress.width, height: sizeOfProgress.height)) : NSValue(CGSize: CGSize(width: sizeOfProgress.width, height: lineWidth()))
         basicAnim.duration = animated ? 0.3 : 0.0
         basicAnim.fillMode = kCAFillModeForwards
         basicAnim.removedOnCompletion = false
-        self.gradient!.addAnimation(basicAnim, forKey: "j")
+        self.progressGradient!.addAnimation(basicAnim, forKey: "j")
     }
     func textFieldStart(){
         delay(0.2) { () -> () in
@@ -545,127 +591,11 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if let nav = nav1 {
-        
-        if view.frame.width == 320{
-            menu?.hidden = true
-            forward?.hidden = true
-            home?.hidden = true
-            clock?.hidden = true
-            nav.frame = CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height)
-            nav2?.frame = CGRect(x: self.view.frame.width * 0.82, y: 0, width: self.view.frame.width, height: self.view.frame.height)
-            textField?.frame = CGRect(x: self.view.frame.width * 0.24, y: 5, width: self.view.frame.width * 0.59, height: 35)
-            
-           
-            
-            var points = [CGPoint]()
-            for i in 1...3{
-                points.append(CGPoint(x: ((nav.frame.width - 28) / 4) * CGFloat(i) + 28, y: 45 * 0.5))
-            }
-            print(points)
-            back?.center = CGPoint(x: 28, y: 45 * 0.5)
-            forward?.center = points[0]
-            reload?.center = points[1]
-            stop?.center = points[1]
-            home?.center = points[2]
-            share?.center = CGPoint(x: 28, y: 45 * 0.5)
-            menu?.center = points[1]
-            
-
-        }else if view.frame.width == 507{
-            clock?.hidden = true
-            menu?.hidden = false
-            forward?.hidden = false
-            home?.hidden = false
-            nav.frame = CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height)
-            nav2?.frame = CGRect(x: self.view.frame.width * 0.85, y: 0, width: self.view.frame.width * 0.1, height: self.view.frame.height)
-            textField?.frame = CGRect(x: self.view.frame.width * 0.24, y: 5, width: self.view.frame.width * 0.61, height: 35)
-
-            clock?.frame = CGRect(x: self.view.frame.width - clock!.frame.width  * 1.05, y: 1, width: clock!.frame.width, height: clock!.frame.height)
-            var points = [CGPoint]()
-            for i in 1...3{
-            points.append(CGPoint(x: ((nav.frame.width - 28) / 4) * CGFloat(i) + 28, y: 45 * 0.5))
-            }
-            back?.center = CGPoint(x: 28, y: 45 * 0.5)
-            forward?.center = points[0]
-            reload?.center = points[1]
-            stop?.center = points[1]
-            home?.center = points[2]
-            share?.center = CGPoint(x: 28, y: 45 * 0.5)
-            menu?.center = CGPoint(x: points[0].x + 3, y: 45 * 0.5)
-            
-            
-        }else if view.frame.width == 694{
-            clock?.hidden = true
-            forward?.hidden = false
-            menu?.hidden = false
-            home?.hidden = false
-            nav.frame = CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height)
-            nav2?.frame = CGRect(x: self.view.frame.width * 0.87, y: 0, width: self.view.frame.width * 0.1, height: self.view.frame.height)
-            textField?.frame = CGRect(x: self.view.frame.width * 0.24, y: 5, width: self.view.frame.width * 0.64, height: 35)
-        
-            clock?.frame = CGRect(x: self.view.frame.width - clock!.frame.width  * 1.05, y: 1, width: clock!.frame.width, height: clock!.frame.height)
-            var points = [CGPoint]()
-            for i in 1...3{
-                points.append(CGPoint(x: ((nav.frame.width - 28) / 4) * CGFloat(i) + 28, y: 45 * 0.5))
-            }
-            back?.center = CGPoint(x: 28, y: 45 * 0.5)
-            forward?.center = points[0]
-            reload?.center = points[1]
-            stop?.center = points[1]
-            home?.center = points[2]
-            share?.center = CGPoint(x: 28, y: 45 * 0.5)
-            menu?.center = points[0]
-            
-            
-        }else if view.frame.width == 438{
-            clock?.hidden = true
-            menu?.hidden = true
-            forward?.hidden = false
-            home?.hidden = false
-            nav.frame = CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height)
-            nav2?.frame = CGRect(x: self.view.frame.width * 0.87, y: 0, width: self.view.frame.width * 0.1, height: self.view.frame.height)
-            textField?.frame = CGRect(x: self.view.frame.width * 0.24, y: 5, width: self.view.frame.width * 0.65, height: 35)
-
-            clock?.frame = CGRect(x: self.view.frame.width - clock!.frame.width  * 1.05, y: 1, width: clock!.frame.width, height: clock!.frame.height)
-            var points = [CGPoint]()
-            for i in 1...3{
-                points.append(CGPoint(x: ((nav.frame.width - 28) / 4) * CGFloat(i) + 28, y: 45 * 0.5))
-            }
-            back?.center = CGPoint(x: 28, y: 45 * 0.5)
-            forward?.center = points[0]
-            reload?.center = points[1]
-            stop?.center = points[1]
-            home?.center = points[2]
-            share?.center = CGPoint(x: 28, y: 45 * 0.5)
-            menu?.center = points[0]
-
-            }
-        else{
-            menu?.hidden = false
-            clock?.hidden = false
-            forward?.hidden = false
-            home?.hidden = false
-            nav.frame = CGRect(x: 0, y: 0, width: self.view.frame.width * 0.26, height: self.view.frame.height)
-            nav2?.frame = CGRect(x: self.view.frame.width * 0.83, y: 0, width: self.view.frame.width * 0.1, height: self.view.frame.height)
-            textField?.frame = CGRect(x: self.view.frame.width * 0.24, y: 5, width: self.view.frame.width * 0.59, height: 35)
-          
-            clock?.frame = CGRect(x: self.view.frame.width - clock!.frame.width  * 1.05, y: 1, width: clock!.frame.width, height: clock!.frame.height)
-            var points = [CGPoint]()
-            for i in 1...3{
-                points.append(CGPoint(x: ((nav.frame.width - 28) / 4) * CGFloat(i) + 28, y: 45 * 0.5))
-            }
-            back?.center = CGPoint(x: 28, y: 45 * 0.5)
-            forward?.center = points[0]
-            reload?.center = points[1]
-            stop?.center = points[1]
-            home?.center = points[2]
-            share?.center = CGPoint(x: 28, y: 45 * 0.5)
-            menu?.center = points[0]
-
-            }
+        delay(0.3) { () -> () in
+            print(self.textField!.bounds)
+            self.textFieldMask!.frame = self.textField!.bounds
         }
-        mask!.frame = textField!.bounds
+       
        
     }
     deinit{
@@ -677,14 +607,5 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
