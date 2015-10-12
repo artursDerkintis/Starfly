@@ -97,8 +97,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
             }}
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        print(gestureRecognizer)
-        print(otherGestureRecognizer)
+       
         return true
     }
   
@@ -163,13 +162,18 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         super.viewDidAppear(animated)
         
     }
+    
+    func cleanUp() {
+         webView?.evaluateJavaScript("stopAllVideos();", completionHandler: nil)
+    }
+    
     deinit{
         webView?.removeObserver(self, forKeyPath: "URL")
         webView?.removeObserver(self, forKeyPath: "estimatedProgress")
         webView?.removeObserver(self, forKeyPath: "canGoBack")
         webView?.removeObserver(self, forKeyPath: "canGoForward")
         webView?.removeObserver(self, forKeyPath: "loading")
-        webView?.evaluateJavaScript("stopAllVideos();", completionHandler: nil)
+       
         
     }
     override func viewDidLayoutSubviews() {

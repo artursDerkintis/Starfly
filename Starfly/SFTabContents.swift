@@ -66,7 +66,9 @@ class SFTabContents: UIViewController, SFTabManagment {
     }
     func removeTab(webVC : SFWebVC){
         webVC.removeFromParentViewController()
+        webVC.cleanUp()
         webVC.view.removeFromSuperview()
+        
     }
     func switchToTab(webVC : SFWebVC){
         currentWebVC = webVC

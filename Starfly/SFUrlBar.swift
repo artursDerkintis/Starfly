@@ -33,7 +33,6 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     
     var outsideListener : UITapGestureRecognizer?
     var search : SFSearchTable?
-    var keyboardHeight : CGFloat = 0
     
     var menuView : SFMenu?
     
@@ -59,7 +58,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         backButton?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         backButton?.setImage(UIImage(named: Images.back)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
         backButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(backButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(backButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(backButton!)
         }
         
@@ -69,7 +68,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         forwardButton?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         forwardButton?.setImage(UIImage(named: Images.forward)?.imageWithColor(UIColor(white: 0.9, alpha: 1.0)), forState: UIControlState.Disabled)
         forwardButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(forwardButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(forwardButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(forwardButton!)
         }
 
@@ -80,8 +79,8 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         reloadButton?.setImage(UIImage(named: Images.reload), forState: UIControlState.Normal)
         reloadButton?.setImage(UIImage(named: Images.reload)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         reloadButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.height.equalTo(reloadButton!.snp_height).multipliedBy(0.5)
-            make.width.equalTo(reloadButton!.snp_height).multipliedBy(0.52)
+            make.height.equalTo(reloadButton!.snp_height).multipliedBy(0.4)
+            make.width.equalTo(reloadButton!.snp_height).multipliedBy(0.42)
             make.center.equalTo(reloadButton!)
         }
         
@@ -90,7 +89,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         stopButton?.setImage(UIImage(named: Images.stop), forState: UIControlState.Normal)
         stopButton?.setImage(UIImage(named: Images.stop)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         stopButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(stopButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(stopButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(stopButton!)
         }
         //stop?.hidden = true
@@ -100,7 +99,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         homeButton?.setImage(UIImage(named: Images.home), forState: UIControlState.Normal)
         homeButton?.setImage(UIImage(named: Images.home)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         homeButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(homeButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(homeButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(homeButton!)
         }
         
@@ -109,7 +108,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         
         textField = UITextField(frame: CGRect.zero)
         textField?.layer.cornerRadius = 35 * 0.5
-        textField?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
+        textField?.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.4).CGColor
         textField?.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
         textField?.layer.shadowOpacity = 0.6
         textField?.layer.shadowRadius = 0
@@ -189,7 +188,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         shareButton?.setImage(UIImage(named: Images.bookmark), forState: UIControlState.Normal)
         shareButton?.setImage(UIImage(named: Images.bookmark)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
         shareButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(shareButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(shareButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(shareButton!)
         }
         shareButton?.tag = 0
@@ -203,7 +202,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         right?.addArrangedSubview(shareButton!)
         right?.addArrangedSubview(menuButton!)
         menuButton?.imageView?.snp_makeConstraints { (make) -> Void in
-            make.width.height.equalTo(menuButton!.snp_height).multipliedBy(0.5)
+            make.width.height.equalTo(menuButton!.snp_height).multipliedBy(0.4)
             make.center.equalTo(menuButton!)
         }
         
@@ -219,8 +218,6 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "closeEx", name: "CLOSE", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "update:", name: "UPDATE", object: nil)
     }
     func showFullURL(){
@@ -252,43 +249,11 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         
     }
     func closeEx(){
-        expand(false, height: 0)
+        
         
         if textField!.isFirstResponder(){
             textField?.resignFirstResponder()
         }
-    }
-    func expand(on : Bool, height : CGFloat){
-        if self.view.viewWithTag(100000)  != nil{
-            view.snp_updateConstraints { (make) -> Void in
-                make.height.equalTo(on ? height + 45 : 45)
-            }
-            UIView.animateWithDuration(0.5, animations: { () -> Void in
-                self.view.layoutIfNeeded()
-                self.view.viewWithTag(100000)?.frame.size.height = on ? height : 0
-                
-                }) { (e) -> Void in
-                    
-                    if !on {
-                        self.menuButton?.tag = 0
-                        self.shareButton?.tag = 0
-                        self.menuButton?.selected = false
-                        self.view.viewWithTag(100000)?.removeFromSuperview()
-                        self.search?.removeFromSuperview()
-                        self.search = nil
-                        if self.outsideListener != nil{
-                            self.view.window?.removeGestureRecognizer(self.outsideListener!)
-                        }
-                        
-                    }else{
-                        self.outsideListener = UITapGestureRecognizer(target: self, action: "close:")
-                        
-                        self.view.window?.addGestureRecognizer(self.outsideListener!)
-                        self.outsideListener!.delegate = self
-                    }
-            }
-        }
-        
     }
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer.accessibilityValue == "double"{
@@ -303,7 +268,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     func close(sender: UITapGestureRecognizer){
         let loc = sender.locationInView(self.view.superview)
         if !CGRectContainsPoint(self.view.frame, loc){
-            expand(false, height: 0)
+            closeMenu()
             menuButton?.tag = 0
             shareButton?.tag = 0
             menuButton?.selected = false
@@ -313,17 +278,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
    
     
-    func keyboardWillHide(not : NSNotification){
-        expand(false, height: 1)
-        
-    }
-    func keyboardWillShow(notification: NSNotification) {
-        if textField!.isFirstResponder(){
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            keyboardHeight = keyboardSize.height
-
-            }}
-    }
+    
     func showMenu(sender : SFButton){
         if textField!.isFirstResponder() {return}
         if sender.tag == 0{
@@ -344,6 +299,10 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
                 self.view.layoutIfNeeded()
                 self.menuView?.layoutIfNeeded()
                 })
+            self.outsideListener = UITapGestureRecognizer(target: self, action: "close:")
+            
+            self.view.window?.addGestureRecognizer(self.outsideListener!)
+            self.outsideListener!.delegate = self
         }else{
             sender.tag = 0
             sender.selected = false
@@ -359,6 +318,10 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
             self.view.layoutIfNeeded()
             self.menuView?.layoutIfNeeded()
             }) { (fin) -> Void in
+                if self.outsideListener != nil{
+                    self.view.window?.removeGestureRecognizer(self.outsideListener!)
+                }
+
                 self.menuView?.removeFromSuperview()
         }
     }
@@ -510,7 +473,7 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         textField?.layer.addAnimation(basicAnim2, forKey: "shadow3")
     }
     func textFieldEnd(){
-        
+        hideCompletions()
         let basicAnim0 = CABasicAnimation(keyPath: "backgroundColor")
         basicAnim0.fromValue = self.view.backgroundColor!.CGColor
         basicAnim0.toValue = self.view.backgroundColor!.colorWithAlphaComponent(0.001).CGColor
@@ -543,44 +506,53 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
         
     }
     func showCompletions(){
-        expand(false, height: 0)
-        let stackView = UIStackView(frame: CGRect.zero)
-        view.addSubview(stackView)
-        
-        stackView.distribution = .FillEqually
-        stackView.spacing = 35
-        stackView.tag = 100000
-        stackView.snp_makeConstraints { (make) -> Void in
+        search = SFSearchTable(frame: CGRect.zero)
+        search?.hidden = true
+        view.addSubview(search!)
+        search?.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(60)
             make.height.equalTo(0)
-            make.width.equalTo(self.view)
+            make.right.equalTo(-35)
+            make.left.equalTo(35)
         }
-        search = SFSearchTable(frame: CGRect.zero)
-        stackView.addArrangedSubview(search!)
-        stackView.alpha = 0.0
-        stackView.hidden = true
-        
+       
         
     }
+    func hideCompletions(){
+        view.snp_updateConstraints { (make) -> Void in
+            make.height.equalTo(45)
+        }
+        search?.snp_updateConstraints{ (make) -> Void in
+            make.height.equalTo(0)
+        }
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            self.view.layoutIfNeeded()
+            self.search?.layoutIfNeeded()
+            }, completion: { (fin) -> Void in
+                self.search?.removeFromSuperview()
+        })
+        
+    }
+
     func textFieldEditing(){
-        if let stackView = self.view.viewWithTag(100000){
-        if stackView.hidden{
-            stackView.hidden = false
-            stackView.snp_removeConstraints()
-            stackView.snp_makeConstraints { (make) -> Void in
-                make.top.equalTo(60)
-                make.bottom.equalTo(-35)
-                make.right.equalTo(-35)
-                make.left.equalTo(35)
+        if let sView = search{
+        if sView.hidden{
+            sView.hidden = false
+            sView.snp_updateConstraints{ (make) -> Void in
+                make.height.equalTo(220)
             }
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.9, options: UIViewAnimationOptions.CurveEaseInOut,  animations: { () -> Void in
-                self.view.frame = CGRect(x: 0, y: self.view.frame.origin.y, width: self.view.frame.size.width, height: self.view.window!.frame.height - self.keyboardHeight - 50)
-                stackView.alpha = 1.0
-                stackView.layoutIfNeeded()
+            view.snp_updateConstraints { (make) -> Void in
+                make.height.equalTo(300)
+            }
+            UIView.animateWithDuration(0.5,  animations: { () -> Void in
+                self.view.layoutIfNeeded()
+                sView.alpha = 1.0
+                sView.layoutIfNeeded()
             }) { (e) -> Void in
                 
             }
-            }}
+            }
+        }
         search?.getSuggestions(forText: textField!.text!)
     }
     func textEnter(){
@@ -591,6 +563,33 @@ class SFUrlBar: UIViewController, SFUrlBarManagment, UIGestureRecognizerDelegate
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        if view.frame.width == 320{
+            clock?.superview?.hidden = true
+            forwardButton?.hidden = true
+            homeButton?.hidden = true
+            menuButton?.hidden = true
+        }else if view.frame.width == 507{
+            clock?.superview?.hidden = true
+            forwardButton?.hidden = false
+            homeButton?.hidden = true
+            menuButton?.hidden = false
+        }else if view.frame.width == 694{
+            clock!.superview?.hidden = true
+            forwardButton?.hidden = false
+            homeButton?.hidden = true
+            menuButton?.hidden = false
+        }else if view.frame.width == 438{
+            clock?.superview?.hidden = true
+            forwardButton?.hidden = false
+            homeButton?.hidden = true
+            menuButton?.hidden = false
+        }else{
+            clock?.superview?.hidden = false
+            forwardButton?.hidden = false
+            homeButton?.hidden = false
+            menuButton?.hidden = false
+        }
+        
         delay(0.3) { () -> () in
             print(self.textField!.bounds)
             self.textFieldMask!.frame = self.textField!.bounds
