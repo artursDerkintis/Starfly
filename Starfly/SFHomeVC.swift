@@ -47,11 +47,11 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         scrollView!.addSubview(homeContent!.view)
         bookmarks = SFBookmarks(frame: CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90))
         bookmarks!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-        bookmarks?.updateFrames(EdgeInsetsMake(50, left: 50, bottom: -130, right: -50))
+        bookmarks?.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
         scrollView?.addSubview(bookmarks!)
         history = SFHistory(frame: CGRect(x: view.bounds.width * 2, y: 90, width: view.bounds.width, height: view.bounds.height - 90))
         history!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-        history!.updateFrames(EdgeInsetsMake(50, left: 50, bottom: -130, right: -50))
+        history!.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
         scrollView?.addSubview(history!)
         scrollView?.showsHorizontalScrollIndicator = false
         

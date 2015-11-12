@@ -78,7 +78,7 @@ class SFHomeSwitcher: UIControl {
         currentPage = current
         ImDoingSomething = true
         UIView.animateWithDuration(0.1, animations: { () -> Void in
-            self.floater?.center = CGPoint(x: centers[current].x, y: self.floater!.center.y)
+            self.floater?.center = CGPoint(x: self.centers[current].x, y: self.floater!.center.y)
             
             }) { (done) -> Void in
                 self.ImDoingSomething = false

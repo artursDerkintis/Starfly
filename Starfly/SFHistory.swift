@@ -87,20 +87,20 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
             make.height.width.equalTo(100)
         }
         tableView?.snp_makeConstraints { (make) -> Void in
-            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+            make.edges.equalTo(UIEdgeInsetsMake(0, 0, 0, 0))
         }
         shadowView?.snp_makeConstraints { (make) -> Void in
-            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+            make.edges.equalTo(UIEdgeInsetsMake(0, 0, 0, 0))
         }
         blur!.snp_makeConstraints { (make) -> Void in
-            make.edges.equalTo(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+            make.edges.equalTo(UIEdgeInsetsMake(0, 0, 0, 0))
         }
 
 
     }
     
     
-    func updateFrames(edge : EdgeInsets){
+    func updateFrames(edge : UIEdgeInsets){
         tableView?.snp_updateConstraints { (make) -> Void in
             make.edges.equalTo(edge)
         }

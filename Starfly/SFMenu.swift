@@ -26,7 +26,7 @@ class SFMenu: UIView {
         history!.tableView?.layer.borderWidth = 1
         history!.tableView?.layer.borderColor = UIColor.whiteColor().CGColor
         history!.tableView?.backgroundColor = UIColor(white: 0.8, alpha: 0.8)
-        history?.updateFrames(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+        history?.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
         history?.alpha = 0.0
         
         bookmarks = SFBookmarks(frame: CGRect.zero)
@@ -35,7 +35,7 @@ class SFMenu: UIView {
         bookmarks!.tableView?.layer.borderWidth = 1
         bookmarks!.tableView?.layer.borderColor = UIColor.whiteColor().CGColor
         bookmarks?.tableView?.backgroundColor = UIColor(white: 0.8, alpha: 0.8)
-        bookmarks!.updateFrames(EdgeInsetsMake(0, left: 0, bottom: 0, right: 0))
+        bookmarks!.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
         bookmarks?.alpha = 0.0
         
         let stackView = UIStackView(arrangedSubviews: [bookmarks!, history!])

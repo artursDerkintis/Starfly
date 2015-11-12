@@ -429,7 +429,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
                 if link != nil && image != nil {
                     actionSheet = UIAlertController(title: link! as String, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
                     actionSheet?.addAction(UIAlertAction(title: "Open in New Tab", style: UIAlertActionStyle.Default, handler: { (n) -> Void in
-                        tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
+                        self.tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
                     }))
                     actionSheet?.addAction(UIAlertAction(title: "Save Image", style: UIAlertActionStyle.Default, handler: { (n) -> Void in
                         self.saveImage(image!)
@@ -441,7 +441,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
                 }else if link != nil && image == nil {
                     actionSheet = UIAlertController(title: link! as String, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
                     actionSheet?.addAction(UIAlertAction(title: "Open in New Tab", style: UIAlertActionStyle.Default, handler: { (n) -> Void in
-                        tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
+                        self.tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
                     }))
                     actionSheet?.addAction(UIAlertAction(title: "Copy URL", style: UIAlertActionStyle.Default, handler: { (n) -> Void in
                         UIPasteboard.generalPasteboard().string = link! as String

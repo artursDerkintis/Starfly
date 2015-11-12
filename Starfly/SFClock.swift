@@ -215,6 +215,7 @@ class Battery: UIView {
     var label : UILabel?
     var timer : NSTimer?
     var currentLevel : Float? = 45
+    let ovalPath = UIBezierPath()
     override init(frame: CGRect) {
         
         super.init(frame: frame)
@@ -285,9 +286,9 @@ class Battery: UIView {
         CGContextTranslateCTM(context, rect.width * 0.5, rect.height * 0.5)
         CGContextRotateCTM(context, -90 * CGFloat(M_PI) / 180)
         let ovalRect = CGRectMake(-(rect.width * 0.475), -(rect.height * 0.475), rect.width * 0.95, rect.height * 0.95)
-        let ovalPath = UIBezierPath()
-        let bbc =  CGFloat(360 * currentLevel!)
         
+        let bbc =  CGFloat(360 * currentLevel!)
+        ovalPath.removeAllPoints()
         ovalPath.addArcWithCenter(CGPointMake(ovalRect.midX, ovalRect.midY), radius: ovalRect.width / 2, startAngle: 0 * CGFloat(M_PI)/180, endAngle: bbc * CGFloat(M_PI)/180, clockwise: true)
         ovalPath.lineCapStyle = CGLineCap.Round
         UIColor.clearColor().setFill()
