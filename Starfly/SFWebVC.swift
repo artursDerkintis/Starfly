@@ -19,6 +19,15 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
     var selected : NSMutableDictionary?
     var newContentLoaded : ((Bool) -> (Void))?
     var circle : UIView?
+    var isCurrent : Bool = false{
+        didSet{
+            if isCurrent{
+                //Updates everthing on becoming current
+                NSNotificationCenter.defaultCenter().postNotificationName("UPDATE", object: self)
+            }
+        }
+    }
+    var handler : SFWebViewHandler?
     override func viewDidLoad() {
         super.viewDidLoad()
         let stringOfJS: NSString?
@@ -35,7 +44,8 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         let con = WKWebViewConfiguration()
         con.userContentController = ee
 
-        webView = WKWebView(frame:  CGRect(x: 0, y: 90, width: self.view.frame.width, height: self.view.frame.height - 90), configuration: con)
+        webView = WKWebView(frame:  CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height), configuration: con)
+        handler = SFWebViewHandler(webView: webView!)
         webView?.UIDelegate = self
         webView?.navigationDelegate = self
         webView?.clipsToBounds = false
@@ -49,6 +59,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         webView?.allowsBackForwardNavigationGestures = true
         
         view.addSubview(webView!)
+        
         if let web = webView{
             web.addObserver(self, forKeyPath: "URL", options: NSKeyValueObservingOptions.New, context: nil)
             web.addObserver(self, forKeyPath: "estimatedProgress", options: NSKeyValueObservingOptions.New, context: nil)
@@ -56,17 +67,52 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
             web.addObserver(self, forKeyPath: "canGoForward", options: NSKeyValueObservingOptions.New, context: nil)
             web.addObserver(self, forKeyPath: "loading", options: NSKeyValueObservingOptions.New, context: nil)
         }
-        let long = UILongPressGestureRecognizer(target: self, action: "long:")
+        
+        //long press for action sheet
+        let long = UILongPressGestureRecognizer(target: self, action: "longPress:")
         long.delegate = self
         
         long.minimumPressDuration = 2.0
         webView?.addGestureRecognizer(long)
         
+        //circle when tapped
         let tap = UITapGestureRecognizer(target: self, action: "tap:")
         tap.delegate = self
         view.addGestureRecognizer(tap)
+        
         setupCircle()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "action:", name: "ACTION", object: nil)
     }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.webView?.scrollView.contentInset = UIEdgeInsets(top: 90, left: 0, bottom: 0, right: 0)
+    }
+    func action(not : NSNotification){
+        if isCurrent{
+            self.performSelector(Selector(not.object! as! String))
+        }
+    }
+    func goBack(){
+        webView?.goBack()
+    }
+    
+    func goHome(){
+        //if there's no url - "goes home"
+        openURL(nil)
+    }
+    
+    func reload(){
+        webView?.reload()
+    }
+    
+    func stop(){
+        webView?.stopLoading()
+    }
+    
+    func goForward(){
+        webView?.goForward()
+    }
+    
     func setupCircle(){
         circle = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         circle?.layer.borderWidth = 2
@@ -101,59 +147,13 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         return true
     }
   
-    func savePassword(dict : NSMutableDictionary, strinf : String){
-        let alert = UIAlertController(title: "Save password", message: "Do you want to save password for \(strinf)?", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Save", style: UIAlertActionStyle.Cancel, handler: { (Action) -> Void in
-            let dicte : NSMutableDictionary? = (NSUserDefaults.standardUserDefaults().objectForKey("PASSWORDS") as? NSMutableDictionary)?.mutableCopy() as? NSMutableDictionary
-            if dicte != nil{
-                
-                dicte!.setObject(dict, forKey: strinf)
-                NSUserDefaults.standardUserDefaults().setObject(dicte, forKey: "PASSWORDS")
-            }else{
-                let dictes = NSMutableDictionary()
-                dictes.setObject(dict, forKey: strinf)
-                NSUserDefaults.standardUserDefaults().setObject(dictes, forKey: "PASSWORDS")
-            }
-            
-        }))
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default, handler: { (Action) -> Void in
-            
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
-        
-        
-    }
-    func updatePassword(dict : NSMutableDictionary, strinf : String){
-        let alert = UIAlertController(title: "Update password", message: "Do you want to update password for \(strinf)?", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Update", style: UIAlertActionStyle.Cancel, handler: { (Action) -> Void in
-            let dicte : NSMutableDictionary? = (NSUserDefaults.standardUserDefaults().objectForKey("PASSWORDS") as? NSMutableDictionary)!.mutableCopy() as? NSMutableDictionary
-            if dicte != nil{
-                
-                dicte!.setValue(dict, forKey: strinf)
-                NSUserDefaults.standardUserDefaults().setObject(dicte, forKey: "PASSWORDS")
-            }else{
-                let dictes = NSMutableDictionary()
-                dicte!.setValue(dict, forKey: strinf)
-                NSUserDefaults.standardUserDefaults().setObject(dictes, forKey: "PASSWORDS")
-            }
-            
-        }))
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default, handler: { (Action) -> Void in
-            
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
-        
-        
-        
-    }
-
+   
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
        
         if keyPath == "URL" || keyPath == "estimatedProgress" || keyPath == "canGoBack" || keyPath == "canGoForward" || keyPath == "loading"{
             NSNotificationCenter.defaultCenter().postNotificationName("UPDATE", object: self)
+            NSNotificationCenter.defaultCenter().postNotificationName("PROGRESS", object: self.webView?.estimatedProgress)
         }
       
     }
@@ -164,7 +164,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
     }
     
     func cleanUp() {
-         webView?.evaluateJavaScript("stopAllVideos();", completionHandler: nil)
+         webView?.deleteMySelf()
     }
     
     deinit{
@@ -200,6 +200,8 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         webView?.backgroundColor = UIColor.clearColor()
     
     }
+ 
+
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         if let url = webView.URL{
         if webView.title == "Starfly Home" && url.absoluteString.containsString("file:///"){
@@ -207,108 +209,29 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
             modeOfWeb = .home
         }else{
             modeOfWeb = .web
-            }
+        }
         }
         newContentLoaded?(true)
-        if NSUserDefaults.standardUserDefaults().boolForKey("rest"){
-            NSNotificationCenter.defaultCenter().postNotificationName("recover", object: nil)
-        }
-        if NSUserDefaults.standardUserDefaults().boolForKey("savePASS"){
-            let dicte = NSUserDefaults.standardUserDefaults().objectForKey("PASSWORDS") as? NSMutableDictionary
-            
-            if dicte != nil{
-                
-                if (dicte?.valueForKey(shortURL(webView.URL!) as String) != nil){
-                    let dictg = dicte?.valueForKey(shortURL(webView.URL!) as String) as! NSMutableDictionary
-                    let user = dictg.valueForKey("USERNAME") as? String
-                    let password = dictg.valueForKey("PASSWORD") as? String
-                    if user != nil && password != nil{
-                        let string  = String(format: "injectPassword(\"%@\",\"%@\");", user!, password!)
-                        print(string)
-                        webView.evaluateJavaScript(string, completionHandler: { (string, error : NSError?) -> Void in
-                            print("DONE OR \(string)")
-                        })
-                    }
-                }
-            }}
-
-        let string = shortURL(webView.URL!)
-        let url = NSURL(string: NSString(format: "http://icons.better-idea.org/api/icons?url=%@&i_am_feeling_lucky=yes", string) as String)!
-        loadFavicon(url) { (ima) -> Void in
+    
+        handler?.tryToInjectPasword()
+        
+        handler?.loadFavicon({ (ima) -> Void in
             self.favicon = ima
-            if NSUserDefaults.standardUserDefaults().boolForKey("pr") == false{
-            let dict = NSMutableDictionary()
-            if webView.URL?.absoluteString != "about:blank" && webView.title != nil && !webView.URL!.absoluteString.containsString("file:///"){
-                dict.setObject(webView.title!, forKey: "title")
-                dict.setObject(webView.URL!.absoluteString, forKey: "url")
-                if ima == nil {
-                    dict.setObject(UIImage(named: "g")!, forKey: "iconData")
-                }else{
-                    dict.setObject(ima!, forKey: "iconData")
-                }
-                
-                saveInHistory(dict)
-                
-                }}
-
-        }
+            self.handler?.saveHistory(ima)
+        })
     }
     func webView(webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: () -> Void) {
         let alert = UIAlertController(title: message, message: nil, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { (Action) -> Void in
             completionHandler()
         }))
-        
-        
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    func makeDictionaryOfPass(tags : [NSString]) -> NSMutableDictionary{
-        let dict = NSMutableDictionary(capacity: 2)
-        for tag : NSString in tags as [NSString] {
-            let start = tag.rangeOfString("[")
-            let end = tag.rangeOfString("]")
-            if start.location != NSNotFound && end.location != NSNotFound {
-                let tagName = tag.substringToIndex(start.location)
-                let tagURL  = tag.substringWithRange(NSMakeRange(start.location + 1, end.location - start.location - 1))
-                dict.setObject(tagURL, forKey: tagName)
-            }
-        }
-        return dict
-        
-    }
-
+    
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == WKNavigationType.FormSubmitted && NSUserDefaults.standardUserDefaults().boolForKey("savePASS"){
-            webView.evaluateJavaScript("savePassword();", completionHandler: { (string, error : NSError?) -> Void in
-                if string != nil{
-                    let result = string as! NSString
-                    let tags = result.componentsSeparatedByString("|&|")
-                    let dict = self.makeDictionaryOfPass(tags as [NSString])
-                    
-                    
-                    let userName = dict.valueForKey("USERNAME") as? NSString
-                    let passWord = dict.valueForKey("PASSWORD") as? NSString
-                    if userName != nil && passWord != nil{
-                        print("USER \(userName), PASS \(passWord)")
-                        let strinf = shortURL(webView.URL!)
-                        let dicte = NSUserDefaults.standardUserDefaults().objectForKey("PASSWORDS") as? NSMutableDictionary
-                        if dicte != nil{
-                            if dicte?.valueForKey(strinf as String) != nil{
-                                let dictg = dicte?.valueForKey(strinf as String) as! NSMutableDictionary
-                                if dictg.valueForKey("USERNAME") as? String == userName && dictg.valueForKey("PASSWORD") as? String == passWord{
-                                    
-                                }else if dictg.valueForKey("USERNAME") as? String != userName || dictg.valueForKey("PASSWORD") as? String != passWord{
-                                    self.updatePassword(dict, strinf: strinf as String)
-                                }
-                            }else{
-                                self.savePassword(dict, strinf: strinf as String)
-                            }
-                        }else{
-                            self.savePassword(dict, strinf: strinf as String)
-                        }}
-                }
-            })
+           handler?.lookForPaswordAndSaveIt()
         }
         
         let url = navigationAction.request.URL;
@@ -325,21 +248,15 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         }
         decisionHandler(WKNavigationActionPolicy.Allow)
     }
-
     
-    func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
-      //  print(navigationResponse.response.URL?.absoluteString)
-        
-        decisionHandler(WKNavigationResponsePolicy.Allow)
-    }
     func webView(webView: WKWebView, didReceiveAuthenticationChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
-
+        
         if let hostName = webView.URL?.host{
             let authMethod = challenge.protectionSpace.authenticationMethod
             if  authMethod == NSURLAuthenticationMethodDefault ||
                 authMethod == NSURLAuthenticationMethodHTTPBasic ||
                 authMethod == NSURLAuthenticationMethodHTTPDigest{
-                
+                    
                     let title = "Authentication Request"
                     let message = "requires user name and password" + hostName
                     let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -373,47 +290,16 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
         }
         
     }
-    func loadFavicon(url : NSURL, completionHandler:(ima:UIImage?) -> Void){
-        NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) { (data : NSData?, response : NSURLResponse?, err : NSError?) -> Void in
-            print("Completion")
-            if data != nil{
-                let image = UIImage(data: data!)
-                if image != nil {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completionHandler(ima: image!)
-                    })
-                    
-                }else{
-                    let js: AnyObject?
-                    do {
-                        js = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
-                    } catch _ {
-                        js = nil
-                    }
-                    print(js)
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completionHandler(ima: UIImage(named: "g"))
-                    })
-                }
-            }else{
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completionHandler(ima: UIImage(named: "g"))
-                })
-                print(err)
-            }
-        
-        }.resume()
-        //http://icons.better-idea.org/api/icons?url=stackovereflow.com&i_am_feeling_lucky=yes
-    }
-   
-    func long(sender: UILongPressGestureRecognizer){
+
+       
+    func longPress(sender: UILongPressGestureRecognizer){
         if sender.state == UIGestureRecognizerState.Began{
             
-            self.tagsForPosition(sender.locationInView(webView!), gesture: sender)
+            self.showActionSheet(sender.locationInView(webView!))
         }
     }
     
-    func tagsForPosition(pt : CGPoint, gesture: UIGestureRecognizer){
+    func showActionSheet(pt : CGPoint){
         var tags : NSArray? = nil
         self.webView!.evaluateJavaScript(NSString(format: "getHTMLElementsAtPoint(%i,%i);",NSInteger(pt.x),NSInteger(pt.y)) as String, completionHandler: { (stringy, error : NSError?) -> Void in
             if error == nil{
@@ -421,10 +307,21 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
                 
                 let result = stringy as! NSString
                 tags = result.componentsSeparatedByString("|&|")
-                self.makeDict(tags!)
                 
-                let link : NSString? = self.selected!.valueForKey("A") as? NSString
-                let image : NSString? = self.selected!.valueForKey("IMG") as? NSString
+                let dict = NSMutableDictionary(capacity: 2)
+                for tag : NSString in tags as! [NSString] {
+                    let start = tag.rangeOfString("[")
+                    let end = tag.rangeOfString("]")
+                    if start.location != NSNotFound && end.location != NSNotFound {
+                        let tagName = tag.substringToIndex(start.location)
+                        let tagURL  = tag.substringWithRange(NSMakeRange(start.location + 1, end.location - start.location - 1))
+                        dict.setObject(tagURL, forKey: tagName)
+                    }
+                }
+
+                
+                let link : NSString? = dict.valueForKey("A") as? NSString
+                let image : NSString? = dict.valueForKey("IMG") as? NSString
                 var actionSheet : UIAlertController?
                 if link != nil && image != nil {
                     actionSheet = UIAlertController(title: link! as String, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -468,56 +365,7 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
             
         })
     }
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
-        let link : NSString? = self.selected!.valueForKey("A") as? NSString
-        let image : NSString? = self.selected!.valueForKey("IMG") as? NSString
-        if link != nil && image != nil {
-            switch buttonIndex {
-            case 1:
-                tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
-               // del?.addTabInForeground(NSURLRequest(URL: NSURL(string: link! as String)!))
-                break
-            
-            case 2:
-                saveImage(image!)
-                break
-            case 4:
-                UIPasteboard.generalPasteboard().string = link! as String
-                break
-            default:
-                break
-            }
-        }else if link != nil && image == nil {
-            switch buttonIndex {
-            case 1:
-                tabManagment?.addTabWithURL(NSURL(string: link! as String)!)
-               // del?.addTabInForeground(NSURLRequest(URL: ))
-                break
-            case 2:
-                UIPasteboard.generalPasteboard().string = link! as String
-                break
-            default:
-                break
-            }
-            
-            
-        }else if link == nil && image != nil{
-            switch buttonIndex {
-                
-            case 1:
-                saveImage(image!)
-                break
-            case 2:
-                UIPasteboard.generalPasteboard().string = link! as String
-                break
-            default:
-                break
-            }
-            
-        }
-        
-    }
-    func saveImage(link : NSString){
+       func saveImage(link : NSString){
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
             let data = NSData(contentsOfURL: NSURL(string: link as String)!)
             if data != nil {
@@ -529,44 +377,11 @@ class SFWebVC: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRe
     
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
         if error != nil{
-            let alert = UIAlertView(title: "Cannot Save", message: "Error Retrieving Data", delegate: nil, cancelButtonTitle: "OK")
-            alert.show()
+            let alert = UIAlertController(title: "Image Cannot Be Saved!", message: nil, preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
-    func makeDict(tag : NSArray){
-        let dict = NSMutableDictionary(capacity: 2)
-        for tags : NSString in tag as! [NSString] {
-            let start = tags.rangeOfString("[")
-            let end = tags.rangeOfString("]")
-            if start.location != NSNotFound && end.location != NSNotFound {
-                let tagName = tags.substringToIndex(start.location)
-                let tagURL  = tags.substringWithRange(NSMakeRange(start.location + 1, end.location - start.location - 1))
-                dict.setObject(tagURL, forKey: tagName)
-            }
-        }
-        self.selected = dict
-        
-        print(self.selected)
-    }
-    
-}
-public func shortURL(url : NSURL?) -> NSString{
-    
-    if url == nil{return ""}
-    if url!.absoluteString.containsString("file:///var/"){return ""}
-    var strinf = url!.absoluteString as NSString
-    if strinf.containsString("http://") || strinf.containsString("https://"){
-        let array : NSArray = strinf.componentsSeparatedByString("//")
-        let newString : String = array.objectAtIndex(1) as! String
-        let newArray  : NSArray = newString.componentsSeparatedByString("/")
-        for string : String in newArray as! [String]{
-            if string == newArray[0] as? NSString{
-                strinf = string
-            }else{
-                
-            }
-            
-        }}
-    return strinf
+  
 }
 

@@ -17,6 +17,7 @@ class SFButton: UIButton {
     func changeColor(){
         backgroundColor = currentColor
     }
+    
     deinit{
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "ColorChanges", object: nil)
     }

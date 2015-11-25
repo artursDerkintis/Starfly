@@ -359,15 +359,18 @@ class SFHomeCollectionVC: UIViewController, UICollectionViewDataSource, UICollec
         self.view.addSubview(web.view)
         
         web.openURL(url)
-       
+        
         web.newContentLoaded = {(b : Bool) in
             print("LOADED FAKE WEBVIEW")
+            web.webView?.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             delay(2.0, closure: { () -> () in
-                let screenShot = web.webView!.takeSnapshotForHomePage()
+                
+                if let screenShot = web.webView?.takeSnapshotForHomePage(){
                 dict.setObject(screenShot, forKey: "shoot")
                 dict.setObject(web.webView!.title!, forKey: "title")
                 dict.setObject(web.webView!.URL!.absoluteString, forKey: "url")
                 completion(dict)
+                }
                 web.view.removeFromSuperview()
             })
             

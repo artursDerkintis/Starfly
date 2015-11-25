@@ -616,6 +616,22 @@ extension CGPoint{
         return sqrt((xDist * xDist) + (yDist * yDist))
     }
 }
+extension UIViewController{
+    
+    func addSubviewSafe(subview : UIView?){
+        if let v = subview{
+            self.view.addSubview(v)
+        }
+    }
+}
+extension UIView{
+    func addSubviewSafe(subview : UIView?){
+        if let v = subview{
+            self.addSubview(v)
+        }
+    }
+    
+}
 extension NSString {
     func urlEncode() -> NSString {
         return CFURLCreateStringByAddingPercentEscapes(
@@ -626,4 +642,42 @@ extension NSString {
             CFStringBuiltInEncodings.UTF8.rawValue
         )
     }
+}
+extension UIView{
+    
+    func firstViewController() -> UIViewController?{
+        return tranverseResponderChainForUIVc()  as? UIViewController
+    }
+    func tranverseResponderChainForUIVc() -> AnyObject?{
+        if let res = self.nextResponder(){
+            if res.isKindOfClass(UIViewController){
+                return res
+            }else if res.isKindOfClass(UIView){
+                return (res as! UIView).tranverseResponderChainForUIVc()
+            }
+        }
+        return nil
+        
+    }
+    
+    
+}
+public func shortURL(url : NSURL?) -> NSString{
+    
+    if url == nil{return ""}
+    if url!.absoluteString.containsString("file:///var/"){return ""}
+    var strinf = url!.absoluteString as NSString
+    if strinf.containsString("http://") || strinf.containsString("https://"){
+        let array : NSArray = strinf.componentsSeparatedByString("//")
+        let newString : String = array.objectAtIndex(1) as! String
+        let newArray  : NSArray = newString.componentsSeparatedByString("/")
+        for string : String in newArray as! [String]{
+            if string == newArray[0] as? NSString{
+                strinf = string
+            }else{
+                
+            }
+            
+        }}
+    return strinf
 }

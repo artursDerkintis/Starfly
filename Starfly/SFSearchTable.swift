@@ -28,7 +28,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         table!.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
         table?.separatorColor = UIColor.clearColor()
         table!.layer.borderColor = UIColor.whiteColor().CGColor
-        table!.layer.borderWidth = 2
+        table!.layer.borderWidth = 1
         table!.layer.cornerRadius = 20
         table2 = UITableView(frame: CGRect.zero)
         table2!.registerClass(SFHistoryCell.self, forCellReuseIdentifier: "search2")
@@ -37,7 +37,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         table2!.backgroundColor = UIColor(white: 0.9, alpha: 0.6)
         table2?.separatorColor = UIColor.clearColor()
         table2!.layer.borderColor = UIColor.whiteColor().CGColor
-        table2!.layer.borderWidth = 2
+        table2!.layer.borderWidth = 1
         table2!.layer.cornerRadius = 20
         let stackView = UIStackView(arrangedSubviews: [table!, table2!])
         stackView.distribution = .FillEqually

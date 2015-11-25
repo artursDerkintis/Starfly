@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 protocol SFTabManagment{
     func addNewTab(complete : SFTabWeb)
     func removeTab(webVC : SFWebVC)
@@ -15,7 +16,7 @@ protocol SFTabManagment{
     func openURLInCurentTab(url : NSURL)
     func bringHomeInFront()
 }
-var labelColor = UIColor.blueColor()
+
 class SFTabContents: UIViewController, SFTabManagment {
     var tabDelegate : SFTabDelegate?
     var homeVC : SFHomeVC?
@@ -28,20 +29,20 @@ class SFTabContents: UIViewController, SFTabManagment {
         
         
     }
+    
     func bringHomeInFront() {
         if let home = homeVC{
             self.view.bringSubviewToFront(home.view)
-    
-            
-            
         }
     }
+    
     func openURL(not : NSNotification){
         let url = not.userInfo!["url"] as! String
         print(url)
         openURLInCurentTab(NSURL(string: parseUrl(url)!)!)
         NSNotificationCenter.defaultCenter().postNotificationName("CLOSE", object: nil)
     }
+    
     func addHome(){
         homeVC = SFHomeVC()
         addChildViewController(homeVC!)
@@ -59,6 +60,7 @@ class SFTabContents: UIViewController, SFTabManagment {
         webVC.view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
         view.addSubview(webVC.view)
         currentWebVC = webVC
+        webVC.isCurrent = true
         complete(webVC)
     }
    func addTabWithURL(url : NSURL){
@@ -72,6 +74,7 @@ class SFTabContents: UIViewController, SFTabManagment {
     }
     func switchToTab(webVC : SFWebVC){
         currentWebVC = webVC
+        webVC.isCurrent = true
         self.view.bringSubviewToFront(webVC.view)
         if webVC.modeOfWeb == .home{
             bringHomeInFront()

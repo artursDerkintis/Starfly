@@ -100,6 +100,7 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         imageChange!.addTarget(self, action: "openMenu:", forControlEvents: UIControlEvents.TouchDown)
         view.addSubview(imageChange!)
     }
+    
     func openMenu(sender : SFButton){
         if sender.tag == 0{
             sender.tag = 1
@@ -156,6 +157,7 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         }
     
     }
+    
     override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
         self.radial?.dismiss()
         self.imageChange?.selected = false
@@ -170,6 +172,7 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         }
 
     }
+    
     func changeImage(sender : ALRadialMenuButton){
         let tag = sender.tag
         self.radial?.dismiss()
@@ -187,16 +190,16 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
         
 
     }
+    
     func editContent(sender : SFButton){
         
-
         UIView.animateWithDuration(0.3, animations: { () -> Void in
             sender.transform = sender.tag == 1 ? CGAffineTransformIdentity : CGAffineTransformMakeRotation(CGFloat(degreesToRadians(90)))
         })
 
         switch currentPage {
         case 0:
-           // bookmarks?.editCells(on: sender.tag == 1 ? false : true)
+          
             break
         case 1:
             homeContent?.editCells(on: sender.tag == 1 ? false : true)
@@ -218,6 +221,7 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
             scrollView?.scrollEnabled = true
         }
     }
+    
     var currentPage : Int = 1{
         didSet{
             self.editButton?.tag = 0
@@ -246,26 +250,30 @@ class SFHomeVC: UIViewController, UIScrollViewDelegate{
                 }}
         }
     }
+    
     func scroll(sender : SFHomeSwitcher){
         let width = sender.frame.width
         let rate = scrollView!.contentSize.width / width
         scrollView?.contentOffset = CGPoint(x: sender.floater!.frame.origin.x * rate, y: 0)
-       
     }
+    
     func scrollEnded(sender : SFHomeSwitcher){
             scrollView?.setContentOffset(CGPoint(x: scrollView!.frame.width * CGFloat(sender.currentPage), y: 0), animated: true)
             currentPage = sender.currentPage
     }
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let width = switcher!.frame.width
         let rate =  width / scrollView.contentSize.width
         switcher?.liveScroll(CGPoint(x: scrollView.contentOffset.x * rate, y: 0))
     }
+    
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         currentPage = Int(scrollView.contentOffset.x / scrollView.frame.width)
         print(currentPage)
         switcher?.setPage(currentPage)
     }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         controlView?.frame = CGRect(x: view.frame.width * 0.5 - 150, y: view.frame.height - 80, width: 300, height: 40)

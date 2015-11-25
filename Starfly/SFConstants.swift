@@ -23,6 +23,49 @@ struct Images {
     static let edit = "edit"
     static let image = "image"
 }
+
+// MARK: Button Actions
+struct SFActions{
+    static let goBack = "goBack"
+    static let goForward = "goForward"
+    static let reload = "reload"
+    static let stop = "stop"
+    static let goHome = "goHome"
+    static let share  = "share"
+    static let menu   = "menu"
+    
+}
+
+enum SFTags : Int{
+    case goBack = 0
+    case goForward = 1
+    case reload = 2
+    case stop = 3
+    case home = 4
+    case share = 5
+    case menu = 6
+    
+}
+
+func getAction(tag : SFTags) -> String{
+    switch tag{
+    case .goBack:
+        return SFActions.goBack
+    case .goForward:
+        return SFActions.goForward
+    case .home:
+        return SFActions.goHome
+    case .reload:
+        return SFActions.reload
+    case .stop:
+        return SFActions.stop
+    case .share:
+        return SFActions.share
+    case .menu:
+        return SFActions.menu
+    }
+}
+
 func backgroundImages() -> [String]{
     var array = [String]()
     for i in 1...20{

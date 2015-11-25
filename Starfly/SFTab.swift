@@ -12,15 +12,14 @@ class SFTab: SFView {
     
     var label : UILabel?
     var icon  : UIImageView?
-    var closeTab : UIButton?
+    var closeTabButton : UIButton?
     var overLayer : CALayer?
     var delegate : SFTabDelegate?
     var loadingIndicator : CALayer?
-    var radial : SFRadialLayer?
     var webVC : SFWebVC?
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //layer.backgroundColor = currentColor?.CGColor
+        
         layer.cornerRadius = frame.height * 0.5
         layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -29,22 +28,17 @@ class SFTab: SFView {
         layer.shadowOpacity = 1.0
         layer.rasterizationScale = UIScreen.mainScreen().scale
         layer.shouldRasterize = true
+        
         overLayer = CALayer()
         overLayer?.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1).CGColor
         layer.addSublayer(overLayer!)
+        
         icon = UIImageView(frame: CGRect(x: 5, y: 5, width: frame.height * 0.4, height: frame.height * 0.4))
         icon?.layer.cornerRadius = frame.height * 0.2
         icon?.center = CGPoint(x: icon!.frame.height * 1.05, y: frame.height * 0.5)
         icon?.backgroundColor = lighterColorForColor(currentColor!, index: -0.2)
         icon?.image = UIImage(named: "g")
         icon?.layer.masksToBounds = true
-        radial = SFRadialLayer()
-        radial!.frame = icon!.bounds
-        radial!.origin = CGPoint(x: radial!.frame.height * 0.5, y: radial!.frame.height * 0.5)
-        radial!.locations = [0.0, 0.6, 0.6, 0.6, 0.6]
-        radial?.opacity = 0.0
-        radial!.radius = radial!.frame.height
-        //icon?.layer.addSublayer(radial!)
         
         addSubview(icon!)
         setLoader()
@@ -61,16 +55,18 @@ class SFTab: SFView {
         label!.layer.shouldRasterize = true
         addSubview(label!)
         
-        closeTab = UIButton(type: UIButtonType.Custom)
-        closeTab?.frame = CGRect(x: frame.width - frame.height * 1.25, y: -(frame.height * 0.25), width: frame.height * 1.5, height: frame.height * 1.5)
-        closeTab?.autoresizingMask =  UIViewAutoresizing.FlexibleLeftMargin
-        closeTab?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Normal)
-        closeTab?.setImage(UIImage(named: Images.closeTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
-        closeTab?.contentEdgeInsets = UIEdgeInsets(top: 21, left: 21, bottom: 21, right: 21)
-        closeTab?.addTarget(self, action: "closeTabF", forControlEvents: UIControlEvents.TouchDown)
-        addSubview(closeTab!)
+        closeTabButton = UIButton(type: UIButtonType.Custom)
+        closeTabButton?.frame = CGRect(x: frame.width - frame.height * 1.25, y: -(frame.height * 0.25), width: frame.height * 1.5, height: frame.height * 1.5)
+        closeTabButton?.autoresizingMask =  UIViewAutoresizing.FlexibleLeftMargin
+        closeTabButton?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Normal)
+        closeTabButton?.setImage(UIImage(named: Images.closeTab)?.imageWithColor(UIColor.lightGrayColor()), forState: UIControlState.Highlighted)
+        closeTabButton?.contentEdgeInsets = UIEdgeInsets(top: 21, left: 21, bottom: 21, right: 21)
+        closeTabButton?.addTarget(self, action: "closeTab", forControlEvents: UIControlEvents.TouchDown)
+        addSubview(closeTabButton!)
+        
         loadingIndiSwitch(on : false)
-        let doubleTap = UITapGestureRecognizer(target: self, action: "closeTabF")
+        
+        let doubleTap = UITapGestureRecognizer(target: self, action: "closeTab")
         doubleTap.numberOfTapsRequired = 2
         self.addGestureRecognizer(doubleTap)
     }
@@ -81,6 +77,7 @@ class SFTab: SFView {
             webVC?.addObserver(self, forKeyPath: "favicon", options: NSKeyValueObservingOptions.New, context: nil)
         }
     }
+    
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "title"{
             label?.text = webVC?.webView?.title
@@ -93,48 +90,39 @@ class SFTab: SFView {
             icon?.image = webVC?.favicon
         }
     }
-    deinit{
-        if let web = webVC?.webView{
-            web.removeObserver(self, forKeyPath: "title")
-            web.removeObserver(self, forKeyPath: "loading")
-            webVC!.removeObserver(self, forKeyPath: "favicon")
-        }
-    }
-    func loadingIndiSwitch(on on : Bool){
-        radial!.setNeedsDisplay()
-        let basicAnim = CABasicAnimation(keyPath: "opacity")
-        basicAnim.fromValue = on ? 0.0 : 1.0
-        basicAnim.toValue = on ? 1.0 : 0.0
-        basicAnim.duration = 0.6
-        basicAnim.fillMode = kCAFillModeForwards
-        basicAnim.removedOnCompletion = false
-        self.loadingIndicator?.addAnimation(basicAnim, forKey: "j")
-       // self.radial?.addAnimation(basicAnim, forKey: "j")
-    }
+    
+  
+    
+    
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         overLayer?.frame = layer.bounds
         overLayer?.cornerRadius = frame.height * 0.5
         layer.cornerRadius = frame.height * 0.5
     }
-    func closeTabF(){
+    
+    //Closes this tab
+    func closeTab(){
         UIView.animateWithDuration(0.3, animations: { () -> Void in
             self.center = CGPoint(x: self.center.x, y: self.center.y - 100)
             }) { (ss) -> Void in
             self.delegate?.closeTab(self)
         }
        
-        
-        
-       
     }
+    
+    //Incrase Touch area
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
         if CGRectContainsPoint(CGRectInset(self.bounds, -10, -5), point){
             return true
         }
         return false
     }
-     var selected : Bool = false{
+    
+    
+    //Selection and Unselection Animations
+    var selected : Bool = false{
         didSet{
             if selected != oldValue{
                 if selected == false{
@@ -199,22 +187,34 @@ class SFTab: SFView {
                 }}
         }
     }
+    
+    //Show/Hide Spinner Loading indicator
+    func loadingIndiSwitch(on on : Bool){
+        
+        let basicAnim = CABasicAnimation(keyPath: "opacity")
+        basicAnim.fromValue = on ? 0.0 : 1.0
+        basicAnim.toValue = on ? 1.0 : 0.0
+        basicAnim.duration = 0.6
+        basicAnim.fillMode = kCAFillModeForwards
+        basicAnim.removedOnCompletion = false
+        self.loadingIndicator?.addAnimation(basicAnim, forKey: "animate")
+        
+    }
+    
     func setLoader(){
         let replicatorLayer = CAReplicatorLayer()
         replicatorLayer.frame = CGRectInset(icon!.frame, -1, -1)
-        // 2
+
         replicatorLayer.instanceCount = 15
         replicatorLayer.instanceDelay = CFTimeInterval(1 / 15.0)
         replicatorLayer.preservesDepth = true
         replicatorLayer.instanceColor = UIColor.whiteColor().CGColor
         
-        // 3
         replicatorLayer.instanceRedOffset = 0.0
         replicatorLayer.instanceGreenOffset = 0.0
         replicatorLayer.instanceBlueOffset = 0.0
         replicatorLayer.instanceAlphaOffset = 0.0
         
-        // 4
         let angle = Float(M_PI * 2.0) / 15
         replicatorLayer.instanceTransform = CATransform3DMakeRotation(CGFloat(angle), 0.0, 0.0, 1.0)
         layer.addSublayer(replicatorLayer)
@@ -229,7 +229,7 @@ class SFTab: SFView {
         rotation.toValue = -Float(M_PI * 2)
         rotation.repeatCount = Float.infinity
         loadingIndicator?.addAnimation(rotation, forKey: "e")
-        // 5
+        
         let instanceLayer = CALayer()
         let layerWidth: CGFloat = 2.0
         instanceLayer.cornerRadius = 1.0
@@ -238,71 +238,32 @@ class SFTab: SFView {
         instanceLayer.backgroundColor = UIColor.whiteColor().CGColor
         replicatorLayer.addSublayer(instanceLayer)
         
-        // 6
         let fadeAnimation = CABasicAnimation(keyPath: "opacity")
         fadeAnimation.fromValue = 1.0
         fadeAnimation.toValue = 0.0
         fadeAnimation.duration = 1
         fadeAnimation.repeatCount = Float(Int.max)
         
-        // 7
         instanceLayer.opacity = 0.0
         instanceLayer.addAnimation(fadeAnimation, forKey: "FadeAnimation")
         instanceLayer.rasterizationScale = UIScreen.mainScreen().scale
         instanceLayer.shouldRasterize = true
         
     }
-/*NSNumber *rotationAtStart = [myLayer valueForKeyPath:@"transform.rotation"];
-CATransform3D myRotationTransform = CATransform3DRotate(myLayer.transform, myRotationAngle, 0.0, 0.0, 1.0);
-myLayer.transform = myRotationTransform;
-CABasicAnimation *myAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-myAnimation.duration = kMyAnimationDuration;
-myAnimation.fromValue = rotationAtStart;
-myAnimation.toValue = [NSNumber numberWithFloat:([rotationAtStart floatValue] + myRotationAngle)];
-[myLayer addAnimation:myAnimation forKey:@"transform.rotation"];*/
+    
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    }
-
-class SFRadialLayer : CALayer {
-    var origin: CGPoint?
-    var radius: CGFloat?
-    var locations: [CGFloat]?
-    var colors: [UIColor]?
-    
-    override func drawInContext(ctx: CGContext) {
-        super.drawInContext(ctx)
-        colors = [currentColor!.colorWithAlphaComponent(0.0), currentColor!, currentColor!, currentColor!, currentColor!]
-        if let colors = self.colors {
-            if let locations = self.locations {
-                if let origin = self.origin {
-                    if let radius = self.radius {
-                        var colorSpace: CGColorSpaceRef?
-                        
-                        var components = [CGFloat]()
-                        for i in 0 ..< colors.count {
-                            let colorRef = colors[i].CGColor
-                            let colorComponents = CGColorGetComponents(colorRef)
-                            let numComponents = CGColorGetNumberOfComponents(colorRef)
-                            if colorSpace == nil {
-                                colorSpace = CGColorGetColorSpace(colorRef)
-                            }
-                            for j in 0 ..< numComponents {
-                                let componentIndex: Int = numComponents * i + j
-                                let component = colorComponents[j]
-                                components.append(component)
-                            }
-                        }
-                        
-                        if let colorSpace = colorSpace {
-                            let gradient = CGGradientCreateWithColorComponents(colorSpace, components, locations, locations.count)
-                            CGContextDrawRadialGradient(ctx, gradient, origin, CGFloat(0), origin, radius, CGGradientDrawingOptions.DrawsAfterEndLocation)
-                        }
-                    }
-                }
-            }
+    deinit{
+        if let web = webVC?.webView{
+            web.removeObserver(self, forKeyPath: "title")
+            web.removeObserver(self, forKeyPath: "loading")
+            webVC!.removeObserver(self, forKeyPath: "favicon")
         }
     }
+    
 }
+
+

@@ -95,8 +95,6 @@ class SFClock: UIView {
                 self.digitalClock?.alpha = 1.0
             })
             break
-        default:
-            break
         }
     }
     func setup(){

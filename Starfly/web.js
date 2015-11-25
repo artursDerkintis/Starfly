@@ -50,9 +50,18 @@ function savePassword() {
 function injectPassword(usernamre, passworrd) {
     var textNode;
     var passwordNode;
-    setUserName(usernamre);
-    setPassword(passworrd);
-    
+   
+    for (var i = 0; i < node_list.length; i++){
+        var node = node_list[i];
+        if (node.getAttribute('type') == 'password'){
+            setUserName(usernamre);
+            setPassword(passworrd);
+            return;
+            
+        }
+        
+    }
+
     
 }
 function setPassword(password){

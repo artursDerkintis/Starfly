@@ -10,18 +10,6 @@
 */
 import UIKit
 
-//Scrolling orientation
-enum SFOrienation{
-    case horizontal; //Default
-    case vertical;
-}
-
-enum SFCellSizeStyle{
-    case fixed;     //Fixed size to all cells
-    case custom;      //Set costom size for each cell
-   
-}
-
 
 
 class SFCardTabs : UIView, UIScrollViewDelegate {
@@ -30,18 +18,14 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
     
     var offsetGap : CGFloat? = 5.0
     
-    var fixedCellSize : CGSize? = CGSize(width: 100, height: 50)
-    
-    
-    var orienation = SFOrienation.horizontal
-    var cellSizeStyle = SFCellSizeStyle.fixed
-
-    
     var scrollView : UIScrollView?
     var addTabB : SFButton?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clearColor()
+        
+        
         
         scrollView = UIScrollView(frame: CGRect.zero)
         scrollView?.layer.masksToBounds = false
@@ -52,9 +36,11 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
         addSubview(scrollView!)
         scrollView?.snp_makeConstraints { (make) -> Void in
             make.top.bottom.left.equalTo(0)
-            make.right.equalTo(self.snp_right).inset(50).priority(100)
+            make.right.equalTo(self.snp_right).inset(75).priority(100)
         }
         scrollView?.delegate = self
+        
+        
         
         addTabB = SFButton(type: UIButtonType.Custom)
         addTabB?.setImage(UIImage(named: Images.addTab), forState: UIControlState.Normal)
@@ -75,10 +61,15 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
         }
        
     }
+    
+    
     func addTarget(target : SFTabs){
         addTabB?.addTarget(target, action: "addNewTab", forControlEvents: UIControlEvents.TouchUpInside)
     }
+    
+    //Adds new Tab 'Cell'
     func addCell(newCell : SFTab){
+        
         cells.append(newCell)
         
         scrollView!.addSubview(newCell)
@@ -91,8 +82,6 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
                 if x < CGRectGetMaxX(viewA.frame){
                     x = CGRectGetMaxX(viewA.frame)
                 }
-                
-                
             }
             self.scrollView!.contentSize = CGSize(width: x, height: 0)
             if x >= self.scrollView!.bounds.size.width{
@@ -100,16 +89,10 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
                 self.scrollView!.setContentOffset(bottomOffset, animated: true)
                 
             }
-
-        
-
-        
-                   
-        
-        
         
     }
     
+    //Find placement for all tabs
     func updateEverything(){
         var width : CGFloat = 0.0
         for cell in cells{
@@ -125,12 +108,8 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
                 self.repositionEachCell(self.scrollView!)
             })
             
-            
-            
-            
         }
 
-        
         var x : CGFloat = 0.0
         
         for viewA in self.scrollView!.subviews{
@@ -144,14 +123,9 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
         UIView.animateWithDuration(0.3) { () -> Void in
             self.scrollView!.contentSize = CGSize(width: x, height: 0)
         }
-        
-        if x >= self.scrollView!.bounds.size.width{
-           // let bottomOffset  = CGPointMake(x - self.scrollView!.bounds.size.width, 0)
-            //self.scrollView!.setContentOffset(bottomOffset, animated: true)
-            
-        }
 
     }
+    
     func findFrames(){
     
         var width : CGFloat = 0.0
@@ -170,40 +144,19 @@ class SFCardTabs : UIView, UIScrollViewDelegate {
                 }, completion: { (e) -> Void in
                     
             })
-               
-            
-                
-            
-            
-           
-      
-            
-            
         }
-        
-        
     }
+    
     override func layoutSubviews() {
+        super.layoutSubviews()
         repositionEachCell(scrollView!)
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        
         repositionEachCell(scrollView)
-        //keepAddInSide()
-        //reposiotion each cell while scrolling
-            }
-    func keepAddInSide(){
-        scrollView!.bringSubviewToFront(addTabB!)
-        let point = scrollView!.convertPoint(addTabB!.center, toView: self)
-        if point.x > scrollView!.frame.width - (35 *  0.5){
-            let translate = CGAffineTransformMakeTranslation(-(point.x - (scrollView!.frame.width - (35 *  0.5))), 0)
-            addTabB?.transform = translate
-        }else{
-            addTabB?.transform = CGAffineTransformIdentity
-        }
-
     }
+    
+   
     func repositionEachCell(scrollView : UIScrollView){
         for cell in cells{
             

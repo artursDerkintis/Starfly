@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9527.1" systemVersion="15B38b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9035"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9525.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -18,19 +19,34 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="splash" translatesAutoresizingMaskIntoConstraints="NO" id="XWM-36-fsO">
                                 <rect key="frame" x="180" y="185" width="240" height="236"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="236" id="R6k-df-Tvm"/>
                                     <constraint firstAttribute="width" constant="240" id="yF0-jd-n8M"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© Arturs Derkintis" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2p-U2-fHf">
+                                <rect key="frame" x="0.0" y="586" width="570" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="a2p-U2-fHf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="2Wv-Lh-R7A"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="a2p-U2-fHf" secondAttribute="bottom" constant="-1" id="5t9-Y2-naV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="a2p-U2-fHf" secondAttribute="trailing" constant="10" id="YuH-3y-b22"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="a2p-U2-fHf" secondAttribute="trailing" constant="-20" id="ZBJ-5L-Gpn"/>
+                            <constraint firstItem="a2p-U2-fHf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="g2U-ba-GHQ"/>
                             <constraint firstItem="XWM-36-fsO" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jQE-ga-q04"/>
                             <constraint firstItem="XWM-36-fsO" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="lqd-65-whZ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="ZBJ-5L-Gpn"/>
+                                <exclude reference="g2U-ba-GHQ"/>
+                            </mask>
+                        </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
@@ -42,6 +58,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="splash" width="872" height="863"/>
+        <image name="splash" width="436" height="432"/>
     </resources>
 </document>

@@ -19,7 +19,9 @@ struct Deleter {
     static let cancel           = 7
     
 }
+
 class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, SWTableViewCellDelegate{
+    
     var tableView : UITableView?
     let app = UIApplication.sharedApplication().delegate as! AppDelegate
     private var fetchController : NSFetchedResultsController?
@@ -27,14 +29,13 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     var deleteAllButton : UIButton?
 
     var blur : UIVisualEffectView?
-   // var delgate : SFOpenMeDelegate?
     var oldestItemAge : NSDate?
     var wholeArray : NSArray?
     var shadowView : UIView?
-    
-    
     var introView : SFView?
     let starImage = UIImageView(image: UIImage(named: "history"))
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
@@ -63,8 +64,8 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
         tableView = UITableView(frame: CGRect.zero)
         tableView?.layer.cornerRadius = 20
         tableView?.layer.masksToBounds = true
-        tableView?.registerClass(SFHistoryCell.self, forCellReuseIdentifier: "HISTI")
-        tableView?.registerClass(SFHistoryHeader.self, forHeaderFooterViewReuseIdentifier: "HISTII")
+        tableView?.registerClass(SFHistoryCell.self, forCellReuseIdentifier: "History")
+        tableView?.registerClass(SFHistoryHeader.self, forHeaderFooterViewReuseIdentifier: "HistoryHeader")
         tableView!.delegate   = self
         tableView!.dataSource = self
         tableView?.backgroundColor = .clearColor()
@@ -463,7 +464,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("HISTI", forIndexPath: indexPath) as! SFHistoryCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("History", forIndexPath: indexPath) as! SFHistoryCell
         let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
         cell.titleLabel?.text = object.titleOfIt
         cell.urlLabel?.text = object.urlOfIt
@@ -488,7 +489,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier("HISTII") as! SFHistoryHeader
+        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier("HistoryHeader") as! SFHistoryHeader
         let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
         let datF = (UIApplication.sharedApplication().delegate as! AppDelegate).dateFormater2
         datF.dateFormat  = "dd-MM-yyyy"
@@ -620,9 +621,7 @@ class SFHistory: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedRe
           
             self.tableView!.moveRowAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
             break
-            
-        default:
-            return
+        
         }
         })
         

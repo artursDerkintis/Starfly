@@ -17,6 +17,7 @@ class SFTabs: UIViewController, SFTabDelegate {
     var currentTab : SFTab?
     var tabManagment : SFTabManagment?
     var urlBarManagment : SFUrlBarManagment?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scroller = SFCardTabs(frame: view.bounds)
@@ -43,6 +44,7 @@ class SFTabs: UIViewController, SFTabDelegate {
             }
         }
     }
+    
     func saveTabsForRecovery(){
         if NSUserDefaults.standardUserDefaults().boolForKey("rest"){
             let array = NSMutableArray()
@@ -59,6 +61,7 @@ class SFTabs: UIViewController, SFTabDelegate {
         }
 
     }
+    
     func addNewTab(){
         tabManagment?.addNewTab({ (webVC : SFWebVC) -> Void in
             webVC.openURL(nil)
@@ -67,14 +70,15 @@ class SFTabs: UIViewController, SFTabDelegate {
         })
         
     }
+    
     func addNewTabWithURL(url : NSURL){
         tabManagment?.addNewTab({ (webVC : SFWebVC) -> Void in
             webVC.openURL(url)
             self.addTab(true, webVC: webVC)
             self.urlBarManagment?.setWebVC(webVC)
         })
-        
     }
+    
     func closeTab(tab : SFTab){
         
             let ind = tabs.indexOf(tab)
@@ -110,11 +114,14 @@ class SFTabs: UIViewController, SFTabDelegate {
             
         
     }
+    
     func updateAllTabs(){
         for tab in tabs{
             tab.selected = false
+            tab.webVC?.isCurrent = false
         }
     }
+    
     func addTab(foreground : Bool, webVC : SFWebVC){
         let newTab = SFTab(frame: CGRect(x: 0, y: -50, width: 200, height: self.view.frame.height * 0.8))
         newTab.webVC = webVC
@@ -127,7 +134,9 @@ class SFTabs: UIViewController, SFTabDelegate {
         scroller?.addCell(newTab)
         tabs.append(newTab)
         currentTab = newTab
+        self.urlBarManagment?.setWebVC(webVC)
     }
+    
     func selectTab(sender : UITapGestureRecognizer){
         if sender.view!.isKindOfClass(SFTab) && (sender.view as! SFTab) != currentTab{
             updateAllTabs()
