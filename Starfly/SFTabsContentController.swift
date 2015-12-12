@@ -24,6 +24,7 @@ class SFTabsContentController: UIViewController, SFTabsContentDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		addSubviewSafe(home.view)
+        addChildViewController(home)
 		home.view.snp_makeConstraints {(make) -> Void in
 			make.top.right.left.bottom.equalTo(0)
 		}

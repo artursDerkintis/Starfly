@@ -34,7 +34,9 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
         request = simpleHistoryRequest()
         cacheIcons(request)
         fetchController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: appDelegate.managedObjectContext, sectionNameKeyPath: "sectionId", cacheName: nil)
+        
         fetchController?.delegate = self
+        
     }
     
     func loadData() {
@@ -144,8 +146,109 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
             appDelegate.managedObjectContext.deleteObject(hit)
             appDelegate.saveContext()
         }
+        
     }
     
+    //Delete
+    func deleteLastHour(){
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(NSCalendarUnit.Hour, value: -1, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
+        
+        for hit in fetchController!.fetchedObjects as! [HistoryHit]{
+            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
+                
+                deleteImage(hit.faviconPath)
+                
+                appDelegate.managedObjectContext.deleteObject(hit)
+            }else{
+                break
+            }
+        }
+        appDelegate.saveContext()
+    }
+    func deleteToday(){
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -1, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
+        
+        for hit in fetchController!.fetchedObjects as! [HistoryHit]{
+            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
+                
+                deleteImage(hit.faviconPath)
+                appDelegate.managedObjectContext.deleteObject(hit)
+            }else{
+                break
+            }
+        }
+        appDelegate.saveContext()
+    }
+    func deleteThisWeek(){
+        let calendar = NSCalendar.currentCalendar()
+        let date = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -7, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
+        
+        for hit in fetchController!.fetchedObjects as! [HistoryHit]{
+            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
+                
+                deleteImage(hit.faviconPath)
+                appDelegate.managedObjectContext.deleteObject(hit)
+            }else{
+                break
+            }
+        }
+        appDelegate.saveContext()
+    }
+    func deleteAll(){
+        for hit in fetchController!.fetchedObjects as! [HistoryHit]{
+            deleteImage(hit.faviconPath)
+            appDelegate.managedObjectContext.deleteObject(hit)
+        }
+        appDelegate.saveContext()
+
+    }
+    func deleteAllAndDeep(){
+        deleteAll()
+        
+        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        if storage.cookies?.count != 0{
+            for cookie : AnyObject? in storage.cookies! as [AnyObject]{
+                if  cookie != nil{
+                    print(cookie)
+                    storage.deleteCookie(cookie as! NSHTTPCookie)
+                }else{
+                    break
+                }
+            }}
+        NSUserDefaults.standardUserDefaults().synchronize()
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        
+        let path : String? = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Library/WebKit/WebsiteData/LocalStorage")
+        if path != nil{
+            let s: [AnyObject]?
+            do {
+                s = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(path!)
+            } catch let error as NSError {
+                print(error)
+                s = nil
+            }
+            if s != nil && s?.count != 0{
+                for fileString : AnyObject in s! as [AnyObject] {
+                    if fileString.pathExtension == "localstorage"{
+                        let pathd = (path! as NSString).stringByAppendingPathComponent(fileString as! String)
+                        var error : NSError?
+                        do {
+                            try NSFileManager.defaultManager().removeItemAtPath(pathd)
+                            
+                        } catch let error1 as NSError {
+                            error = error1
+                        }
+                        if error != nil{
+                            print(error?.localizedDescription)
+                        }
+                        
+                    }}
+            }}
+
+        
+    }
     func deleteImage(stringPath : NSString) {
         let stsAr : NSString? = stringPath.lastPathComponent
         let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
@@ -171,8 +274,11 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
-        return sectionInfo.numberOfObjects
+        if self.fetchController!.sections?.count > 0{
+            let sectionInfo = self.fetchController!.sections![section]
+            return sectionInfo.numberOfObjects
+            
+        }else{return 0}
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

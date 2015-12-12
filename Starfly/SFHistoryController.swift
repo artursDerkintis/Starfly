@@ -117,6 +117,31 @@ class SFHistoryController: UIViewController {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-
+    
+    func showDeleteActions(){
+        let actionController = UIAlertController(title: "What to delete?", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+        let actionHour = UIAlertAction(title: "Last Hour", style: UIAlertActionStyle.Default) { (k) -> Void in
+            self.historyProvider.deleteLastHour()
+        }
+        let actionToday = UIAlertAction(title: "Today", style: UIAlertActionStyle.Default) { (k) -> Void in
+            self.historyProvider.deleteToday()
+        }
+        let actionThisWeek = UIAlertAction(title: "This Week", style: UIAlertActionStyle.Default) { (k) -> Void in
+            self.historyProvider.deleteThisWeek()
+        }
+        let actionAll = UIAlertAction(title: "Delete All", style: UIAlertActionStyle.Default) { (k) -> Void in
+            self.historyProvider.deleteAll()
+        }
+        let actionDeep = UIAlertAction(title: "Delete Deeply", style: UIAlertActionStyle.Default) { (k) -> Void in
+            self.historyProvider.deleteAllAndDeep()
+        }
+        let actionCancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (k) -> Void in
+        }
+        for action in [actionHour, actionToday, actionThisWeek, actionAll, actionDeep, actionCancel]{
+            actionController.addAction(action)
+        }
+        
+        presentViewController(actionController, animated: true, completion: nil)
+    }
 
 }

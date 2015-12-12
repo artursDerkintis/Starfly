@@ -13,7 +13,12 @@ let bookmarksCell = "bookmarksCell"
 
 class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, SWTableViewCellDelegate {
 
-	var tableView : UITableView!
+    var tableView : UITableView!{
+        didSet{
+            tableView.delegate = self
+            tableView.dataSource = self
+        }
+    }
 
 	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 
@@ -157,14 +162,17 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 		cell.titleLabel?.text = object.title
 		cell.urlLabel?.text = object.url
 		cell.icon?.image = iconDictionary.objectForKey(object.favicon) as? UIImage
-		cell.rightUtilityButtons = deleteButton() as [AnyObject]
+		cell.leftUtilityButtons = deleteButton() as [AnyObject]
 		cell.delegate = self
 		return cell
 	}
 
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
-		return sectionInfo.numberOfObjects
+        if self.fetchController!.sections?.count > 0{
+           let sectionInfo = self.fetchController!.sections![section]
+            return sectionInfo.numberOfObjects
+            
+        }else{return 0}
 	}
 
 	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

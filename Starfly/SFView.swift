@@ -13,6 +13,7 @@ class SFView: UIView {
         super.init(frame: frame)
         
         currentColor = NSUserDefaults.standardUserDefaults().colorForKey("COLOR2") == nil ? SFColors.green : NSUserDefaults.standardUserDefaults().colorForKey("COLOR2")
+        UIApplication.sharedApplication().delegate?.window!?.tintColor = currentColor
         backgroundColor = currentColor
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeColor", name: "ColorChanges", object: nil)
     }
@@ -21,6 +22,8 @@ class SFView: UIView {
         currentColor = NSUserDefaults.standardUserDefaults().colorForKey("COLOR2") == nil ? SFColors.green : NSUserDefaults.standardUserDefaults().colorForKey("COLOR2")
 
         backgroundColor = currentColor
+        UIApplication.sharedApplication().delegate?.window!?.tintColor = currentColor
+        
     }
     deinit{
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "ColorChanges", object: nil)
