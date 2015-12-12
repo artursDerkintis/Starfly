@@ -8,7 +8,7 @@
 
 import UIKit
 protocol SFUrlBarManagment{
-    func setWebVC(webVC : SFWebVC?)
+    func setWebVC(webVC : SFWebController?)
 }
 
 class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment {
@@ -19,7 +19,7 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
     var main : UIStackView?
     var menuVisible = false
     
-    var currentWebVC : SFWebVC?
+    var currentWebVC : SFWebController?
     
     
     var outsideListener : UITapGestureRecognizer?
@@ -151,7 +151,7 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
                 self.menuView?.removeFromSuperview()
         }
     }
-    func setWebVC(webVC : SFWebVC?){
+    func setWebVC(webVC : SFWebController?){
         if webVC != nil{
             currentWebVC = webVC
         }

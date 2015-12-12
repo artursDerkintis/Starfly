@@ -69,7 +69,7 @@ class SFShare:  UIView {
         conV!.addSubview(tiits!)
         urlz = UILabel(frame: CGRectMake(25, 180, 255, 33))
         urlz?.textColor = UIColor(white: 0.9, alpha: 1)
-        urlz?.font = starflyFont(15)
+        urlz?.font = UIFont.systemFontOfSize(13)
         conV?.addSubview(urlz!)
         conV?.addSubview(icH!)
         addSubview(conV!)

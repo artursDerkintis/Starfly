@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SWTableViewCell.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>SnapKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +22,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>DADEDA1CAB9F998932ABF08230D4BFAB</key>
+		<key>35339EF4D0BC1EBA2BE0F4E2269D0DA2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FB57BAD769666D2CD91B650DB10CB847</key>
+		<key>5E38D9C50321028A6B5D17D9237ACAD5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DBEBED4C443411E979E280FC3F88E94A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

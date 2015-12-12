@@ -10,9 +10,9 @@ import UIKit
 
 class SFMenu: UIView {
     
-    var history : SFHistory?
-    var bookmarks : SFBookmarks?
-    var settings : SFSettings?
+    var history : SFHistoryController!
+    var bookmarks : SFBookmarksController!
+    var settings : SFSettings!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,25 +20,15 @@ class SFMenu: UIView {
         backgroundColor = UIColor.clearColor()
         layer.masksToBounds = true
         
-        history = SFHistory(frame: CGRect.zero)
-        history?.shadowView?.hidden = true
-        history?.blur?.hidden = true
-        history!.tableView?.layer.borderWidth = 1
-        history!.tableView?.layer.borderColor = UIColor.whiteColor().CGColor
-        history!.tableView?.backgroundColor = UIColor(white: 0.8, alpha: 0.8)
-        history?.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
-        history?.alpha = 0.0
+        history = SFHistoryController()
+        history.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
+        history.view.alpha = 0.0
         
-        bookmarks = SFBookmarks(frame: CGRect.zero)
-        bookmarks?.shadowView?.hidden = true
-        bookmarks?.blur?.hidden = true
-        bookmarks!.tableView?.layer.borderWidth = 1
-        bookmarks!.tableView?.layer.borderColor = UIColor.whiteColor().CGColor
-        bookmarks?.tableView?.backgroundColor = UIColor(white: 0.8, alpha: 0.8)
-        bookmarks!.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
-        bookmarks?.alpha = 0.0
+        bookmarks = SFBookmarksController()
+        bookmarks.updateFrames(UIEdgeInsetsMake(0, 0, 0, 0))
+        bookmarks.view.alpha = 0.0
         
-        let stackView = UIStackView(arrangedSubviews: [bookmarks!, history!])
+        let stackView = UIStackView(arrangedSubviews: [bookmarks.view, history.view])
         stackView.spacing = 35
         stackView.distribution = .FillEqually
         addSubview(stackView)
@@ -59,8 +49,8 @@ class SFMenu: UIView {
             
         }
         UIView.animateWithDuration(0.2, delay: 0.5, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
-                self.history?.alpha = 1.0
-                self.bookmarks?.alpha = 1.0
+                self.history.view.alpha = 1.0
+                self.bookmarks.view.alpha = 1.0
             }) { (fin) -> Void in
                 self.history?.load()
                 self.bookmarks?.load()

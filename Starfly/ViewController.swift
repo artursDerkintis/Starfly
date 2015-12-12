@@ -10,20 +10,20 @@ import UIKit
 import SnapKit
 
 class ViewController: UIViewController {
-    var tabContent : SFTabContents?
+    var tabsContentController : SFTabsContentController?
     var urlBar : SFUrlBar?
-    var tabBar : SFTabs?
+    var tabBar : SFTabsController?
     var blur : UIVisualEffectView?
     var overlayerView : UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        tabContent = SFTabContents()
-        addChildViewController(tabContent!)
+        tabsContentController = SFTabsContentController()
+        addChildViewController(tabsContentController!)
        
-        view.addSubview(tabContent!.view)
-        tabContent?.view.snp_makeConstraints { (make) -> Void in
+        view.addSubview(tabsContentController!.view)
+        tabsContentController?.view.snp_makeConstraints { (make) -> Void in
             make.top.left.right.bottom.equalTo(0)
         }
         blur = UIVisualEffectView(frame: CGRect.zero)
@@ -45,9 +45,9 @@ class ViewController: UIViewController {
             make.right.left.equalTo(0)
             
         }
-        tabBar = SFTabs()
-        tabBar?.tabManagment = tabContent
-        tabBar?.urlBarManagment = urlBar
+        tabBar = SFTabsController()
+        tabBar?.tabContentDelegate = tabsContentController
+       // tabBar?.urlBarManagment = urlBar
         
         addChildViewController(tabBar!)
         
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
             make.left.equalTo(3)
             make.height.equalTo(45)
         }
-        tabContent?.tabDelegate = tabBar
+        //tabContent?.tabDelegate = tabBar
         
         
         view.backgroundColor = UIColor(rgba: "#F7F7F7")

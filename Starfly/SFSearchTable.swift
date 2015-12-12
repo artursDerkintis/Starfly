@@ -111,11 +111,11 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if tableView == table{
             if array.count > 0{
-            NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: nil, userInfo: ["url" : array[indexPath.row]])
+            NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: array[indexPath.row])
             }
         }else if tableView == table2{
             let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
-             NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: nil, userInfo: ["url" : object.urlOfIt])
+             NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.urlOfIt)
         }
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

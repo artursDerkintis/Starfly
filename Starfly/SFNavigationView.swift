@@ -94,13 +94,13 @@ class SFNavigationView: UIView{
     
     func update(notification : NSNotification){
         if let webVC = notification.object{
-            if webVC.isKindOfClass(SFWebVC){
-                updateInstantly(webVC as! SFWebVC)
+            if webVC.isKindOfClass(SFWebController){
+                updateInstantly(webVC as! SFWebController)
             }
         }
     }
     
-    func updateInstantly(webViewVC : SFWebVC){
+    func updateInstantly(webViewVC : SFWebController){
             backButton?.enabled = webViewVC.webView!.canGoBack
             forwardButton?.enabled = webViewVC.webView!.canGoForward
             let l =  webViewVC.webView!.loading

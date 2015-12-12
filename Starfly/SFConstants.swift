@@ -80,7 +80,7 @@ func backgroundImagesThumbnails() -> [String]{
     }
     return array
 }
-typealias SFTabWeb = SFWebVC -> Void
+typealias SFTabWeb = SFWebController -> Void
 typealias SFContains = Bool -> Void
 typealias SFNewContentLoaded = Bool -> Void
 enum SFClockFace : Int {

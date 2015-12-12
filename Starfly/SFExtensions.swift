@@ -15,7 +15,7 @@ public func lineWidth() -> CGFloat{
     }else{
         return 1
     }
- 
+    
 }
 public func randomString(len : Int) -> NSString {
     let s : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -35,9 +35,6 @@ public func delay(delay:Double, closure:()->()) {
         dispatch_get_main_queue(), closure)
 }
 
-public func starflyFont(size : CGFloat) -> UIFont{
-    return UIFont(name: "Helvetica-Light", size: size)!
-}
 public func getRandomColor() -> UIColor{
     
     let randomRed:CGFloat = CGFloat(drand48())
@@ -76,36 +73,7 @@ extension String {
         return nil
     }
 }
-public func getDegreeSymbol(getdegree : Bool) -> NSString {
-    /*NSLocale *locale = [NSLocale currentLocale];
-    BOOL isMetric = [[locale objectForKey:NSLocaleUsesMetricSystem] boolValue];*/
-    let locale : NSLocale = NSLocale.currentLocale()
-    let isMetric : Bool = locale.objectForKey(NSLocaleUsesMetricSystem)!.boolValue
-        if getdegree {
-            if isMetric{
-                return "°C"
-            }else{
-                return "°F"
-            }
-        }else{
-            if isMetric{
-                return "metric"
-            }else{
-                return "imperial"
-            }
-        }
-}
-public func urlBarWidth() -> CGFloat{
-    let orientation : UIInterfaceOrientation = UIApplication.sharedApplication().statusBarOrientation
-    if orientation == UIInterfaceOrientation.LandscapeRight
-    {
-        return 710
-    }else if orientation == UIInterfaceOrientation.LandscapeLeft {
-        return 710
-    }else{
-        return 460
-    }
-}
+
 public func isLandscape() -> Bool{
     let orientation : UIInterfaceOrientation = UIApplication.sharedApplication().statusBarOrientation
     if orientation == UIInterfaceOrientation.LandscapeRight
@@ -116,15 +84,9 @@ public func isLandscape() -> Bool{
     }else{
         return false
     }
+    
+}
 
-}
-public func animate(animate:() -> Void, after:() -> Void){
-    UIView.animateWithDuration(0.3, animations: { () -> Void in
-        animate()
-    }) { (e) -> Void in
-        after()
-    }
-}
 extension WKWebView{
     func deleteMySelf(){
         loadRequest(NSURLRequest(URL: NSURL(string: "about:blank")!))
@@ -135,20 +97,20 @@ extension UIImage {
     
     func imageWithColor(color1: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-
+        
         let context = UIGraphicsGetCurrentContext() as CGContextRef!
         CGContextTranslateCTM(context, 0, self.size.height)
         CGContextScaleCTM(context, 1.0, -1.0);
         CGContextSetBlendMode(context, CGBlendMode.Normal)
-
+        
         let rect = CGRectMake(0, 0, self.size.width, self.size.height) as CGRect
         CGContextClipToMask(context, rect, self.CGImage)
         color1.setFill()
         CGContextFillRect(context, rect)
-
+        
         let newImage = UIGraphicsGetImageFromCurrentImageContext() as UIImage
         UIGraphicsEndImageContext()
-
+        
         return newImage
     }
     func imageWithColorMultiply(color1: UIColor) -> UIImage {
@@ -169,7 +131,7 @@ extension UIImage {
         
         return newImage
     }
-
+    
     func addGlowEffect() -> UIImage{
         var newSize : CGRect = CGRectMake(0, 0, self.size.width, self.size.height)
         let theImage : CGImageRef = self.CGImage!
@@ -190,7 +152,7 @@ extension UIImage {
         centerRect.origin.x += -3;
         centerRect.origin.y += -3;
         CGContextDrawImage(ctx, centerRect, theImage);
-
+        
         let newImage = UIGraphicsGetImageFromCurrentImageContext() as UIImage
         UIGraphicsEndImageContext()
         
@@ -267,32 +229,32 @@ extension UIImage {
 extension UIView {
     
     func takeSnapshot(offset : CGFloat) -> UIImage? {
-         var image  : UIImage = UIImage()
-            let orientation : UIDeviceOrientation = UIDevice.currentDevice().orientation
-            var heght : CGFloat = 0
-            if orientation.isLandscape{
-                heght = self.frame.height / 5 * 4.5
-            }else if orientation.isPortrait{
-                heght = self.frame.height / 5 * 2.5
-            }
-           
-            let rect : CGRect = CGRectMake(0, 0, self.bounds.width, heght)
-            
-            
-            UIGraphicsBeginImageContextWithOptions(rect.size, false, 1.0)
-            self.drawViewHierarchyInRect(CGRectMake(0, 0, self.bounds.width, self.bounds.height), afterScreenUpdates: false)
-            
-            // old style: self.layer.renderInContext(UIGraphicsGetCurrentContext())
-            
-            image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            
-            
+        var image  : UIImage = UIImage()
+        let orientation : UIDeviceOrientation = UIDevice.currentDevice().orientation
+        var heght : CGFloat = 0
+        if orientation.isLandscape{
+            heght = self.frame.height / 5 * 4.5
+        }else if orientation.isPortrait{
+            heght = self.frame.height / 5 * 2.5
+        }
+        
+        let rect : CGRect = CGRectMake(0, 0, self.bounds.width, heght)
+        
+        
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 1.0)
+        self.drawViewHierarchyInRect(CGRectMake(0, 0, self.bounds.width, self.bounds.height), afterScreenUpdates: false)
+        
+        // old style: self.layer.renderInContext(UIGraphicsGetCurrentContext())
+        
+        image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        
+        
         return image
     }
     func takeSnapshotForFavorites(offset : CGFloat) -> UIImage {
-        var image  : UIImage = UIImage()
+        var image  : UIImage?
         let orientation : UIDeviceOrientation = UIDevice.currentDevice().orientation
         var heght : CGFloat = 0
         if orientation.isLandscape{
@@ -306,15 +268,15 @@ extension UIView {
         
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.7)
         self.drawViewHierarchyInRect(CGRectMake(0, -offset, self.bounds.width, self.bounds.height), afterScreenUpdates: false)
-        
-        // old style: self.layer.renderInContext(UIGraphicsGetCurrentContext())
-        
         image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         
-        
-        return image
+        if let image = image{
+            return image
+        }else{
+            return UIImage(named: "splash")!
+        }
     }
     func takeSnapshotForHomePage() -> UIImage {
         var image  : UIImage = UIImage()
@@ -332,8 +294,6 @@ extension UIView {
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.7)
         self.drawViewHierarchyInRect(CGRectMake(0,0, self.frame.width, self.frame.height), afterScreenUpdates: false)
         
-        // old style: self.layer.renderInContext(UIGraphicsGetCurrentContext())
-        
         image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -350,21 +310,21 @@ extension UIView {
     }
     func frontColor(color : UIColor){
         
-       
+        
         self.backgroundColor = UIColor.whiteColor()
         
         var alreadyHaveColorSublayer : Bool = false
         if self.layer.sublayers != nil{
-        for layer in self.layer.sublayers as [CALayer]!{
-           
-            if layer.name != nil{
-            if (layer.name == "color"){
-                let l = layer as! CAGradientLayer
-                alreadyHaveColorSublayer = true
-                l.frame = self.bounds
-                l.colors = [color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor]
-                l.locations = [NSNumber(float: 0.1), NSNumber(float: 0.5), NSNumber(float: 0.9)]
-                }}
+            for layer in self.layer.sublayers as [CALayer]!{
+                
+                if layer.name != nil{
+                    if (layer.name == "color"){
+                        let l = layer as! CAGradientLayer
+                        alreadyHaveColorSublayer = true
+                        l.frame = self.bounds
+                        l.colors = [color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor]
+                        l.locations = [NSNumber(float: 0.1), NSNumber(float: 0.5), NSNumber(float: 0.9)]
+                    }}
             }}
         if alreadyHaveColorSublayer == false{
             let frontColorLayer : CAGradientLayer = CAGradientLayer()
@@ -373,8 +333,8 @@ extension UIView {
             frontColorLayer.colors = [color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor, color.colorWithAlphaComponent(1).CGColor]
             frontColorLayer.locations = [NSNumber(float: 0.1), NSNumber(float: 0.5), NSNumber(float: 0.9)]
             self.layer.insertSublayer(frontColorLayer, atIndex: 0)
-            }
         }
+    }
     func frontColore(color : UIColor, withBackgroundColor bcolor : UIColor){
         
         
@@ -401,110 +361,26 @@ extension UIView {
             self.layer.insertSublayer(frontColorLayer, atIndex: 0)
         }
     }
-
-
-}
-extension UIViewController {
     
     
-     
-
 }
 
 extension UIColor {
-   
-
-  class  func getColor() -> UIColor{
     
-    let colorInt : Int = NSUserDefaults.standardUserDefaults().integerForKey("color")
-        return self.starflyColorArray().objectAtIndex(colorInt) as! UIColor
-        }
-    class  func getColorfromArray(i : Int) -> UIColor{
-       
-        return self.starflyColorArray().objectAtIndex(i).colorWithAlphaComponent(1) as UIColor
-    }
-    class func starflyButtonsTintColor() -> UIColor {
-        return UIColor.whiteColor()
-    }
-    class func starflyColorArray() -> NSArray{
-        let color1 : UIColor = UIColor(rgba: "#12a8f4")
-        let color2 : UIColor = UIColor(rgba: "#FF4E00")
-        let color3 : UIColor = UIColor(rgba: "#ffb400")
-        let color4 : UIColor = UIColor(rgba: "#0BD30C")
-        let color5 : UIColor = UIColor(rgba: "#1ad6fd")
-        let color6 : UIColor = UIColor(rgba: "#FF00FF")
-        let color7 : UIColor = UIColor(rgba: "#2da100")
-        let color8 : UIColor = UIColor(rgba: "#2d77ff")
-        let color9 : UIColor = UIColor(rgba: "#0b6734")
-        let color10 : UIColor = UIColor(rgba: "#ea1900")
-        let color11 : UIColor = UIColor(rgba: "#dd00cb")
-        let color12 : UIColor = UIColor(rgba: "#ff0084")
-        let colorArray : NSArray = [color1,
-            color2,
-            color3,
-            color4,
-            color5,
-            color6,
-            color7,
-            color8,
-            color9,
-            color10,
-            color11,
-            color12]
-        return colorArray
-    }
-
-       class func LightOrDark() -> Bool{
-        let componentColors :UnsafePointer<CGFloat> = CGColorGetComponents(self.getColor().CGColor)
-        let colorbrightness: CGFloat = ((componentColors[0] * 299) + (componentColors[1] * 587) + (componentColors[2] * 114)) / 1000
-if (colorbrightness < 0.9)
-    {
-return true
-        
-    }
-    else
-    {
-return false
-        
-    }
-
-        
-}
-       class func starflyColor() -> UIColor{
-        return getColor()
-    }
-    class func starflyMainColor() -> UIColor{
-        return UIColor.whiteColor()
-    }
-   class func starflyTintColor() -> UIColor{
-   
-    return UIColor.blackColor().colorWithAlphaComponent(1)
     
+    class func colorWithSaturationFactor(factor: CGFloat, color: UIColor) -> UIColor {
+        var hue : CGFloat = 0
+        var saturation : CGFloat = 0
+        var brightness : CGFloat = 0
+        var alpha : CGFloat = 0
+        if color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
+            return UIColor(hue: hue,
+                saturation:saturation * factor,
+                brightness: brightness,
+                alpha: alpha)
+        } else {
+            return UIColor.blueColor()
         }
-    class func starflyWhitedColor() -> UIColor{
-        
-        return UIColor.whiteColor()
-        
-    }
-    class func starflyTabColor() -> UIColor{
-     
-    return UIColor.whiteColor()
-
-    
-        }
-     class func colorWithSaturationFactor(factor: CGFloat, color: UIColor) -> UIColor {
-    var hue : CGFloat = 0
-    var saturation : CGFloat = 0
-    var brightness : CGFloat = 0
-    var alpha : CGFloat = 0
-    if color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
-    return UIColor(hue: hue,
-        saturation:saturation * factor,
-        brightness: brightness,
-        alpha: alpha)
-    } else {
-    return UIColor.blueColor()
-    }
     }
     convenience init(rgba: String) {
         var red:   CGFloat = 0.0
@@ -533,7 +409,7 @@ return false
                 print("scan hex error")
             }
         } else {
-           
+            
         }
         self.init(red:red, green:green, blue:blue, alpha:alpha)
     }
@@ -544,7 +420,7 @@ return false
         }
         return UIColor()
     }
-  
+    
     func lighterColor(percent : Double) -> UIColor {
         return colorWithBrightnessFactor(CGFloat(1 + percent));
     }
@@ -559,26 +435,7 @@ return false
             return self;
         }
     }
-   /* + (UIColor*)changeBrightness:(UIColor*)color amount:(CGFloat)amount
-    {
     
-    CGFloat hue, saturation, brightness, alpha;
-    if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-    brightness += (amount-1.0);
-    brightness = MAX(MIN(brightness, 1.0), 0.0);
-    return [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:alpha];
-    }
-    
-    CGFloat white;
-    if ([color getWhite:&white alpha:&alpha]) {
-    white += (amount-1.0);
-    white = MAX(MIN(white, 1.0), 0.0);
-    return [UIColor colorWithWhite:white alpha:alpha];
-    }
-    
-    return nil;
-    }*/
-
 }
 
 public func lighterColorForColor(color: UIColor, index : CGFloat) -> UIColor {
@@ -604,8 +461,8 @@ public func parseUrl(input : NSString) -> String?{
         return input as String
         
     }
-        
-        string = input.urlEncode() as String
+    
+    string = input.urlEncode() as String
     
     return String(format: "https://www.google.com/search?q=%@", string!)
 }
