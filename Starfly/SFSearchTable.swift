@@ -117,6 +117,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
             let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
              NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.urlOfIt)
         }
+        UIApplication.sharedApplication().delegate?.window!?.endEditing(true)
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if tableView == self.table{
