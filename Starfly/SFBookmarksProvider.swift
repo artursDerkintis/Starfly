@@ -33,6 +33,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	func loadData() {
 		do {
 			try fetchController?.performFetch()
+            tableView.reloadData()
 		} catch _ {
 
 		}

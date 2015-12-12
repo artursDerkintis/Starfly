@@ -21,11 +21,11 @@ class SFFavoritesController: UIViewController {
 
 		layout.minimumLineSpacing = 15
 		layout.minimumInteritemSpacing = 15
-		layout.itemSize = CGSizeMake(170, 130)
+		layout.itemSize = CGSizeMake(175, 123)
 		collectionView = UICollectionView(frame: CGRectMake(0, 0, view.bounds.width, view.bounds.height), collectionViewLayout: layout)
 		collectionView.registerClass(SFFavoritesCell.self, forCellWithReuseIdentifier: homeCell)
 		collectionView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
-		collectionView.contentInset = UIEdgeInsets(top: 50, left: 50, bottom: 120, right: 50)
+		collectionView.contentInset = UIEdgeInsets(top: 40, left: 40, bottom: 120, right: 40)
 		collectionView.showsVerticalScrollIndicator = false
 		collectionView.clipsToBounds = true
 		collectionView.backgroundColor = .clearColor()

@@ -1010,7 +1010,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = Starfly/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.starfly.StarflyV2-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = com.starfly.StarflyV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/NealCeffrey/Desktop/Development/Starfly/Starfly/Starfly-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1026,7 +1026,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Starfly/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.starfly.StarflyV2-demo";
+				PRODUCT_BUNDLE_IDENTIFIER = com.starfly.StarflyV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/NealCeffrey/Desktop/Development/Starfly/Starfly/Starfly-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 2;
