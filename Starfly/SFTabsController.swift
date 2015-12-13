@@ -33,7 +33,8 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 	var addTabButton : SFButton?
 
 	var tabContentDelegate : SFTabsContentDelegate?
-
+    var urlBarManagment : SFUrlBarManagment?
+    
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tabsView = SFTabsView(frame: .zero)
@@ -81,7 +82,6 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 		tabContentDelegate?.addTab({(webViewController: SFWebController) -> Void in
 				tab.webViewController = webViewController
 				webViewController.openURL(nil)
-				tab.setUpObservers()
 			})
 		tab.id = getId()
 		tab.controllerDelegate = self
@@ -92,15 +92,15 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 
 	func addTabWithUrl(url : NSURL) {
 		let tab = SFTab(frame: .zero)
+        tabContentDelegate?.addTab({(webViewController: SFWebController) -> Void in
+            tab.webViewController = webViewController
+            webViewController.openURL(url)
+        })
 		tab.id = getId()
 		tab.controllerDelegate = self
 		tabs.append(tab)
-		selectTab(tab.id)
 		tabsView?.addNewTab(tab)
-		tabContentDelegate?.addTab({(webViewController: SFWebController) -> Void in
-				tab.webViewController = webViewController
-				webViewController.openURL(url)
-			})
+        selectTab(tab.id)
 	}
 
 	func removeCurrentTab() {
@@ -144,6 +144,8 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 		unselectAllTabs()
 		if let tab = tabById(id) {
 			tab.webViewController?.isCurrent = true
+            tabContentDelegate?.bringSFWebControllerInFront(tab.webViewController!)
+            urlBarManagment?.setWebController(tab.webViewController!)
 			tab.selected = true
 			currentTab = tab
 		}

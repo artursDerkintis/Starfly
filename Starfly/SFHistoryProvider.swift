@@ -92,13 +92,16 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
             switch type {
             case .Insert:
                 if let hit = anObject as? HistoryHit {
+                   
                     let iconFileName = (hit.faviconPath as NSString).lastPathComponent
-                    let folder = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
-                    let iconPath = folder.stringByAppendingString(iconFileName as String)
+                    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
+                    let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
+
                     if let icon = UIImage(contentsOfFile: iconPath) {
                         self.iconDictionary.setObject(icon, forKey: hit.faviconPath)
                     }
                 }
+                self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
                 break
             case .Delete:
                 if let hit = anObject as? HistoryHit {

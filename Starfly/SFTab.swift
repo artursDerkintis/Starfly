@@ -17,7 +17,11 @@ class SFTab: SFView {
 	var loadingIndicator : CALayer?
 	var id : Double = 0
 	var controllerDelegate : SFTabsControllerDelegate?
-	var webViewController : SFWebController?
+    var webViewController : SFWebController?{
+        didSet{
+            self.setUpObservers()
+        }
+    }
 	let replicatorLayer = CAReplicatorLayer()
 	override init(frame: CGRect) {
 		super.init(frame: frame)

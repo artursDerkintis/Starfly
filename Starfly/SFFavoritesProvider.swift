@@ -116,12 +116,17 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
 
 					switch type {
 					case .Insert:
-						let iconFileName = (hit.favicon as NSString).lastPathComponent
-						let folder = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
-						let iconPath = folder.stringByAppendingString(iconFileName as String)
-						if let icon = UIImage(contentsOfFile: iconPath) {
-							self.screenshotDictionary.setObject(icon, forKey: hit.bigImage)
-						}
+                        let iconFileName = (hit.bigImage as NSString).lastPathComponent
+                        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
+                        let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
+                        if let icon = UIImage(contentsOfFile: iconPath) {
+                            self.screenshotDictionary.setObject(icon, forKey: hit.bigImage)
+                           self.collectionView?.insertItemsAtIndexPaths([newIndexPath!])
+                        }
+                        delay(1.5, closure: { () -> () in
+                            self.collectionView?.reloadData()
+                        })
+                        
 						break
 					case .Delete:
 						self.collectionView?.deleteItemsAtIndexPaths([indexPath!])
@@ -224,7 +229,7 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
 	//MARK: Retreive new Image
 	func loadNewImageForHit(hit : HomeHit, indexPath: NSIndexPath) {
 
-		let imageFileName = (hit.favicon as NSString).lastPathComponent
+		let imageFileName = (hit.bigImage as NSString).lastPathComponent
 		let folder = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
 		let imagePath = folder.stringByAppendingString(imageFileName as String)
 		if fileIsOlderThanDay(imagePath) {

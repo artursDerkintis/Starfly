@@ -88,13 +88,15 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 				switch type {
 				case .Insert:
 					if let hit = anObject as? Bookmarks {
-						let iconFileName = (hit.favicon as NSString).lastPathComponent
-						let folder = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
-						let iconPath = folder.stringByAppendingString(iconFileName as String)
+                        let iconFileName = (hit.favicon as NSString).lastPathComponent
+                        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
+                        let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
 						if let icon = UIImage(contentsOfFile: iconPath) {
 							self.iconDictionary.setObject(icon, forKey: hit.favicon)
 						}
+                        
 					}
+                    self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
 					break
 				case .Delete:
 					if let hit = anObject as? Bookmarks {
@@ -134,7 +136,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 		return mutableArray.mutableCopy() as! NSArray
 	}
 
-	func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: Int) {
+	func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerLeftUtilityButtonWithIndex index: Int) {
 		let indexPath = self.tableView?.indexPathForCell(cell)
 		if let hit = fetchController!.objectAtIndexPath(indexPath!) as? Bookmarks {
 			deleteImage(hit.favicon)
@@ -144,12 +146,11 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	}
 
 	func deleteImage(stringPath : NSString) {
-		let stsAr : NSString? = stringPath.lastPathComponent
-		let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
-		let path = folder.stringByAppendingPathComponent(stsAr! as String)
-
+        let iconFileName = stringPath.lastPathComponent
+        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
+        let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
 		do {
-			try NSFileManager.defaultManager().removeItemAtPath(path)
+			try NSFileManager.defaultManager().removeItemAtPath(iconPath)
 		} catch let error as NSError {
 			print(error.localizedDescription)
 		}

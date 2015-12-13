@@ -8,7 +8,7 @@
 
 import UIKit
 protocol SFUrlBarManagment{
-    func setWebVC(webVC : SFWebController?)
+    func setWebController(webController : SFWebController?)
 }
 
 class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment {
@@ -19,7 +19,7 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
     var main : UIStackView?
     var menuVisible = false
     
-    var currentWebVC : SFWebController?
+    var currentWebController : SFWebController?
     
     
     var outsideListener : UITapGestureRecognizer?
@@ -65,7 +65,7 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
     }
 
     func shareScreen(){
-        if let current = currentWebVC where current.modeOfWeb != .home{
+        if let current = currentWebController where current.modeOfWeb != .home{
             let dictionary = NSMutableDictionary()
             if current.webView!.URL != nil && current.favicon != nil && current.webView!.title != nil{
             dictionary.setObject(current.webView!.URL!.absoluteString, forKey: "url")
@@ -151,9 +151,9 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
                 self.menuView?.removeFromSuperview()
         }
     }
-    func setWebVC(webVC : SFWebController?){
-        if webVC != nil{
-            currentWebVC = webVC
+    func setWebController(webController : SFWebController?){
+        if webController != nil{
+            currentWebController = webController
         }
     }
 

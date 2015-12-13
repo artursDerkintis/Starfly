@@ -47,7 +47,7 @@ class ViewController: UIViewController {
         }
         tabBar = SFTabsController()
         tabBar?.tabContentDelegate = tabsContentController
-        
+        tabBar?.urlBarManagment = urlBar
         addChildViewController(tabBar!)
         
         view.addSubview(tabBar!.view)

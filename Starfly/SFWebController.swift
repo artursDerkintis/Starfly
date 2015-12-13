@@ -72,9 +72,9 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 
 		//long press for action sheet
 		let long = UILongPressGestureRecognizer(target: self, action: "longPress:")
-		long.delegate = self
+		//long.delegate = self
 
-		long.minimumPressDuration = 0.4
+		long.minimumPressDuration = 0.5
 		webView?.addGestureRecognizer(long)
 
 		//circle when tapped
