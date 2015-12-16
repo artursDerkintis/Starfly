@@ -151,44 +151,57 @@ class SFWebViewHandler: NSObject {
 		if let longURL = webView?.URL {
 
 			let string = shortURL(longURL)
-			let url = NSURL(string: NSString(format: "http://icons.better-idea.org/api/icons?url=%@&i_am_feeling_lucky=yes", string) as String)!
-			NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) {(data : NSData?, response : NSURLResponse?, err : NSError?) -> Void in
-
-				if data != nil {
-					let image = UIImage(data: data!)
-					if image != nil {
-						dispatch_async(dispatch_get_main_queue(), {() -> Void in
-								completionHandler(ima: image!)
-							})
-
-					} else {
-						let js: AnyObject?
-						do {
-							js = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
-						} catch _ {
-							js = nil
-						}
-						print(js)
-						dispatch_async(dispatch_get_main_queue(), {() -> Void in
-								//return empty placeholder
-								completionHandler(ima: UIImage(named: "g"))
-							})
-					}
-				} else {
-					dispatch_async(dispatch_get_main_queue(), {() -> Void in
-							completionHandler(ima: UIImage(named: "g"))
-						})
-					print(err)
-				}
-
-			}.resume()
+			let url = NSURL(string: "http://icons.better-idea.org/allicons.json?pretty=true&url=\(string)")!
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+                NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: url)) {(data : NSData?, response : NSURLResponse?, err : NSError?) -> Void in
+                    
+                    if data != nil {
+                        let image = UIImage(data: data!)
+                        if image != nil {
+                            dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                                completionHandler(ima: image!)
+                            })
+                            
+                        } else {
+                            let js : NSDictionary?
+                            do {
+                                js = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                            } catch _ {
+                                js = nil
+                            }
+                            if let icons = js?.objectForKey("icons") as? [AnyObject] where icons.count > 0{
+                            
+                                let urlIm = icons[0].objectForKey("url")
+                                if let dataIm = NSData(contentsOfURL: NSURL(string: urlIm as! String)!){
+                                let image = UIImage(data: dataIm)
+                                dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                                    //return empty placeholder
+                                    completionHandler(ima: image)
+                                    
+                                })
+                                }
+                              //  print(url)
+                            }
+                            
+                            
+                        }
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                            completionHandler(ima: UIImage(named: "g"))
+                        })
+                        print(err)
+                    }
+                    
+                    }.resume()
+            })
+			
 
 		}
 		//http://icons.better-idea.org/api/icons?url=stackovereflow.com&i_am_feeling_lucky=yes
 	}
 	func showActionSheet(pt : CGPoint) {
 		var tags : NSArray? = nil
-		self.webView!.evaluateJavaScript(NSString(format: "getHTMLElementsAtPoint(%i,%i);", NSInteger(pt.x), NSInteger(pt.y)) as String, completionHandler: {(stringy, error : NSError?) -> Void in
+		self.webView!.evaluateJavaScript(NSString(format: "getHTMLElementsAtPoint(%i,%i);", NSInteger(pt.x), NSInteger(pt.y - 90)) as String, completionHandler: {(stringy, error : NSError?) -> Void in
 				if error == nil {
 
 

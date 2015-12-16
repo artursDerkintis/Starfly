@@ -230,8 +230,8 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
 	func loadNewImageForHit(hit : HomeHit, indexPath: NSIndexPath) {
 
 		let imageFileName = (hit.bigImage as NSString).lastPathComponent
-		let folder = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
-		let imagePath = folder.stringByAppendingString(imageFileName as String)
+        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
+		let imagePath = folder.stringByAppendingPathComponent(imageFileName as String)
 		if fileIsOlderThanDay(imagePath) {
 			dispatch_async(dispatch_get_main_queue()) {() -> Void in
 				self.updateItem(NSURL(string: hit.url)!, completion: {(newData: NSDictionary) -> Void in
@@ -246,7 +246,7 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
 							data.writeToFile(imagePath as String, atomically: true)
 						}
 
-						self.collectionView?.reloadItemsAtIndexPaths([indexPath])
+						self.configureExistingCell(indexPath)
 					})
 			}
 		}

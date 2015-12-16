@@ -28,7 +28,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 			}
 		}
 	}
-
+    var longpress = false
 	var handler : SFWebViewHandler?
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -57,7 +57,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 		webView?.opaque = false
 		webView?.scrollView.clipsToBounds = false
 		webView?.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
-
+        webView?.allowsLinkPreview = true
 		webView?.allowsBackForwardNavigationGestures = true
 
 		view.addSubview(webView!)
@@ -72,9 +72,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 
 		//long press for action sheet
 		let long = UILongPressGestureRecognizer(target: self, action: "longPress:")
-		//long.delegate = self
-
-		long.minimumPressDuration = 0.5
+		long.delegate = self
 		webView?.addGestureRecognizer(long)
 
 		//circle when tapped
@@ -212,9 +210,11 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 				NSNotificationCenter.defaultCenter().postNotificationName("HOME", object: self)
 				modeOfWeb = .home
 			} else {
+                
 				modeOfWeb = .web
 			}
 		}
+        NSNotificationCenter.defaultCenter().postNotificationName("RECOVERY", object: nil)
 		newContentLoaded?(true)
 
 		handler?.tryToInjectPasword()
@@ -232,9 +232,17 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 				}))
 		self.presentViewController(alert, animated: true, completion: nil)
 	}
+   
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+        if longpress == true{
+            decisionHandler(.Cancel)
+            longpress = false
+            return
+        }
+        decisionHandler(WKNavigationActionPolicy.Allow)
 
-
-	func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    }
+	func webView(webView: WKWebView,   navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
 		if navigationAction.navigationType == WKNavigationType.FormSubmitted && NSUserDefaults.standardUserDefaults().boolForKey("savePASS") {
 			handler?.lookForPaswordAndSaveIt()
 		}
@@ -250,10 +258,21 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 		if (navigationAction.targetFrame == nil) {
 			NSNotificationCenter.defaultCenter().postNotificationName("AddTabURL", object: navigationAction.request.URL!.absoluteString)
 			decisionHandler(WKNavigationActionPolicy.Cancel)
-		}
-		decisionHandler(WKNavigationActionPolicy.Allow)
+        }
+        decisionHandler(WKNavigationActionPolicy.Allow)
+        
 	}
 
+	func longPress(sender: UILongPressGestureRecognizer) {
+        longpress = true
+		if sender.state == UIGestureRecognizerState.Began {
+           handler!.showActionSheet(sender.locationInView(webView!))
+			
+        }else if sender.state == UIGestureRecognizerState.Ended{
+            
+            
+        }
+	}
 	func webView(webView: WKWebView, didReceiveAuthenticationChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
 
 		if let hostName = webView.URL?.host {
@@ -297,11 +316,6 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 	}
 
 
-	func longPress(sender: UILongPressGestureRecognizer) {
-		if sender.state == UIGestureRecognizerState.Began {
-			handler!.showActionSheet(sender.locationInView(webView!))
-		}
-	}
 
 	func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
 		//    print(error.localizedDescription)

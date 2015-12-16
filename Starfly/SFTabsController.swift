@@ -64,10 +64,10 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "addTabNotification:", name: "AddTabURL", object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "goHome:", name: "HOME", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "openURL:", name: "OPEN", object: nil)
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveTabs", name: "RECOVERY", object: nil)
         //Initatial tab
         delay(0.4) { () -> () in
-            self.addTab()
+            self.restoreTabs()
         }
 	}
 
@@ -75,6 +75,8 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+    
+    
 
 	//MARK: Chrome functions
 	func addTab() {
@@ -157,6 +159,23 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 			tab.selected = false
 		}
 	}
+    
+    func restoreTabs(){
+        if NSUserDefaults.standardUserDefaults().boolForKey("rest"){
+            
+            if NSUserDefaults.standardUserDefaults().objectForKey("tabsInMemory") != nil{
+                let array = NSUserDefaults.standardUserDefaults().objectForKey("tabsInMemory") as! NSMutableArray
+                for item in array{
+                    addTabWithUrl(NSURL(string: item as! String)!)
+                }
+                
+            }else{
+                self.addTab()
+            }
+        }else{
+            self.addTab()
+        }
+    }
 
 	//MARK: Finders
 	func tabByIndex(index : Int) -> SFTab? {
@@ -204,5 +223,22 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
             }
         }
     }
-
+    func saveTabs(){
+        if NSUserDefaults.standardUserDefaults().boolForKey("rest"){
+            
+            let array = NSMutableArray()
+            for tab in tabs where tab.webViewController!.modeOfWeb == .web{
+                if let url = tab.webViewController?.webView?.URL{
+                    array.addObject(url.absoluteString)
+                }
+            }
+            if array.count > 0{
+                NSUserDefaults.standardUserDefaults().setObject(array, forKey: "tabsInMemory")
+            }else{
+                NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "tabsInMemory")
+            }
+        }
+        
+    }
+    
 }

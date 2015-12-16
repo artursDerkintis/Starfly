@@ -23,7 +23,7 @@ class SFProgressView: UIView {
     
     func updateProgress(not : NSNotification){
         let progress = not.object! as! Double
-        print(progress)
+        //print(progress)
         newProgress = progress
         UIView.animateWithDuration(durationFull * NSTimeInterval(progress - oldProgress), animations: { () -> Void in
             self.progressLayer.frame = CGRect(x: 0, y:0, width: self.frame.width * CGFloat(self.newProgress), height: self.frame.height)

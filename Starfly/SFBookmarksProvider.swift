@@ -77,7 +77,10 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
         dispatch_async(dispatch_get_main_queue(), {() -> Void in
             if self.tableView != nil{
-                self.tableView?.endUpdates()
+                delay(0.5, closure: { () -> () in
+                    self.tableView?.endUpdates()
+                })
+                
                 
             }
         })
@@ -96,13 +99,12 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 						}
                         
 					}
-                    self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
+                    delay(0.3, closure: { () -> () in
+                        self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
+                    })
 					break
 				case .Delete:
-					if let hit = anObject as? Bookmarks {
-						self.deleteImage(hit.favicon)
-					}
-					self.tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+                    self.tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
 					break
 				case .Move:
 					self.tableView?.moveRowAtIndexPath(indexPath!, toIndexPath: newIndexPath!)

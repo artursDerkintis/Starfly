@@ -82,7 +82,9 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         dispatch_async(dispatch_get_main_queue(), {() -> Void in
             if self.tableView != nil{
-                self.tableView?.endUpdates()
+                delay(1.0, closure: { () -> () in
+                    self.tableView?.endUpdates()
+                })
             }
         })
     }
@@ -101,12 +103,12 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
                         self.iconDictionary.setObject(icon, forKey: hit.faviconPath)
                     }
                 }
-                self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
+                delay(0.3, closure: { () -> () in
+                    self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
+                })
+                
                 break
             case .Delete:
-                if let hit = anObject as? HistoryHit {
-                    self.deleteImage(hit.faviconPath)
-                }
                 self.tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
                 break
             case .Move:
