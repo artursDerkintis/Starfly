@@ -239,6 +239,12 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
             longpress = false
             return
         }
+        if (navigationAction.targetFrame == nil) {
+            NSNotificationCenter.defaultCenter().postNotificationName("AddTabURL", object: navigationAction.request.URL!.absoluteString)
+            decisionHandler(WKNavigationActionPolicy.Cancel)
+            return
+        }
+
         decisionHandler(WKNavigationActionPolicy.Allow)
 
     }
