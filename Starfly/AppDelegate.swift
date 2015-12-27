@@ -125,6 +125,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
+    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+        if Fillr.sharedInstance().canHandleOpenURL(url){
+            Fillr.sharedInstance().handleOpenURL(url)
+            return true
+        }
+        return false
+    }
 }
 

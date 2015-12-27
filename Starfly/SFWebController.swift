@@ -217,7 +217,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
         NSNotificationCenter.defaultCenter().postNotificationName("RECOVERY", object: nil)
 		newContentLoaded?(true)
 
-		handler?.tryToInjectPasword()
+		///handler?.tryToInjectPasword()
 
 		handler?.loadFavicon({(ima) -> Void in
 				self.favicon = ima
@@ -249,9 +249,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 
     }
 	func webView(webView: WKWebView,   navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-		if navigationAction.navigationType == WKNavigationType.FormSubmitted && NSUserDefaults.standardUserDefaults().boolForKey("savePASS") {
-			handler?.lookForPaswordAndSaveIt()
-		}
+    
 
 		let url = navigationAction.request.URL;
 		let urlString = url != nil ? url!.absoluteString : ""

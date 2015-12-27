@@ -34,9 +34,31 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 
 	var tabContentDelegate : SFTabsContentDelegate?
     var urlBarManagment : SFUrlBarManagment?
+    let fillr = Fillr.sharedInstance()
+    
+    /*
+    // Initialise the Fillr SDK once per session
+    Fillr * fillr = [Fillr sharedInstance];
+    [fillr initialiseWithDevKey:'<your dev key>'  andUrlSchema:'<your app url
+    schema>'];
+    [fillr setBrowserName:@"Your Browser Name" toolbarBrowserName:@"Your Browser
+    Name"];
+    // Enable the Fillr toolbar on each of your web views. Call trackWebView once per
+    web view, ideally as soon as the web view is created.
+    [fillr trackWebview:webView];
+    - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+    sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([[Fillr sharedInstance] canHandleOpenURL:url]) {
+    [[Fillr sharedInstance] handleOpenURL:url];
+    return YES;
+    } }*/
     
 	override func viewDidLoad() {
 		super.viewDidLoad()
+        
+        //
+        fillr.initialiseWithDevKey("20cc9debf32bcfd829fccb90a736d491", andUrlSchema: "starfly")
+        //
 		tabsView = SFTabsView(frame: .zero)
 		addSubviewSafe(tabsView)
 		tabsView?.snp_makeConstraints(closure: {(make) -> Void in
@@ -146,6 +168,7 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
 		unselectAllTabs()
 		if let tab = tabById(id) {
 			tab.webViewController?.isCurrent = true
+            fillr.trackWebview(tab.webViewController?.webView)
             tabContentDelegate?.bringSFWebControllerInFront(tab.webViewController!)
             urlBarManagment?.setWebController(tab.webViewController!)
 			tab.selected = true

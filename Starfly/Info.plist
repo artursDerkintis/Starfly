@@ -20,6 +20,21 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>4</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.starfly.StarflyV2</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>starfly</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fillr</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

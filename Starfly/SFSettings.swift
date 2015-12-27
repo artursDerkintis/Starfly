@@ -27,7 +27,7 @@ class SFSettings: UIView {
         let savePasswordsSwitch = SFSettingsSwitch(frame: CGRect(x:0, y: 0, width: 150, height : 40))
         
         savePasswordsSwitch.switcher?.tag = NSUserDefaults.standardUserDefaults().boolForKey("savePASS") == true ? 1 : 0
-        savePasswordsSwitch.switcher?.setTitle("Save Passwords", forState: UIControlState.Normal)
+        savePasswordsSwitch.switcher?.setTitle("Enable Fillr", forState: UIControlState.Normal)
         savePasswordsSwitch.switcher?.backgroundColor = NSUserDefaults.standardUserDefaults().boolForKey("savePASS") == true ? UIColor(white: 0.5, alpha: 0.5) :UIColor.clearColor()
         
         savePasswordsSwitch.switcher?.addTarget(self, action: "passwordMode:", forControlEvents: UIControlEvents.TouchDown)
@@ -93,7 +93,7 @@ class SFSettings: UIView {
     func passwordMode(sender : UIButton){
         NSUserDefaults.standardUserDefaults().setBool(sender.tag == 1 ? false : true, forKey: "savePASS")
         sender.backgroundColor = NSUserDefaults.standardUserDefaults().boolForKey("savePASS") == true ? UIColor(white: 0.5, alpha: 0.5) :UIColor.clearColor()
-        
+        Fillr.sharedInstance().setEnabled(sender.tag == 1 ? false : true)
         sender.tag = NSUserDefaults.standardUserDefaults().boolForKey("savePASS") == true ? 1 : 0
     }
     required init?(coder aDecoder: NSCoder) {
