@@ -53,7 +53,6 @@
 		B82FB6031C30584400FE2AD7 /* FillrAutofillInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = B82FB5E51C30584400FE2AD7 /* FillrAutofillInputAccessoryView.m */; };
 		B82FB6041C30584400FE2AD7 /* FillrToolbarPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = B82FB5E71C30584400FE2AD7 /* FillrToolbarPopup.m */; };
 		B82FB6051C30584400FE2AD7 /* NSData+Base64Fillr.m in Sources */ = {isa = PBXBuildFile; fileRef = B82FB5ED1C30584400FE2AD7 /* NSData+Base64Fillr.m */; };
-		B82FB6061C30584400FE2AD7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B82FB5F51C30584400FE2AD7 /* Info.plist */; };
 		B82FB6071C30584400FE2AD7 /* FillrSDKBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B82FB5F61C30584400FE2AD7 /* FillrSDKBundle.bundle */; };
 		B82FB6081C30584400FE2AD7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B82FB5F81C30584400FE2AD7 /* Info.plist */; };
 		B82FB6091C30584400FE2AD7 /* UnwrappedMobileWidget.js in Resources */ = {isa = PBXBuildFile; fileRef = B82FB5F91C30584400FE2AD7 /* UnwrappedMobileWidget.js */; };
@@ -138,27 +137,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B82FB60E1C30584400FE2AD7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 21FD5CB71AEF51AE00300809;
-			remoteInfo = FillrSDK;
-		};
-		B82FB6101C30584400FE2AD7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 21FD5CC21AEF51AE00300809;
-			remoteInfo = FillrSDKTests;
-		};
-		B82FB6121C30584400FE2AD7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 211CCA021AF1E2DD00B13FBD;
-			remoteInfo = FillrSDKBundle;
-		};
 		B8ECA7F81BA5AF3500A95D36 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B8ECA7D81BA5AF3500A95D36 /* Project object */;
@@ -240,8 +218,6 @@
 		B82FB5EE1C30584400FE2AD7 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B82FB5EF1C30584400FE2AD7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B82FB5F01C30584400FE2AD7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = FillrSDK.xcodeproj; sourceTree = "<group>"; };
-		B82FB5F51C30584400FE2AD7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B82FB5F61C30584400FE2AD7 /* FillrSDKBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FillrSDKBundle.bundle; sourceTree = "<group>"; };
 		B82FB5F81C30584400FE2AD7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B82FB5F91C30584400FE2AD7 /* UnwrappedMobileWidget.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = UnwrappedMobileWidget.js; sourceTree = "<group>"; };
@@ -471,8 +447,6 @@
 				B82FB5D91C30584400FE2AD7 /* fillr_sdk_keyboard_arrow_down@2x.png */,
 				B82FB5DA1C30584400FE2AD7 /* fillr_sdk_keyboard_arrow_down@3x.png */,
 				B82FB5DB1C30584400FE2AD7 /* FillrSDK */,
-				B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */,
-				B82FB5F41C30584400FE2AD7 /* FillrSDKBundle */,
 				B82FB5F61C30584400FE2AD7 /* FillrSDKBundle.bundle */,
 				B82FB5F71C30584400FE2AD7 /* FillrSDKTests */,
 				B82FB5F91C30584400FE2AD7 /* UnwrappedMobileWidget.js */,
@@ -496,24 +470,6 @@
 				B82FB5ED1C30584400FE2AD7 /* NSData+Base64Fillr.m */,
 			);
 			path = FillrSDK;
-			sourceTree = "<group>";
-		};
-		B82FB5F21C30584400FE2AD7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B82FB60F1C30584400FE2AD7 /* libFillrSDK.a */,
-				B82FB6111C30584400FE2AD7 /* FillrSDKTests.xctest */,
-				B82FB6131C30584400FE2AD7 /* FillrSDKBundle.bundle */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		B82FB5F41C30584400FE2AD7 /* FillrSDKBundle */ = {
-			isa = PBXGroup;
-			children = (
-				B82FB5F51C30584400FE2AD7 /* Info.plist */,
-			);
-			path = FillrSDKBundle;
 			sourceTree = "<group>";
 		};
 		B82FB5F71C30584400FE2AD7 /* FillrSDKTests */ = {
@@ -777,6 +733,11 @@
 				TargetAttributes = {
 					B8ECA7DF1BA5AF3500A95D36 = {
 						CreatedOnToolsVersion = 7.0;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					B8ECA7F61BA5AF3500A95D36 = {
 						CreatedOnToolsVersion = 7.0;
@@ -808,12 +769,6 @@
 			mainGroup = B8ECA7D71BA5AF3400A95D36;
 			productRefGroup = B8ECA7E11BA5AF3500A95D36 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = B82FB5F21C30584400FE2AD7 /* Products */;
-					ProjectRef = B82FB5F11C30584400FE2AD7 /* FillrSDK.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				B8ECA7DF1BA5AF3500A95D36 /* Starfly */,
@@ -822,30 +777,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		B82FB60F1C30584400FE2AD7 /* libFillrSDK.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFillrSDK.a;
-			remoteRef = B82FB60E1C30584400FE2AD7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B82FB6111C30584400FE2AD7 /* FillrSDKTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = FillrSDKTests.xctest;
-			remoteRef = B82FB6101C30584400FE2AD7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B82FB6131C30584400FE2AD7 /* FillrSDKBundle.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = FillrSDKBundle.bundle;
-			remoteRef = B82FB6121C30584400FE2AD7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B8ECA7DE1BA5AF3500A95D36 /* Resources */ = {
@@ -860,7 +791,6 @@
 				B82FB5FD1C30584400FE2AD7 /* fillr_sdk_keyboard_arrow_down.png in Resources */,
 				B86D9A621BAB1963000808C5 /* abs8.jpg in Resources */,
 				B838B4841BBB16570023AD3E /* abs19_small.jpg in Resources */,
-				B82FB6061C30584400FE2AD7 /* Info.plist in Resources */,
 				B838B4661BBAFF350023AD3E /* abs5_small.jpg in Resources */,
 				B838B4851BBB16570023AD3E /* abs19.jpg in Resources */,
 				B86D9A601BAB1963000808C5 /* abs6.jpg in Resources */,
