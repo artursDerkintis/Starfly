@@ -16,12 +16,19 @@ class SFHistoryCell : SWTableViewCell {
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		backgroundColor = .clearColor()
+        icon = UIImageView(frame: CGRect.zero)
+        contentView.addSubview(icon!)
+        icon?.snp_makeConstraints {(make) -> Void in
+            make.width.height.equalTo(30)
+            make.centerY.equalTo(self.snp_centerY)
+            make.left.equalTo(10)
+        }
 		titleLabel = UILabel(frame: CGRect.zero)
 		titleLabel?.textColor = UIColor.blackColor()
 		titleLabel?.font = UIFont.systemFontOfSize(16, weight: UIFontWeightRegular)
 		contentView.addSubview(titleLabel!)
 		titleLabel?.snp_makeConstraints {(make) -> Void in
-			make.left.equalTo(50)
+			make.left.equalTo(self.icon!.snp_rightMargin).offset(10)
 			make.height.equalTo(self.contentView).multipliedBy(0.5)
 			make.top.equalTo(4)
 			make.right.equalTo(0)
@@ -31,19 +38,13 @@ class SFHistoryCell : SWTableViewCell {
 		urlLabel?.font = UIFont.systemFontOfSize(14, weight: UIFontWeightRegular)
 		contentView.addSubview(urlLabel!)
 		urlLabel!.snp_makeConstraints {(make) -> Void in
-			make.left.equalTo(50)
-			make.height.equalTo(self.contentView).multipliedBy(0.5)
+			make.left.equalTo(self.icon!.snp_rightMargin).offset(10)
+			make.bottom.equalTo(-4)
 			make.top.equalTo(25)
 			make.right.equalTo(0)
-
 		}
 
-		icon = UIImageView(frame: CGRect.zero)
-		contentView.addSubview(icon!)
-		icon?.snp_makeConstraints {(make) -> Void in
-			make.width.height.equalTo(30)
-			make.top.left.equalTo(10)
-		}
+
 	}
 
 	required init(coder aDecoder: NSCoder) {

@@ -14,11 +14,9 @@ let historyHeader = "historyHeader"
 
 class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, SWTableViewCellDelegate {
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     private var fetchController : NSFetchedResultsController?
-    
-    var iconDictionary = NSMutableDictionary()
+
     
     var tableView : UITableView? {
         didSet {
@@ -27,50 +25,26 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
         }
     }
     
-    var request : NSFetchRequest!
-    
     override init() {
         super.init()
-        request = simpleHistoryRequest()
-        cacheIcons(request)
-        fetchController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: appDelegate.managedObjectContext, sectionNameKeyPath: "sectionId", cacheName: nil)
-        
+        fetchController = NSFetchedResultsController(fetchRequest: simpleHistoryRequest, managedObjectContext: SFDataHelper.sharedInstance.managedObjectContext, sectionNameKeyPath: "sectionId", cacheName: nil)
         fetchController?.delegate = self
-        
     }
     
     func loadData() {
         do {
             try fetchController?.performFetch()
-            
             tableView?.reloadData()
         } catch _ {
             
         }
     }
     
-    func simpleHistoryRequest() -> NSFetchRequest {
+    lazy var simpleHistoryRequest : NSFetchRequest = {
         let request = NSFetchRequest(entityName: "HistoryHit")
         request.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: false)]
         return request
-    }
-    
-    func cacheIcons(request : NSFetchRequest) {
-        do {
-            if let hits = try appDelegate.managedObjectContext.executeFetchRequest(request) as? [HistoryHit] {
-                for hit in hits {
-                    let iconFileName = (hit.faviconPath as NSString).lastPathComponent
-                    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
-                    let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
-                    if let icon = UIImage(contentsOfFile: iconPath) {
-                        iconDictionary.setObject(icon, forKey: hit.faviconPath)
-                    }
-                }
-            }
-        } catch _ {
-            
-        }
-    }
+    }()
     
     //MARK: NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -93,20 +67,7 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
         dispatch_async(dispatch_get_main_queue(), {() -> Void in
             switch type {
             case .Insert:
-                if let hit = anObject as? HistoryHit {
-                   
-                    let iconFileName = (hit.faviconPath as NSString).lastPathComponent
-                    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
-                    let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
-
-                    if let icon = UIImage(contentsOfFile: iconPath) {
-                        self.iconDictionary.setObject(icon, forKey: hit.faviconPath)
-                    }
-                }
-                delay(0.3, closure: { () -> () in
-                    self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
-                })
-                
+                self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
                 break
             case .Delete:
                 self.tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
@@ -147,9 +108,9 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
     func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: Int) {
         let indexPath = self.tableView?.indexPathForCell(cell)
         if let hit = fetchController!.objectAtIndexPath(indexPath!) as? HistoryHit {
-            deleteImage(hit.faviconPath)
-            appDelegate.managedObjectContext.deleteObject(hit)
-            appDelegate.saveContext()
+            hit.removeIcon()
+            SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
+            SFDataHelper.sharedInstance.saveContext()
         }
         
     }
@@ -160,53 +121,50 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
         let date = calendar.dateByAddingUnit(NSCalendarUnit.Hour, value: -1, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
         
         for hit in fetchController!.fetchedObjects as! [HistoryHit]{
-            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
-                
-                deleteImage(hit.faviconPath)
-                
-                appDelegate.managedObjectContext.deleteObject(hit)
+            if hit.date!.compare(date) == NSComparisonResult.OrderedSame ||  hit.date!.compare(date) == NSComparisonResult.OrderedDescending{
+                hit.removeIcon()
+                SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
             }else{
                 break
             }
         }
-        appDelegate.saveContext()
+        SFDataHelper.sharedInstance.saveContext()
     }
     func deleteToday(){
         let calendar = NSCalendar.currentCalendar()
         let date = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -1, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
         
         for hit in fetchController!.fetchedObjects as! [HistoryHit]{
-            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
-                
-                deleteImage(hit.faviconPath)
-                appDelegate.managedObjectContext.deleteObject(hit)
+            if hit.date!.compare(date) == NSComparisonResult.OrderedSame ||  hit.date!.compare(date) == NSComparisonResult.OrderedDescending{
+                hit.removeIcon()
+                SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
             }else{
                 break
             }
         }
-        appDelegate.saveContext()
+        SFDataHelper.sharedInstance.saveContext()
     }
     func deleteThisWeek(){
         let calendar = NSCalendar.currentCalendar()
         let date = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -7, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
         
         for hit in fetchController!.fetchedObjects as! [HistoryHit]{
-            if hit.date.compare(date) == NSComparisonResult.OrderedSame ||  hit.date.compare(date) == NSComparisonResult.OrderedDescending{
+            if hit.date!.compare(date) == NSComparisonResult.OrderedSame ||  hit.date!.compare(date) == NSComparisonResult.OrderedDescending{
                 
-                deleteImage(hit.faviconPath)
-                appDelegate.managedObjectContext.deleteObject(hit)
+                hit.removeIcon()
+                SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
             }else{
                 break
             }
         }
-        appDelegate.saveContext()
+        SFDataHelper.sharedInstance.saveContext()
     }
     func deleteAll(){
         for hit in fetchController!.fetchedObjects as! [HistoryHit]{
-            deleteImage(hit.faviconPath)
-            appDelegate.managedObjectContext.deleteObject(hit)
+            hit.removeIcon()
+            SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
         }
-        appDelegate.saveContext()
+        SFDataHelper.sharedInstance.saveContext()
 
     }
     func deleteAllAndDeep(){
@@ -254,25 +212,16 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
 
         
     }
-    func deleteImage(stringPath : NSString) {
-        let stsAr : NSString? = stringPath.lastPathComponent
-        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HistoryHit")
-        let path = folder.stringByAppendingPathComponent(stsAr! as String)
-        
-        do {
-            try NSFileManager.defaultManager().removeItemAtPath(path)
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-    }
+
     
     //MARK: UITableViewDataSource
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(historyCell, forIndexPath: indexPath) as! SFHistoryCell
         let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
+        print(object.titleOfIt)
         cell.titleLabel?.text = object.titleOfIt
         cell.urlLabel?.text = object.urlOfIt
-        cell.icon?.image = iconDictionary.objectForKey(object.faviconPath) as? UIImage
+        cell.icon?.image = object.icon
         cell.rightUtilityButtons = deleteButton() as [AnyObject]
         cell.delegate = self
         return cell
@@ -300,47 +249,47 @@ class SFHistoryProvider: NSObject, UITableViewDataSource, UITableViewDelegate, N
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(historyHeader) as! SFHistoryHeader
         let sectionInfo = self.fetchController!.sections![section] as NSFetchedResultsSectionInfo
-        
-        appDelegate.dateFormater2.dateFormat = "dd-MM-yyyy"
+        let formater = DateFormatter.sharedInstance.dateFormatter
+        formater.dateFormat = "dd-MM-yyyy"
         let dateToday = NSDate()
-        let dayToday = appDelegate.dateFormater2.stringFromDate(dateToday)
+        let dayToday = formater.stringFromDate(dateToday)
         let dayStrings = sectionInfo.name
-        let date = appDelegate.dateFormater2.dateFromString(dayStrings)
+        let date = formater.dateFromString(dayStrings)
         let calendar = NSCalendar.currentCalendar()
         let dayAgo = calendar.dateByAddingUnit(NSCalendarUnit.Day, value: -6, toDate: NSDate(), options: NSCalendarOptions.MatchStrictly)!
         if (dayAgo.compare(date!) == NSComparisonResult.OrderedAscending) {
-            appDelegate.dateFormater2.dateFormat = "EEEE"
-            let dayString = appDelegate.dateFormater2.stringFromDate(date!)
+            formater.dateFormat = "EEEE"
+            let dayString = formater.stringFromDate(date!)
             if dayStrings == dayToday {
                 header.dayLabel!.text = "Today"
             } else {
                 header.dayLabel!.text = dayString
             }
         } else if (dayAgo.compare(date!) == NSComparisonResult.OrderedSame || dayAgo.compare(date!) == NSComparisonResult.OrderedDescending) {
-            appDelegate.dateFormater2.dateFormat = "d LLLL"
-            header.dayLabel!.text = appDelegate.dateFormater2.stringFromDate(date!)
+            formater.dateFormat = "d LLLL"
+            header.dayLabel!.text = formater.stringFromDate(date!)
         }
         return header
     }
     
     func configureExistingCell(indexPath: NSIndexPath) {
-        if let hit = fetchController?.objectAtIndexPath(indexPath) as? HistoryHit {
+        if let object = fetchController?.objectAtIndexPath(indexPath) as? HistoryHit {
             if let cell = self.tableView?.cellForRowAtIndexPath(indexPath) as?SFHistoryCell {
-                cell.icon?.image = iconDictionary.objectForKey(hit.faviconPath) as? UIImage
-                cell.urlLabel?.text = hit.urlOfIt
-                cell.titleLabel?.text = hit.titleOfIt
+                cell.icon?.image = object.icon
+                cell.urlLabel?.text = object.urlOfIt
+                cell.titleLabel?.text = object.titleOfIt
             } else {
                 self.tableView?.endUpdates()
-                
                 self.tableView?.reloadData()
             }
         }
     }
-    //MARK: UITableViewDelagate
+    
+    //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         if let object = fetchController?.objectAtIndexPath(indexPath) as? HistoryHit {
-            NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.urlOfIt)
+            NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.getURL())
         }
     }
 }

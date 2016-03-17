@@ -20,6 +20,7 @@ class SFClock: UIView {
     var digitalClock : UILabel?
     var batteryLevel : Battery?
     var state : SFClockFace?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         if NSUserDefaults.standardUserDefaults().integerForKey("clockFace") == 0{
@@ -32,10 +33,11 @@ class SFClock: UIView {
         let tap = UITapGestureRecognizer(target: self, action: "changeFace")
         addGestureRecognizer(tap)
     }
+    
     func start(){
         timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
         NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
-            }
+    }
    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -97,6 +99,7 @@ class SFClock: UIView {
             break
         }
     }
+    
     func setup(){
         let color = UIColor.whiteColor()
         containerLayer = CALayer()

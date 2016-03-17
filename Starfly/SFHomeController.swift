@@ -55,14 +55,13 @@ class SFHomeController: UIViewController, UIScrollViewDelegate {
 		bookmarksController = SFBookmarksController()
 		bookmarksController.view.frame = CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
 		bookmarksController.view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-		bookmarksController.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
 		scrollView?.addSubview(bookmarksController.view)
 
 		historyController = SFHistoryController()
         addChildViewController(historyController)
 		historyController.view.frame = CGRect(x: view.bounds.width * 2, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
 		historyController.view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-		historyController.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
+
 		scrollView.addSubview(historyController.view)
 
 

@@ -162,8 +162,9 @@ class SFTextView: UIView {
 	}
 
 	func textEnter() {
-
-		NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: self.textField!.text!)
+        if let url = NSURL(string: parseUrl(self.textField!.text!)!){
+            NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: url)
+        }
 	}
 
 	func presentSearchCompletions() {

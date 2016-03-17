@@ -18,16 +18,15 @@ class SFWebViewHandler: NSObject {
 
 	func saveHistory(favicon : UIImage?) {
 		if NSUserDefaults.standardUserDefaults().boolForKey("pr") == false {
-			let dictionary = NSMutableDictionary()
+            
 			if webView!.URL?.absoluteString != "about:blank" && webView!.title != nil && !webView!.URL!.absoluteString.containsString("file:///") {
-				dictionary.setObject(webView!.title!, forKey: "title")
-				dictionary.setObject(webView!.URL!.absoluteString, forKey: "url")
-				if favicon == nil {
-					dictionary.setObject(UIImage(named: "g")!, forKey: "iconData")
-				} else {
-					dictionary.setObject(favicon!, forKey: "iconData")
-				}
-				saveInHistory(dictionary)
+                if let title = webView?.title, url = webView?.URL?.absoluteString{
+                    let fav = favicon != nil ? favicon : UIImage(named: "g")
+                    let item = Item(url: url, title: title, favicon: fav!)
+                    SFDataHandler.sharedInstance.saveHistoryItem(item)
+                }
+				
+                
 			}
 		}
 	}

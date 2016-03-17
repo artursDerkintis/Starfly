@@ -35,7 +35,7 @@ class SFIntroViewController: UIViewController {
         //Fade Animation
         UIView.animateWithDuration(0.3, delay: 2.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
             self.view.alpha = 0.0
-            imageView.transform = CGAffineTransformMakeScale(0.01, 0.01)
+            imageView.transform = CGAffineTransformMakeScale(10, 10)
             }) { (fin) -> Void in
                 self.view.removeFromSuperview()
                 self.removeFromParentViewController()
