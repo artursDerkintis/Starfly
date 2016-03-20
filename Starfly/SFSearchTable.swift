@@ -10,12 +10,14 @@ import UIKit
 import CoreData
 let querie = "http://suggestqueries.google.com/complete/search?client=toolbar&hl=en&q="
 class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate{
+    
     private var googleTable : UITableView?
     private var historyTable : UITableView?
     private var array = [String]()
     let app = UIApplication.sharedApplication().delegate as! AppDelegate
     private var fetchController : NSFetchedResultsController?
     private var textForSearch = ""
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         fetchController = NSFetchedResultsController(fetchRequest: simpleHistoryRequest, managedObjectContext: SFDataHelper.sharedInstance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -28,7 +30,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         googleTable!.backgroundColor = UIColor(white: 0.9, alpha: 0.0)
         googleTable?.separatorColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
         historyTable = UITableView(frame: CGRect.zero)
-        historyTable!.registerClass(SFHistoryCell.self, forCellReuseIdentifier: "search2")
+        historyTable!.registerClass(SFHistoryCellSearch.self, forCellReuseIdentifier: "search2")
         historyTable!.delegate = self
         historyTable!.dataSource = self
         historyTable!.backgroundColor = UIColor(white: 0.9, alpha: 0.0)
@@ -104,11 +106,13 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
         if tableView == googleTable{
             if array.count > 0{
                 if let url = NSURL(string: parseUrl(array[indexPath.row])!){
+                    print("google \(url)")
                     NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object:url)
                 }
             }
         }else if tableView == historyTable{
             let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
+            print("google \(object.getURL())")
             NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.getURL())
         }
         UIApplication.sharedApplication().delegate?.window!?.endEditing(true)
@@ -124,7 +128,7 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
             }
             return cell
         }else if tableView == self.historyTable{
-            let cell = tableView.dequeueReusableCellWithIdentifier("search2", forIndexPath: indexPath) as! SFHistoryCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("search2", forIndexPath: indexPath) as! SFHistoryCellSearch
             let object = fetchController?.objectAtIndexPath(indexPath) as! HistoryHit
             let title = NSMutableAttributedString(string: object.titleOfIt!)
             let rangeT = (object.titleOfIt! as NSString).rangeOfString(textForSearch, options: NSStringCompareOptions.CaseInsensitiveSearch)
@@ -138,7 +142,6 @@ class SFSearchTable: UIView, UITableViewDataSource, UITableViewDelegate, NSFetch
             cell.titleLabel?.textColor = nil
             
             cell.urlLabel?.textColor = nil
-            cell.icon?.hidden = true
             cell.titleLabel?.attributedText = title
             cell.urlLabel?.attributedText = url
             return cell

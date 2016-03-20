@@ -13,17 +13,23 @@ import CoreData
 class HomeHit: NSManagedObject {
     
     // Insert code here to add functionality to your managed object subclass
-    lazy var screenshot : UIImage? = {
-        if let fav = self.bigImage{
-            let iconFileName = (fav as NSString).lastPathComponent
-            let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
-            let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
-            if let icon = UIImage(contentsOfFile: iconPath) {
-                return icon
+    var screenshot : UIImage?{
+        get{
+            if (_screenshot == nil){
+                if let fav = self.bigImage{
+                    let iconFileName = (fav as NSString).lastPathComponent
+                    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
+                    let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
+                    if let icon = UIImage(contentsOfFile: iconPath) {
+                        _screenshot = icon
+                    }
+                }
             }
+            return _screenshot
         }
-        return nil
-    }()
+    }
+    
+    var _screenshot : UIImage?
     
     func setIndex(){
         self.arrangeIndex = CFAbsoluteTimeGetCurrent()

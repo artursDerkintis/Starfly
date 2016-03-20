@@ -114,11 +114,11 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
     
     func configureExistingCell(indexPath : NSIndexPath) {
         if let hit = fetchController?.objectAtIndexPath(indexPath) as? HomeHit {
-           
+            
             if let cell = collectionView?.cellForItemAtIndexPath(indexPath) as? SFFavoritesCell {
                 cell.label?.text = hit.title
                 cell.imageView?.image = hit.screenshot
-                 cell.delegate = self
+                cell.delegate = self
             }
         }
     }
@@ -171,36 +171,35 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
         if let hit = fetchController?.objectAtIndexPath(indexPath) as? HomeHit {
             NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: hit.getURL())
             
-            //self.loadNewImageForHit(hit, indexPath: indexPath)
+            
+            self.loadNewImageForHit(hit, indexPath: indexPath)
             
         }
     }
     
     //MARK: Retreive new Image
-    /*func loadNewImageForHit(hit : HomeHit, indexPath: NSIndexPath) {
-    
-    let imageFileName = (hit.bigImage! as NSString).lastPathComponent
-    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
-    let imagePath = folder.stringByAppendingPathComponent(imageFileName as String)
-    if fileIsOlderThanDay(imagePath) {
-    dispatch_async(dispatch_get_main_queue()) {() -> Void in
-				self.updateItem(hit.getURL(), completion: {(newData: NSDictionary) -> Void in
-    hit.url = newData.valueForKey("url") as! String
-    hit.title = newData.valueForKey("title") as! String
-    
-    let image = newData.valueForKey("shoot") as! UIImage
-    let dataBig = UIImagePNGRepresentation(image)
-    
-    if let data = dataBig {
-    self.screenshotDictionary.setValue(image, forKey: imageFileName)
-    data.writeToFile(imagePath as String, atomically: true)
+    func loadNewImageForHit(hit : HomeHit, indexPath: NSIndexPath) {
+        
+        let imageFileName = (hit.bigImage! as NSString).lastPathComponent
+        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/HomeHit")
+        let imagePath = folder.stringByAppendingPathComponent(imageFileName as String)
+        if fileIsOlderThanDay(imagePath) {
+            dispatch_async(dispatch_get_main_queue()) {() -> Void in
+                self.updateItem(hit.getURL(), completion: {(newData: NSDictionary) -> Void in
+                    hit.url = newData.valueForKey("url") as? String
+                    hit.title = newData.valueForKey("title") as? String
+                    hit._screenshot = nil
+                    let image = newData.valueForKey("shoot") as! UIImage
+                    let dataBig = UIImagePNGRepresentation(image)
+                    
+                    if let data = dataBig {
+                        data.writeToFile(imagePath as String, atomically: true)
+                    }
+                    self.configureExistingCell(indexPath)
+                })
+            }
+        }
     }
-    
-    self.configureExistingCell(indexPath)
-    })
-    }
-    }
-    }*/
     
     func updateItem(url : NSURL, completion: (NSDictionary) -> Void) {
         let dict = NSMutableDictionary()

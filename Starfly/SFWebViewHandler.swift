@@ -196,8 +196,8 @@ class SFWebViewHandler: NSObject {
 			
 
 		}
-		//http://icons.better-idea.org/api/icons?url=stackovereflow.com&i_am_feeling_lucky=yes
 	}
+    
 	func showActionSheet(pt : CGPoint) {
 		var tags : NSArray? = nil
 		self.webView!.evaluateJavaScript(NSString(format: "getHTMLElementsAtPoint(%i,%i);", NSInteger(pt.x), NSInteger(pt.y - 90)) as String, completionHandler: {(stringy, error : NSError?) -> Void in

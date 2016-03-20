@@ -19,7 +19,7 @@ class SFFavoritesCell: UICollectionViewCell {
     
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-        
+        contentView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         parallaxView = ParallaxView(frame: .zero)
         contentView.addSubview(parallaxView)
         parallaxView.snp_makeConstraints { (make) -> Void in
@@ -92,6 +92,8 @@ class SFFavoritesCell: UICollectionViewCell {
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+    
+
 }
 
 

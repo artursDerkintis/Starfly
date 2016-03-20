@@ -240,6 +240,7 @@ class SFTabsController: UIViewController, SFTabsControllerDelegate {
     }
     func openURL(not: NSNotification){
         if let url = not.object! as? NSURL{
+            print("tabs controller \(url)")
             currentTab?.webViewController?.openURL(url)
             tabContentDelegate?.bringSFWebControllerInFront(currentTab!.webViewController!)
         }

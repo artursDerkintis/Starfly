@@ -11,18 +11,23 @@ import WebKit
 import SafariServices
 
 class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIGestureRecognizerDelegate {
+    
 	var webView : WKWebView?
+    
 	var faviconOperation = NSOperationQueue()
+    
 	dynamic var favicon : UIImage?
-	//    var tabManagment : SFTabManagment?
+    
 	var modeOfWeb = SFWebState.home
-	var selected : NSMutableDictionary?
+    
 	var newContentLoaded : ((Bool) -> (Void))?
+    
 	var circle : UIView?
+    
 	var isCurrent : Bool = false {
 		didSet {
 			if isCurrent {
-				//Updates everthing on becoming currentv
+				//Updates everthing on becoming current
 				NSNotificationCenter.defaultCenter().postNotificationName("PROGRESS", object: self.webView?.estimatedProgress)
 				NSNotificationCenter.defaultCenter().postNotificationName("UPDATE", object: self)
 			}
@@ -185,6 +190,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 	}
 
 	func openURL(urlOpt : NSURL?) {
+        
 		if let url = urlOpt {
 			modeOfWeb = .web
 			webView?.loadRequest(NSURLRequest(URL: url))
@@ -192,7 +198,9 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 		} else {
 			justGoHome()
 		}
+        
 	}
+    
 	func justGoHome() {
 
 		let url = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("home", ofType: "html")!)
@@ -217,7 +225,7 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
         NSNotificationCenter.defaultCenter().postNotificationName("RECOVERY", object: nil)
 		newContentLoaded?(true)
 
-		///handler?.tryToInjectPasword()
+		handler?.tryToInjectPasword()
 
 		handler?.loadFavicon({(ima) -> Void in
 				self.favicon = ima
@@ -239,42 +247,31 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
             longpress = false
             return
         }
-        if (navigationAction.targetFrame == nil) {
-            NSNotificationCenter.defaultCenter().postNotificationName("AddTabURL", object: navigationAction.request.URL!.absoluteString)
+        
+        let url = navigationAction.request.URL;
+        let urlString = url != nil ? url!.absoluteString : ""
+        
+        if (urlString as NSString).isMatch(NSRegularExpression(pattern: "\\/\\/itunes\\.apple\\.com\\/")) {
+            UIApplication.sharedApplication().openURL(url!)
             decisionHandler(WKNavigationActionPolicy.Cancel)
             return
         }
-
-        decisionHandler(WKNavigationActionPolicy.Allow)
-
-    }
-	func webView(webView: WKWebView,   navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-    
-
-		let url = navigationAction.request.URL;
-		let urlString = url != nil ? url!.absoluteString : ""
-
-		if (urlString as NSString).isMatch(NSRegularExpression(pattern: "\\/\\/itunes\\.apple\\.com\\/")) {
-			UIApplication.sharedApplication().openURL(url!)
-			decisionHandler(WKNavigationActionPolicy.Cancel)
-			return
-		}
-		if (navigationAction.targetFrame == nil) {
-			NSNotificationCenter.defaultCenter().postNotificationName("AddTabURL", object: navigationAction.request.URL!.absoluteString)
-			decisionHandler(WKNavigationActionPolicy.Cancel)
+        if (navigationAction.targetFrame == nil) {
+            NSNotificationCenter.defaultCenter().postNotificationName("AddTabURL", object: navigationAction.request.URL!.absoluteString)
+            decisionHandler(WKNavigationActionPolicy.Cancel)
         }
         decisionHandler(WKNavigationActionPolicy.Allow)
-        
-	}
 
+
+    }
+    
 	func longPress(sender: UILongPressGestureRecognizer) {
         longpress = true
 		if sender.state == UIGestureRecognizerState.Began {
            handler!.showActionSheet(sender.locationInView(webView!))
 			
         }else if sender.state == UIGestureRecognizerState.Ended{
-            
-            
+                        
         }
 	}
 	func webView(webView: WKWebView, didReceiveAuthenticationChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
@@ -322,7 +319,8 @@ class SFWebController: UIViewController, WKUIDelegate, WKNavigationDelegate, UIG
 
 
 	func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-		//    print(error.localizedDescription)
+       /// print(error.localizedDescription)
+        
 	}
 }
 

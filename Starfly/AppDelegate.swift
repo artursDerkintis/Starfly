@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        window?.backgroundColor = UIColor.whiteColor()
+        window?.backgroundColor = UIColor.lightGrayColor()
         
         
         
@@ -30,13 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NSUserDefaults.standardUserDefaults().setBool(false, forKey: "savePASS")
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "alreadyLauched")
             NSUserDefaults.standardUserDefaults().setBool(false, forKey: "pr")
-            //saveHitFirst()
-
+            SFDataHandler.sharedInstance.saveHitFirst()
         }
         
-      
         return true
-        
     }
   
     func applicationWillResignActive(application: UIApplication) {
@@ -66,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if Fillr.sharedInstance().canHandleOpenURL(url){
             Fillr.sharedInstance().handleOpenURL(url)
             return true
+        }else{
+            UIApplication.sharedApplication().openURL(url)
         }
         return false
     }

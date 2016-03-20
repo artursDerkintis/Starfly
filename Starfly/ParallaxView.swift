@@ -92,55 +92,14 @@ class ParallaxView: UIView, UIGestureRecognizerDelegate {
             break
         }
     }
+    
     func allowParallax(){
         parallax = true
         UIView.animateWithDuration(0.3) { () -> Void in
             self.setAlphaForViews(0.0)
         }
     }
-    deinit{
-        
-    }
-    /*override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        print("Start")
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "allowParallax", userInfo: nil, repeats: false)
-        
-    }
     
-   
-    
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        print("It recognizes touch")
-        
-        if parallax{
-            if let touch = touches.first {
-                let point = touch.locationInView(self)
-                if CGRectContainsPoint(self.frame, point){
-                    let newX = point.x - bounds.width / 2
-                    var newY = point.y - bounds.height / 2
-                    if newY < 0{
-                        newY = newY * -1
-                    }
-                    layer.zPosition = 100
-                    var rotationAndPerspectiveTransform = CATransform3DIdentity;
-                    rotationAndPerspectiveTransform.m34 = 1.0 / -500;
-                    rotationAndPerspectiveTransform = CATransform3DRotate(rotationAndPerspectiveTransform,
-                        (-newX / 5) * CGFloat(M_PI) / 180.0,
-                        -newY / 5,
-                        4.0,
-                        0.0)
-                    UIView.animateWithDuration(0.3) { () -> Void in
-                        self.layer.transform = rotationAndPerspectiveTransform
-                    }
-                }else{
-                    endParallax()
-                }
-            }
-        }
-    }
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        endParallax()
-    }*/
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

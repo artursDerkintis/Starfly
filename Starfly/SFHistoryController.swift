@@ -73,7 +73,6 @@ class SFHistoryController: UIViewController {
         for action in [actionHour, actionToday, actionThisWeek, actionAll, actionDeep, actionCancel]{
             actionController.addAction(action)
         }
-        
         presentViewController(actionController, animated: true, completion: nil)
     }
 }
