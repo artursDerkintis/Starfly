@@ -26,6 +26,7 @@ class ViewController: UIViewController {
         tabsContentController?.view.snp_makeConstraints { (make) -> Void in
             make.top.left.right.bottom.equalTo(0)
         }
+        
         blur = UIVisualEffectView(frame: CGRect.zero)
        
         blur?.layer.masksToBounds = true
@@ -71,9 +72,11 @@ class ViewController: UIViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "privateMode", name: "PRIVATE", object: nil)
     }
+    
     func privateMode(){
          blur?.effect = UIBlurEffect(style: NSUserDefaults.standardUserDefaults().boolForKey("pr") ? UIBlurEffectStyle.Dark : UIBlurEffectStyle.Light)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

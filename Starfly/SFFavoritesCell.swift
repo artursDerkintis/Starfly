@@ -14,11 +14,23 @@ class SFFavoritesCell: UICollectionViewCell {
 	var imageView : UIImageView?
 	var blur : UIVisualEffectView?
 	var delete : SFButton?
+    var parallaxView : ParallaxView!
+    var delegate : SFFavoritesCellDelegate?
+    
 	override init(frame: CGRect) {
 		super.init(frame: frame)
+        contentView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+        parallaxView = ParallaxView(frame: .zero)
+        contentView.addSubview(parallaxView)
+        parallaxView.snp_makeConstraints { (make) -> Void in
+            make.top.right.bottom.left.equalTo(0)
+        }
+    
+        
+        
 		let view = SFView(frame: bounds)
 		view.layer.cornerRadius = 10
-		addSubview(view)
+		parallaxView.addSubview(view)
 		layer.cornerRadius = 10
 		layer.masksToBounds = false
 		layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
@@ -40,7 +52,7 @@ class SFFavoritesCell: UICollectionViewCell {
 		label!.layer.shouldRasterize = true
 		label?.textAlignment = NSTextAlignment.Center
 
-		addSubview(label!)
+		parallaxView.addSubview(label!)
 		imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: frame.height - frame.height * 0.16))
 		imageView?.backgroundColor = UIColor.whiteColor()
 		imageView?.contentMode = UIViewContentMode.ScaleAspectFill
@@ -49,7 +61,7 @@ class SFFavoritesCell: UICollectionViewCell {
 		imageView?.layer.mask = shape
 		imageView?.layer.masksToBounds = true
 		imageView?.image = UIImage(named: "test2.jpg")
-		addSubview(imageView!)
+		parallaxView.addSubview(imageView!)
 		delete = SFButton(type: UIButtonType.Custom)
 		delete?.frame = CGRect(x: frame.width - 11, y: -6, width: 20, height: 20)
 		delete?.setImage(UIImage(named: Images.closeTab), forState: UIControlState.Normal)
@@ -62,8 +74,14 @@ class SFFavoritesCell: UICollectionViewCell {
 		delete?.layer.rasterizationScale = UIScreen.mainScreen().scale
 		delete?.layer.shouldRasterize = true
 		delete?.transform = CGAffineTransformMakeScale(0.001, 0.001)
-		addSubview(delete!)
+        delete?.addTarget(self, action: "deleteCell", forControlEvents: .TouchDown)
+		parallaxView.addSubview(delete!)
 	}
+    
+    func deleteCell(){
+        delegate?.deleteFromDataBase(self)
+    }
+    
 	override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
 		if CGRectContainsPoint(CGRect(x: 0, y: -20, width: frame.width + 20, height: frame.height + 20), point) {
 
@@ -74,6 +92,8 @@ class SFFavoritesCell: UICollectionViewCell {
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+    
+
 }
 
 
@@ -87,7 +107,7 @@ class SFSearchTableCell: UITableViewCell {
 		label = UILabel(frame: CGRect.zero)
 		label?.font = UIFont.systemFontOfSize(15, weight: UIFontWeightRegular)
 		backgroundColor = UIColor.clearColor()
-		label?.textColor = UIColor.blackColor()
+		label?.textColor = UIColor.whiteColor()
 		label!.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.8).CGColor
 		label!.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
 		label!.layer.shadowRadius = 0
@@ -97,9 +117,9 @@ class SFSearchTableCell: UITableViewCell {
 		label?.textAlignment = NSTextAlignment.Left
 		addSubview(label!)
 		label?.snp_makeConstraints {(make) -> Void in
-			make.width.height.equalTo(self)
-			make.left.right.equalTo(50)
-
+			make.top.bottom.equalTo(0)
+			make.right.equalTo(-50)
+            make.left.equalTo(20)
 		}
 	}
 

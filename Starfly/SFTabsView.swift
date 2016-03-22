@@ -24,6 +24,7 @@ class SFTabsView: UIView, UIGestureRecognizerDelegate {
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
+        
 		scrollView = UIScrollView(frame: .zero)
 		scrollView?.bounces = false
 		scrollView?.showsHorizontalScrollIndicator = false
@@ -101,6 +102,7 @@ class SFTabsView: UIView, UIGestureRecognizerDelegate {
 		}
 
 	}
+    
 	func moveTab() {
 		if let replacebleTab = getTabAtPoint(placeHolderImageView.center) where replacebleTab != movingTab {
 			swap(&tabs[tabs.indexOf(replacebleTab)!], &tabs[tabs.indexOf(movingTab!)!])
@@ -114,6 +116,7 @@ class SFTabsView: UIView, UIGestureRecognizerDelegate {
 			}
 		}
 	}
+    
 	func addNewTab(tab: SFTab) {
 		tabs.append(tab)
 		scrollView?.addSubviewSafe(tab)

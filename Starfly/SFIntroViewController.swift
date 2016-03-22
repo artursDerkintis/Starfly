@@ -18,8 +18,8 @@ class SFIntroViewController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: "splash"))
         addSubviewSafe(imageView)
         imageView.snp_makeConstraints { (make) -> Void in
-            make.height.equalTo(236)
-            make.width.equalTo(240)
+            make.height.equalTo(97)
+            make.width.equalTo(100)
             make.center.equalTo(self.view)
         }
         
@@ -35,7 +35,7 @@ class SFIntroViewController: UIViewController {
         //Fade Animation
         UIView.animateWithDuration(0.3, delay: 2.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
             self.view.alpha = 0.0
-            imageView.transform = CGAffineTransformMakeScale(0.01, 0.01)
+            imageView.transform = CGAffineTransformMakeScale(0.9, 0.9)
             }) { (fin) -> Void in
                 self.view.removeFromSuperview()
                 self.removeFromParentViewController()

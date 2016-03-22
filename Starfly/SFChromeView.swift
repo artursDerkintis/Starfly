@@ -65,7 +65,6 @@ class SFChromeView: UIView {
             if firstViewController()!.respondsToSelector("shareScreen"){
                 firstViewController()?.performSelector("shareScreen")
             }
-            
             break
         default:
             break

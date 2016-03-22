@@ -8,7 +8,11 @@
 
 import UIKit
 var currentColor : UIColor?
+
+//Self coloring UIView
 class SFView: UIView {
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         

@@ -25,6 +25,7 @@ public func randomString(len : Int) -> NSString {
     }
     return mut.mutableCopy() as! NSString
 }
+
 public func degreesToRadians(degrees: Double) -> Double { return degrees * M_PI / 180.0 }
 public func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -113,6 +114,7 @@ extension UIImage {
         
         return newImage
     }
+    
     func imageWithColorMultiply(color1: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         
@@ -158,6 +160,7 @@ extension UIImage {
         
         return newImage
     }
+    
     func resizeImage(targetSize: CGSize) -> UIImage {
         let size = self.size
         let widthRatio = targetSize.width / self.size.width
@@ -178,6 +181,7 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage
     }
+    
     func isDarkImage() -> Bool{
         var isDark = false
         let imageData = CGDataProviderCopyData(CGImageGetDataProvider(self.CGImage))
@@ -367,6 +371,14 @@ extension UIView {
 
 extension UIColor {
     
+    class func imageFromColor(color: UIColor, frame: CGRect) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
+        color.setFill()
+        UIRectFill(frame)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
     
     class func colorWithSaturationFactor(factor: CGFloat, color: UIColor) -> UIColor {
         var hue : CGFloat = 0

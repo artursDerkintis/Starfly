@@ -55,14 +55,13 @@ class SFHomeController: UIViewController, UIScrollViewDelegate {
 		bookmarksController = SFBookmarksController()
 		bookmarksController.view.frame = CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
 		bookmarksController.view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-		bookmarksController.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
 		scrollView?.addSubview(bookmarksController.view)
 
 		historyController = SFHistoryController()
         addChildViewController(historyController)
-		historyController.view.frame = CGRect(x: view.bounds.width * 2, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
+		historyController.view.frame = CGRect(x: view.bounds.width * 2, y: 135, width: view.bounds.width, height: view.bounds.height - 90)
 		historyController.view.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-		historyController.updateFrames(UIEdgeInsetsMake(50, 50, -130, -50))
+        historyController.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 100, right: 0)
 		scrollView.addSubview(historyController.view)
 
 
@@ -287,7 +286,7 @@ class SFHomeController: UIViewController, UIScrollViewDelegate {
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 		controlView?.frame = CGRect(x: view.frame.width * 0.5 - 150, y: view.frame.height - 80, width: 300, height: 40)
-		historyController.view.frame = CGRect(x: view.bounds.width * 2, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
+		historyController.view.frame = CGRect(x: view.bounds.width * 2, y: 150, width: view.bounds.width, height: view.bounds.height - 90)
 		favoritesController.view.frame = CGRect(x: view.bounds.width, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
 		bookmarksController.view.frame = CGRect(x: 0, y: 90, width: view.bounds.width, height: view.bounds.height - 90)
 		scrollView.contentSize = CGSize(width: view.frame.width * 3, height: 200)

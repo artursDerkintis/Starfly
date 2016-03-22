@@ -10,7 +10,6 @@ import UIKit
 
 protocol SFTabsContentDelegate {
 	func addTab(completion: (webViewController : SFWebController) -> Void)
-	//    func removeTab(webViewController : SFWebController)
 	func selectTab(webViewController : SFWebController)
 	func bringHomeInFront()
     func bringSFWebControllerInFront(webViewController : SFWebController)
@@ -47,6 +46,7 @@ class SFTabsContentController: UIViewController, SFTabsContentDelegate {
 
 	}
     func bringSFWebControllerInFront(webViewController: SFWebController) {
+       
         self.view.bringSubviewToFront(webViewController.view)
     }
 

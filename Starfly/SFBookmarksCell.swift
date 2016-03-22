@@ -16,6 +16,13 @@ class SFBookmarksCell : SWTableViewCell {
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		backgroundColor = .clearColor()
+        contentView.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(1)
+            make.right.equalTo(0)
+            make.left.equalTo(0)
+            make.bottom.equalTo(-1)
+        }
+        contentView.backgroundColor = UIColor(white: 0.9, alpha: 0.5)
 		titleLabel = UILabel(frame: CGRect.zero)
 		titleLabel?.textColor = UIColor.blackColor()
 		titleLabel?.font = UIFont.systemFontOfSize(16, weight: UIFontWeightRegular)

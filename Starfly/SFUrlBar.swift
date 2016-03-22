@@ -66,21 +66,17 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
 
     func shareScreen(){
         if let current = currentWebController where current.modeOfWeb != .home{
-            let dictionary = NSMutableDictionary()
-            if current.webView!.URL != nil && current.favicon != nil && current.webView!.title != nil{
-            dictionary.setObject(current.webView!.URL!.absoluteString, forKey: "url")
-            dictionary.setObject(current.webView!.title!, forKey: "title")
-            dictionary.setObject(current.favicon!, forKey: "image")
-            let image = current.webView?.scrollView.takeSnapshotForFavorites(90)
-            dictionary.setObject(image!, forKey: "imageScreenShoot")
-            }
-            if dictionary.count > 0{
-                let share = SFShare(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.window!.frame.height))
-                self.view.window?.rootViewController!.view.addSubview(share)
-                share.setUpME(dictionary)
+           
+           if let url = current.webView?.URL?.absoluteString,
+            title = current.webView?.title,
+            favicon = current.favicon,
+            image = current.webView?.scrollView.takeSnapshotForFavorites(90){
+            
+            let share = SFShare(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.window!.frame.height))
+            self.view.window?.rootViewController!.view.addSubview(share)
+            share.setup(Item(url: url, title: title, favicon: favicon, screenshot: image))
             }
         }
-        
     }
     
     
@@ -120,11 +116,10 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
                 
             }
             view.snp_updateConstraints { (make) -> Void in
-                make.height.equalTo(567)
+                make.height.equalTo(135)
             }
             UIView.animateWithDuration(0.5, animations: { () -> Void in
                 self.view.layoutIfNeeded()
-                self.menuView?.layoutIfNeeded()
                 })
             self.outsideListener = UITapGestureRecognizer(target: self, action: "close:")
             
@@ -136,6 +131,7 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
         }
         
     }
+    
     func closeMenu(){
         view.snp_updateConstraints { (make) -> Void in
             make.height.equalTo(45)
@@ -185,17 +181,14 @@ class SFUrlBar: UIViewController, UIGestureRecognizerDelegate, SFUrlBarManagment
             navigation?.homeButton?.hidden = false
             chrome?.menuButton?.hidden = false
         }
-        
-        delay(0.3) { () -> () in
-           //// print(self.textField!.bounds)
-            ///self.textFieldMask!.frame = self.textField!.bounds
-        }
-       
        
     }
+    
+    
     deinit{
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+        
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

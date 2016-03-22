@@ -20,18 +20,11 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
         }
     }
 
-	let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-
 	private var fetchController : NSFetchedResultsController?
 
-	var iconDictionary = NSMutableDictionary()
-
-	var request : NSFetchRequest!
 	override init() {
 		super.init()
-		request = simpleHistoryRequest()
-		cacheIcons(request)
-		fetchController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: appDelegate.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+		fetchController = NSFetchedResultsController(fetchRequest: simpleHistoryRequest, managedObjectContext: SFDataHelper.sharedInstance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
 		fetchController?.delegate = self
 	}
 
@@ -44,28 +37,11 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 		}
 	}
 
-	func simpleHistoryRequest() -> NSFetchRequest {
+    lazy var simpleHistoryRequest : NSFetchRequest = {
 		let request = NSFetchRequest(entityName: "Bookmarks")
 		request.sortDescriptors = [NSSortDescriptor(key: "arrangeIndex", ascending: false)]
 		return request
-	}
-
-	func cacheIcons(request : NSFetchRequest) {
-		do {
-			if let hits = try appDelegate.managedObjectContext.executeFetchRequest(request) as? [Bookmarks] {
-				for hit in hits {
-					let iconFileName = (hit.favicon as NSString).lastPathComponent
-                    let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
-					let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
-					if let icon = UIImage(contentsOfFile: iconPath) {
-						iconDictionary.setObject(icon, forKey: hit.favicon)
-					}
-				}
-			}
-		} catch _ {
-
-		}
-	}
+	}()
 
 	//MARK: NSFetchedResultsControllerDelegate
 	func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -80,8 +56,6 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
                 delay(0.5, closure: { () -> () in
                     self.tableView?.endUpdates()
                 })
-                
-                
             }
         })
 	}
@@ -90,18 +64,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 		dispatch_async(dispatch_get_main_queue(), {() -> Void in
 				switch type {
 				case .Insert:
-					if let hit = anObject as? Bookmarks {
-                        let iconFileName = (hit.favicon as NSString).lastPathComponent
-                        let folder : NSString = (NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents/Books")
-                        let iconPath = folder.stringByAppendingPathComponent(iconFileName as String)
-						if let icon = UIImage(contentsOfFile: iconPath) {
-							self.iconDictionary.setObject(icon, forKey: hit.favicon)
-						}
-                        
-					}
-                    delay(0.3, closure: { () -> () in
-                        self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
-                    })
+                    self.tableView!.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Top)
 					break
 				case .Delete:
                     self.tableView?.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
@@ -141,9 +104,8 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerLeftUtilityButtonWithIndex index: Int) {
 		let indexPath = self.tableView?.indexPathForCell(cell)
 		if let hit = fetchController!.objectAtIndexPath(indexPath!) as? Bookmarks {
-			deleteImage(hit.favicon)
-			appDelegate.managedObjectContext.deleteObject(hit)
-			appDelegate.saveContext()
+			SFDataHelper.sharedInstance.managedObjectContext.deleteObject(hit)
+			SFDataHelper.sharedInstance.saveContext()
 		}
 	}
 
@@ -164,7 +126,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 		let object = fetchController?.objectAtIndexPath(indexPath) as! Bookmarks
 		cell.titleLabel?.text = object.title
 		cell.urlLabel?.text = object.url
-		cell.icon?.image = iconDictionary.objectForKey(object.favicon) as? UIImage
+		cell.icon?.image = object.icon
 		cell.leftUtilityButtons = deleteButton() as [AnyObject]
 		cell.delegate = self
 		return cell
@@ -184,7 +146,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	func configureExistingCell(indexPath: NSIndexPath) {
 		if let hit = fetchController?.objectAtIndexPath(indexPath) as? Bookmarks {
 			if let cell = self.tableView?.cellForRowAtIndexPath(indexPath) as? SFBookmarksCell {
-				cell.icon?.image = iconDictionary.objectForKey(hit.favicon) as? UIImage
+				cell.icon?.image = hit.icon
 				cell.urlLabel?.text = hit.url
 				cell.titleLabel?.text = hit.title
 			} else {
@@ -197,7 +159,7 @@ class SFBookmarksProvider: NSObject, UITableViewDataSource, UITableViewDelegate,
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: false)
 		if let object = fetchController?.objectAtIndexPath(indexPath) as? Bookmarks {
-			NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.url)
+			NSNotificationCenter.defaultCenter().postNotificationName("OPEN", object: object.getURL())
 		}
 	}
 

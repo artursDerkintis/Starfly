@@ -9,6 +9,7 @@
 import UIKit
 
 class SFHomeSwitcher: UIControl {
+    
     var floater : SFView?
     var items = ["Bookmarks", "Home", "History"]
     var centers = [CGPoint]()
@@ -16,6 +17,7 @@ class SFHomeSwitcher: UIControl {
     var dragging = false
     var currentPage : Int = 1
     var ImDoingSomething = false
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         let count = CGFloat(items.count)
@@ -33,20 +35,17 @@ class SFHomeSwitcher: UIControl {
         layer.shadowRadius = 2
         layer.shadowOpacity = 1.0
         layer.shouldRasterize = true
-        layer.borderWidth = 2
+        layer.borderWidth = 0
         layer.borderColor = UIColor.whiteColor().CGColor
         layer.rasterizationScale = UIScreen.mainScreen().scale
 
         floater = SFView(frame: CGRect(x: 0, y: 0, width: frame.width / count, height: frame.height))
         floater?.layer.cornerRadius = floater!.frame.height * 0.5
-        floater?.layer.borderWidth = 2
+        floater?.layer.borderWidth = 0
         floater?.layer.borderColor = UIColor.whiteColor().CGColor
         floater?.userInteractionEnabled = false
         addSubview(floater!)
-        floater!.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
-        floater!.layer.shadowOffset = CGSize(width: 0, height: lineWidth())
-        floater!.layer.shadowOpacity = 0.6
-        floater!.layer.shadowRadius = 0
+        
         for item in items{
             let label = UILabel(frame: CGRect(x: (frame.width / count) * CGFloat(items.indexOf(item)!), y: 0, width: frame.width / count, height: frame.height))
             label.textColor = .whiteColor()
@@ -60,19 +59,19 @@ class SFHomeSwitcher: UIControl {
             label.layer.shouldRasterize = true
             label.textAlignment = NSTextAlignment.Center
             label.text = item
-            
             addSubview(label)
             centers.append(label.center)
         }
         
         
     }
+    
     func liveScroll(point : CGPoint){
         if !ImDoingSomething{
-            
             floater?.frame.origin = point
         }
     }
+    
     func setPage(current : Int){
         if !ImDoingSomething{
         currentPage = current
@@ -117,6 +116,7 @@ class SFHomeSwitcher: UIControl {
 
         return false
     }
+    
     override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
         let loc = touch.locationInView(self)
         if dragging{
@@ -127,6 +127,7 @@ class SFHomeSwitcher: UIControl {
         sendActionsForControlEvents(UIControlEvents.ValueChanged)
         return true
     }
+    
     override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
         var closestX : CGFloat = CGFloat.infinity
         var point : CGPoint?
@@ -149,6 +150,7 @@ class SFHomeSwitcher: UIControl {
         sendActionsForControlEvents(UIControlEvents.TouchUpInside)
         dragging = false
     }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
