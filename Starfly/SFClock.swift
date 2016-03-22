@@ -42,6 +42,7 @@ class SFClock: UIView {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     func changeFace(){
         let integer = NSUserDefaults.standardUserDefaults().integerForKey("clockFace")
         switch integer{
@@ -138,8 +139,11 @@ class SFClock: UIView {
         digitalClock = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
         digitalClock?.textAlignment = NSTextAlignment.Center
         digitalClock?.font = UIFont.systemFontOfSize(13)
+        
         digitalClock?.textColor = UIColor.whiteColor()
         addSubview(digitalClock!)
+        
+        
         batteryLevel = Battery(frame: self.bounds)
         addSubview(batteryLevel!)
         updateFace()
@@ -171,9 +175,8 @@ class SFClock: UIView {
         minLayer?.anchorPoint = CGPointMake(0.5, 0.07)
         hourLayer?.anchorPoint = CGPointMake(0.5, 0.07)
         
-        
-        
     }
+    
     func updateClock(){
         let dateComp = NSCalendar.currentCalendar().components(([NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]), fromDate: NSDate())
         let seconds : NSInteger  = dateComp.second
@@ -238,10 +241,12 @@ class Battery: UIView {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "firetimer", name: UIApplicationDidBecomeActiveNotification, object: nil)
         
     }
+    
     func firetimer(){
         timer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "refreshTimer", userInfo: nil, repeats: true)
         NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSRunLoopCommonModes)
     }
+    
     func refreshTimer(){
         currentLevel = UIDevice.currentDevice().batteryLevel
         label!.text = String(format: "%.f%%", currentLevel! * 100)
@@ -253,8 +258,8 @@ class Battery: UIView {
         check()
         setNeedsDisplay()
     }
-    func check()
-    {
+    
+    func check(){
         switch (UIDevice.currentDevice().batteryState){
             
         case UIDeviceBatteryState.Unplugged:

@@ -72,9 +72,11 @@ class ViewController: UIViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "privateMode", name: "PRIVATE", object: nil)
     }
+    
     func privateMode(){
          blur?.effect = UIBlurEffect(style: NSUserDefaults.standardUserDefaults().boolForKey("pr") ? UIBlurEffectStyle.Dark : UIBlurEffectStyle.Light)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

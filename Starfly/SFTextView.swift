@@ -73,6 +73,8 @@ class SFTextView: UIView, UIGestureRecognizerDelegate {
         
     }
     
+    
+    
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -82,7 +84,6 @@ class SFTextView: UIView, UIGestureRecognizerDelegate {
             self.textField!.selectedTextRange = self.textField!.textRangeFromPosition(self.textField!.beginningOfDocument, toPosition: self.textField!.endOfDocument)
             self.presentSearchCompletions()
         }
-        
         let basicAnim = CABasicAnimation(keyPath: "shadowRadius")
         basicAnim.toValue = 6
         basicAnim.duration = 0.2
@@ -145,7 +146,6 @@ class SFTextView: UIView, UIGestureRecognizerDelegate {
                     sView.alpha = 1.0
                     sView.layoutIfNeeded()
                     }) {(e) -> Void in
-                        
                 }
             }
         }

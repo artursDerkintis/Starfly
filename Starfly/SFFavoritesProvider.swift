@@ -187,7 +187,6 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
             dispatch_async(dispatch_get_main_queue()) {() -> Void in
                 self.updateItem(hit.getURL(), completion: {(newData: NSDictionary) -> Void in
                     hit.url = newData.valueForKey("url") as? String
-                    hit.title = newData.valueForKey("title") as? String
                     hit._screenshot = nil
                     let image = newData.valueForKey("shoot") as! UIImage
                     let dataBig = UIImagePNGRepresentation(image)
@@ -195,6 +194,7 @@ class SFFavoritesProvider: NSObject, UICollectionViewDelegate, UICollectionViewD
                     if let data = dataBig {
                         data.writeToFile(imagePath as String, atomically: true)
                     }
+                    SFDataHelper.sharedInstance.saveContext()
                     self.configureExistingCell(indexPath)
                 })
             }

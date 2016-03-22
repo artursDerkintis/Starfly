@@ -46,6 +46,7 @@ class SFTabsContentController: UIViewController, SFTabsContentDelegate {
 
 	}
     func bringSFWebControllerInFront(webViewController: SFWebController) {
+       
         self.view.bringSubviewToFront(webViewController.view)
     }
 

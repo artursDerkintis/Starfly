@@ -13,6 +13,7 @@ class SFProgressView: UIView {
     var progressLayer = UIView()
     var oldProgress : Double = 0
     var newProgress : Double = 0
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -33,10 +34,7 @@ class SFProgressView: UIView {
                     self.progressLayer.frame = CGRect(x: 0, y:0, width: self.newProgress == 1.0 ? 0.0 : self.progressLayer.frame.size.width, height: self.frame.height)
                     
                 })
-                
         }
-        
-        
         oldProgress = progress
     }
     
